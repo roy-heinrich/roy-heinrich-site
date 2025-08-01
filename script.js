@@ -110,3 +110,7 @@ initThree();
 window.addEventListener("load", () => {
   document.body.style.opacity = "1";
 });
+
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('nav-links').classList.toggle('active');
+});
