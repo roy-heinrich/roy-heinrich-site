@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roy Heinrich Delgado - Portfolio</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="scroll-indicator"></div>
+    
+    <canvas id="three-canvas"></canvas>
+
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">RHD</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>Roy Heinrich Delgado</h1>
+                <p class="subtitle">Novice Developer & AI Enthusiast</p>
+                <p class="description">
+                    Fourth-year Information Technology student at Aklan State University, passionate about building intelligent systems and crafting exceptional user experiences.
+                </p>
+                <a href="#projects" class="cta-button">View My Work</a>
+            </div>
+        </section>
+
+        <section id="about" class="section">
+            <div class="container">
+                <h2 class="section-title fade-in">About Me</h2>
+                <div class="about-content fade-in">
+                    <div class="about-text">
+                        <p>
+                            I'm a <span class="about-highlight">resourceful</span> developer who thrives on technical challenges. I've built and improved chatbots with multiple integrations including Flask, MySQL, ChromaDB, fastText, Ollama, and OpenRouter, demonstrating my ability to learn and adapt quickly.
+                        </p>
+                        <p>
+                            I'm <span class="about-highlight">goal-driven</span> and detail-oriented, always asking precise questions about deployment, optimization, and user experience because I don't just want things to work—I want them to work exceptionally well.
+                        </p>
+                        <p>
+                            My approach is <span class="about-highlight">user-centered</span>. I've customized applications to handle multiple languages naturally, implement graceful fallbacks, and respect data privacy. This reflects my values of clarity, professionalism, and empathy in design.
+                        </p>
+                    </div>
+                    <div class="skills-grid">
+                        <div class="skill-item">
+                            <h3>Frontend</h3>
+                            <p>HTML, CSS, JavaScript, React</p>
+                        </div>
+                        <div class="skill-item">
+                            <h3>Backend</h3>
+                            <p>Flask, Node.js, MySQL</p>
+                        </div>
+                        <div class="skill-item">
+                            <h3>AI/ML</h3>
+                            <p>fastText, Ollama, ChromaDB</p>
+                        </div>
+                        <div class="skill-item">
+                            <h3>Tools</h3>
+                            <p>Git, Docker, OpenRouter</p>
+                        </div>
+                        <div class="skill-item">
+                            <h3>Languages</h3>
+                            <p>Python, JavaScript, SQL</p>
+                        </div>
+                        <div class="skill-item">
+                            <h3>Cloud</h3>
+                            <p>Render, InfinityFree</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="section">
+            <div class="container">
+                <h2 class="section-title fade-in">Featured Projects</h2>
+                <div class="projects-grid fade-in">
+                    <div class="project-card">
+                        <h3 class="project-title">Intelligent Chatbot System</h3>
+                        <p class="project-description">
+                            A sophisticated multilingual chatbot with natural language processing, supporting both Tagalog and English. Features real-time responses, fallback logic, and seamless live agent integration with privacy-focused design.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Flask</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">ChromaDB</span>
+                            <span class="tech-tag">fastText</span>
+                            <span class="tech-tag">Ollama</span>
+                            <span class="tech-tag">OpenRouter</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">View Demo</a>
+                            <a href="#" class="project-link">Source Code</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <h3 class="project-title">University Management System</h3>
+                        <p class="project-description">
+                            A comprehensive web application for academic management, featuring student enrollment, grade tracking, and administrative tools. Built with responsive design and optimized performance.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">Express</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">View Demo</a>
+                            <a href="#" class="project-link">Source Code</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <h3 class="project-title">AI-Powered Analytics Dashboard</h3>
+                        <p class="project-description">
+                            An interactive dashboard that processes and visualizes complex data sets using machine learning algorithms. Features real-time analytics and predictive modeling capabilities.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">TensorFlow</span>
+                            <span class="tech-tag">D3.js</span>
+                            <span class="tech-tag">Flask</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link">View Demo</a>
+                            <a href="#" class="project-link">Source Code</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section">
+            <div class="container">
+                <h2 class="section-title fade-in">Let's Connect</h2>
+                <div class="contact-content fade-in">
+                    <p class="contact-text">
+                        I'm always interested in discussing new opportunities, innovative projects, or just connecting with fellow developers. Feel free to reach out!
+                    </p>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <h3>Email</h3>
+                            <a href="mailto:roy.delgado@example.com">roy.delgado@example.com</a>
+                        </div>
+                        <div class="contact-item">
+                            <h3>LinkedIn</h3>
+                            <a href="#" target="_blank">Roy Heinrich Delgado</a>
+                        </div>
+                        <div class="contact-item">
+                            <h3>GitHub</h3>
+                            <a href="#" target="_blank">@roy-heinrich</a>
+                        </div>
+                    </div>
+                    <a href="mailto:roy.delgado@example.com" class="cta-button">Get In Touch</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Roy Heinrich Delgado. Built with passion and Three.js.</p>
+        </div>
+    </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
