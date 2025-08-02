@@ -1,4 +1,4 @@
-# Roy Heinrich Delgado - Portfolio
+# Portfolio
 
 A personal portfolio website for Roy Heinrich Delgado, showcasing projects, skills, and contact information. Built with modern web technologies and enhanced with interactive Three.js graphics.
 
