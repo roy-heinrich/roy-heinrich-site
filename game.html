@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RHD • Tic Tac Toe</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <nav id="navbar">
+    <div class="nav-container">
+      <div class="logo">RHD</div>
+      <a class="project-link" href="index.html">← Back</a>
+    </div>
+  </nav>
+
+  <main class="section" style="padding-top: 7rem;">
+    <div class="container">
+      <h2 class="section-title">Tic Tac Toe</h2>
+      <div id="game" class="game">
+        <div id="board" class="board" role="grid" aria-label="Tic Tac Toe board">
+          <button class="cell" data-idx="0" aria-label="cell 1" role="gridcell"></button>
+          <button class="cell" data-idx="1" aria-label="cell 2" role="gridcell"></button>
+          <button class="cell" data-idx="2" aria-label="cell 3" role="gridcell"></button>
+          <button class="cell" data-idx="3" aria-label="cell 4" role="gridcell"></button>
+          <button class="cell" data-idx="4" aria-label="cell 5" role="gridcell"></button>
+          <button class="cell" data-idx="5" aria-label="cell 6" role="gridcell"></button>
+          <button class="cell" data-idx="6" aria-label="cell 7" role="gridcell"></button>
+          <button class="cell" data-idx="7" aria-label="cell 8" role="gridcell"></button>
+          <button class="cell" data-idx="8" aria-label="cell 9" role="gridcell"></button>
+        </div>
+        <div class="game-controls">
+          <p id="status" class="contact-text">Player X's turn</p>
+          <button id="reset" class="cta-button">Reset</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
+

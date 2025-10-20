@@ -1,0 +1,21 @@
+{
+    "liveServer.settings.CustomBrowser": "chrome",
+    "liveServer.settings.donotShowInfoMsg": true,
+    "liveServer.settings.NoBrowser": false,
+    "liveServer.settings.ignoreFiles": [
+        ".vscode/**",
+        "**/*.scss",
+        "**/*.sass"
+    ],
+    "liveServer.settings.host": "127.0.0.1",
+    "liveServer.settings.port": 5500,
+    "liveServer.settings.root": "/",
+    "liveServer.settings.mount": [
+        ["/", "./"]
+    ],
+    "liveServer.settings.mimeTypes": {
+        "js": "application/javascript",
+        "css": "text/css",
+        "html": "text/html"
+    }
+}

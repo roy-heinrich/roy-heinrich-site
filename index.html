@@ -4,8 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Roy Heinrich Delgado - Portfolio</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json?v=3" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
   <div class="scroll-indicator"></div>
@@ -15,17 +18,86 @@
     <nav id="navbar">
         <div class="nav-container">
           <div class="logo">RHD</div>
+          <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+            <span class="theme-icon" aria-hidden="true">☾</span>
+          </button>
       
           <div class="hamburger" id="hamburger">
             &#9776;
           </div>
       
+          <style>
+            .nav-links {
+              list-style: none;
+              display: flex;
+              gap: 20px;
+              padding: 0;
+              margin: 0;
+            }
+          
+            .nav-links li {
+              position: relative;
+            }
+          
+            .nav-links a {
+              text-decoration: none;
+              color: #fff;
+              padding: 8px 12px;
+              display: block;
+            }
+          
+            .nav-links a:hover {
+              background-color: #333;
+              border-radius: 4px;
+            }
+          
+            /* Dropdown styles */
+            .dropdown-menu {
+              display: none;
+              position: absolute;
+              top: 100%;
+              left: 0;
+              list-style: none;
+              background-color: #222;
+              padding: 10px 0;
+              margin: 0;
+              min-width: 160px;
+              border-radius: 6px;
+              box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+              z-index: 100;
+            }
+          
+            .dropdown-menu li a {
+              padding: 8px 16px;
+              color: #fff;
+              white-space: nowrap;
+            }
+          
+            .dropdown-menu li a:hover {
+              background-color: #444;
+            }
+          
+            /* Show dropdown on hover */
+            .dropdown:hover .dropdown-menu {
+              display: block;
+            }
+          </style>
+          
           <ul class="nav-links" id="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#projects">Projects</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle">Games ▾</a>
+              <ul class="dropdown-menu">
+                <li><a href="game.html">Tic Tac Toe</a></li>
+                <li><a href="sudoku.html">Sudoku</a></li>
+                <li><a href="pacman.html">Pacman</a></li>
+              </ul>
+            </li>
             <li><a href="#contact">Contact</a></li>
           </ul>
+          
         </div>
       </nav>
 
@@ -89,59 +161,67 @@
         <section id="projects" class="section">
             <div class="container">
                 <h2 class="section-title fade-in">Featured Projects</h2>
+            <div class="projects-controls">
+              <button class="filter-btn active" data-filter="all">All</button>
+              <button class="filter-btn" data-filter="ai">AI/ML</button>
+              <button class="filter-btn" data-filter="web">Web Apps</button>
+              <button class="filter-btn" data-filter="data">Data</button>
+              <input id="project-search" type="search" placeholder="Filter projects ( / )" aria-label="Filter projects" />
+            </div>
                 <div class="projects-grid fade-in">
-                    <div class="project-card">
-                        <h3 class="project-title">Intelligent Chatbot System</h3>
+                    <div class="project-card" data-category="ai" tabindex="0">
+                        <h3 class="project-title">TomasChatBot</h3>
                         <p class="project-description">
-                            A sophisticated multilingual chatbot with natural language processing, supporting both Tagalog and English. Features real-time responses, fallback logic, and seamless live agent integration with privacy-focused design.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">Flask</span>
-                            <span class="tech-tag">MySQL</span>
-                            <span class="tech-tag">ChromaDB</span>
-                            <span class="tech-tag">fastText</span>
-                            <span class="tech-tag">Ollama</span>
-                            <span class="tech-tag">OpenRouter</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="project-link">View Demo</a>
-                            <a href="#" class="project-link">Source Code</a>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <h3 class="project-title">University Management System</h3>
-                        <p class="project-description">
-                            A comprehensive web application for academic management, featuring student enrollment, grade tracking, and administrative tools. Built with responsive design and optimized performance.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">React</span>
-                            <span class="tech-tag">Node.js</span>
-                            <span class="tech-tag">MySQL</span>
-                            <span class="tech-tag">Express</span>
-                        </div>
-                        <div class="project-links">
-                            <a href="#" class="project-link">View Demo</a>
-                            <a href="#" class="project-link">Source Code</a>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <h3 class="project-title">AI-Powered Analytics Dashboard</h3>
-                        <p class="project-description">
-                            An interactive dashboard that processes and visualizes complex data sets using machine learning algorithms. Features real-time analytics and predictive modeling capabilities.
+                            A multilingual school-focused chatbot with NLP, context memory, and privacy-friendly design. Built with Python and web UI for interactive testing and demos.
                         </p>
                         <div class="project-tech">
                             <span class="tech-tag">Python</span>
-                            <span class="tech-tag">TensorFlow</span>
-                            <span class="tech-tag">D3.js</span>
-                            <span class="tech-tag">Flask</span>
+                            <span class="tech-tag">NLP</span>
+                            <span class="tech-tag">FastAPI</span>
                         </div>
                         <div class="project-links">
-                            <a href="#" class="project-link">View Demo</a>
-                            <a href="#" class="project-link">Source Code</a>
+                            <a href="https://github.com/roy-heinrich/TomasChatBot" class="project-link" target="_blank" rel="noopener" data-analytics="code">Source Code</a>
                         </div>
                     </div>
+
+                    <div class="project-card" data-category="web" tabindex="0">
+                        <h3 class="project-title">Linux Leap Advisor</h3>
+                        <p class="project-description">
+                            A comprehensive tool to check Windows application compatibility with Linux distributions, featuring intelligent search and multiple package sources.
+                        </p>
+                        <div class="project-tech">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">Web</span>
+                            <span class="tech-tag">UX</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://github.com/roy-heinrich/linux-leap-advisor" class="project-link" target="_blank" rel="noopener" data-analytics="code">Source Code</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials" class="section">
+            <div class="container">
+                <h2 class="section-title fade-in">What People Say</h2>
+                <div class="carousel fade-in" aria-roledescription="carousel">
+                    <div class="carousel-track">
+                        <div class="carousel-item" aria-roledescription="slide">
+                            <p>“Roy delivered beyond expectations with clean, maintainable code.”</p>
+                            <span class="author">— Project Mentor</span>
+                        </div>
+                        <div class="carousel-item" aria-roledescription="slide">
+                            <p>“Proactive, thoughtful, and user-focused. Great collaborator.”</p>
+                            <span class="author">— Teammate</span>
+                        </div>
+                        <div class="carousel-item" aria-roledescription="slide">
+                            <p>“Understands AI and product tradeoffs, not just the tech.”</p>
+                            <span class="author">— Advisor</span>
+                        </div>
+                    </div>
+                    <button class="carousel-prev" aria-label="Previous">‹</button>
+                    <button class="carousel-next" aria-label="Next">›</button>
                 </div>
             </div>
         </section>
@@ -151,12 +231,23 @@
                 <h2 class="section-title fade-in">Let's Connect</h2>
                 <div class="contact-content fade-in">
                     <p class="contact-text">
-                        I'm always interested in discussing new opportunities, innovative projects, or just connecting with fellow developers. Feel free to reach out!
+                        I'm always interested in discussing new opportunities, innovative projects, or just connecting with fellow developers.
                     </p>
+                    <form id="contact-form" novalidate>
+                        <div class="form-row">
+                            <input type="text" id="name" name="name" placeholder="Your name" required />
+                            <input type="email" id="email" name="email" placeholder="Your email" required />
+                        </div>
+                        <input type="text" id="company" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+                        <textarea id="message" name="message" placeholder="Your message" rows="5" required></textarea>
+                        <button type="submit" class="cta-button">Send Message</button>
+                        <p id="form-status" role="status" aria-live="polite"></p>
+                    </form>
                     <div class="contact-info">
                         <div class="contact-item">
                             <h3>Email</h3>
-                            <a href="mailto:royheinrich.delgado0@gmail.com">royheinrich.delgado0@gmail.com</a>
+                            <a id="email-link" href="mailto:royheinrich.delgado0@gmail.com">royheinrich.delgado0@gmail.com</a>
+                            <button class="copy-btn" data-copy="#email-link" aria-label="Copy email">Copy</button>
                         </div>
                         <div class="contact-item">
                             <h3>LinkedIn</h3>
@@ -164,10 +255,10 @@
                         </div>
                         <div class="contact-item">
                             <h3>GitHub</h3>
-                            <a href="#" target="_blank">@roy-heinrich</a>
+                            <a id="github-link" href="#" target="_blank">@roy-heinrich</a>
+                            <button class="copy-btn" data-copy="#github-link" aria-label="Copy GitHub">Copy</button>
                         </div>
                     </div>
-                    <a href="mailto:roy.delgado@example.com" class="cta-button">Get In Touch</a>
                 </div>
             </div>
         </section>
@@ -179,6 +270,16 @@
         </div>
     </footer>
 
-  <script src="script.js"></script>
+  <div id="lightbox" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="lightbox-content" role="document">
+      <button class="lightbox-close" aria-label="Close">×</button>
+      <h3 class="lightbox-title"></h3>
+      <p class="lightbox-desc"></p>
+    </div>
+  </div>
+
+  <button id="back-to-top" aria-label="Back to top" title="Back to top">▲</button>
+
+  <script src="script.js?v=3"></script>
 </body>
 </html>
