@@ -345,15 +345,26 @@ const THEME_STORAGE_KEY = 'site-theme';
 const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
 const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
 const rootEl = document.documentElement;
+
+
 const themeToggleBtn = document.getElementById('theme-toggle');
+const themeIconSvg = document.getElementById('theme-icon-svg');
+const sunPath = themeIconSvg?.querySelector('#theme-icon-sun');
+const moonPath = themeIconSvg?.querySelector('#theme-icon-moon');
 
 function applyTheme(theme) {
   if (theme === 'light') {
     rootEl.classList.add('theme-light');
-    themeToggleBtn && (themeToggleBtn.querySelector('.theme-icon').textContent = '☀');
+    if (sunPath && moonPath) {
+      sunPath.style.opacity = '1';
+      moonPath.style.opacity = '0';
+    }
   } else {
     rootEl.classList.remove('theme-light');
-    themeToggleBtn && (themeToggleBtn.querySelector('.theme-icon').textContent = '☾');
+    if (sunPath && moonPath) {
+      sunPath.style.opacity = '0';
+      moonPath.style.opacity = '1';
+    }
   }
 }
 
@@ -362,7 +373,10 @@ applyTheme(savedTheme || (prefersLight ? 'light' : 'dark'));
 themeToggleBtn && themeToggleBtn.addEventListener('click', () => {
   const isLight = rootEl.classList.toggle('theme-light');
   localStorage.setItem(THEME_STORAGE_KEY, isLight ? 'light' : 'dark');
-  themeToggleBtn.querySelector('.theme-icon').textContent = isLight ? '☀' : '☾';
+  if (sunPath && moonPath) {
+    sunPath.style.opacity = isLight ? '1' : '0';
+    moonPath.style.opacity = isLight ? '0' : '1';
+  }
 });
 
 window.addEventListener("resize", () => {
