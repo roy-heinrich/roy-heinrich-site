@@ -385,33 +385,50 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// Smooth scroll for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener("click", function (e) {
     e.preventDefault();
     const target = document.querySelector(this.getAttribute("href"));
     if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Close mobile menu if open
+      if (navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+      
+      // Smooth scroll to target
+      target.scrollIntoView({ 
+        behavior: "smooth", 
+        block: "start",
+        inline: "nearest"
+      });
     }
   });
 });
 
 window.addEventListener("scroll", () => {
-  const navbar = document.getElementById("navbar");
-  if (window.scrollY > 100) {
+  const currentScrollY = window.scrollY;
+  
+  // Navbar scrolled state
+  if (currentScrollY > 100) {
     navbar.classList.add("scrolled");
   } else {
     navbar.classList.remove("scrolled");
   }
 
+  // Scroll indicator
   const scrollIndicator = document.querySelector(".scroll-indicator");
   const scrollTop = window.pageYOffset;
   const docHeight = document.body.offsetHeight - window.innerHeight;
   const scrollPercent = (scrollTop / docHeight) * 100;
   scrollIndicator.style.width = scrollPercent + "%";
 
+  // Back to top button
   const backToTop = document.getElementById('back-to-top');
   if (backToTop) {
-    if (window.scrollY > 400) {
+    if (currentScrollY > 400) {
       backToTop.classList.add('show');
     } else {
       backToTop.classList.remove('show');
@@ -459,9 +476,75 @@ window.addEventListener("load", () => {
   document.body.style.opacity = "1";
 });
 
-document.getElementById('hamburger').addEventListener('click', () => {
-  document.getElementById('nav-links').classList.toggle('active');
+// Simplified navbar functionality
+const navbar = document.getElementById('navbar');
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('nav-links');
+
+// Hamburger menu toggle
+hamburger.addEventListener('click', () => {
+  const isActive = navLinks.classList.toggle('active');
+  hamburger.setAttribute('aria-expanded', isActive);
+  
+  // Prevent body scroll when menu is open
+  if (isActive) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
 });
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', (e) => {
+  if (navLinks.classList.contains('active') && 
+      !navLinks.contains(e.target) && 
+      !hamburger.contains(e.target)) {
+    navLinks.classList.remove('active');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+});
+
+// Removed confusing dismiss functionality - simplified navbar
+
+// Dropdown: keyboard + mobile accordion behavior
+const dropdown = document.querySelector('.dropdown');
+const dropdownToggle = document.querySelector('.dropdown-toggle');
+const dropdownMenu = document.querySelector('.dropdown-menu');
+
+if (dropdown && dropdownToggle && dropdownMenu) {
+  // Keyboard support
+  dropdownToggle.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      dropdown.classList.toggle('open');
+      const isOpen = dropdown.classList.contains('open');
+      dropdownToggle.setAttribute('aria-expanded', String(isOpen));
+    }
+  });
+
+  // Click to toggle on mobile
+  dropdownToggle.addEventListener('click', (e) => {
+    // Only treat as accordion when mobile menu is active
+    const isMobileMenu = navLinks.classList.contains('active');
+    if (isMobileMenu) {
+      e.preventDefault();
+      dropdown.classList.toggle('open');
+      const isOpen = dropdown.classList.contains('open');
+      dropdownToggle.setAttribute('aria-expanded', String(isOpen));
+    }
+  });
+
+  // Close dropdown when clicking outside on mobile
+  document.addEventListener('click', (e) => {
+    if (navLinks.classList.contains('active') && 
+        !dropdown.contains(e.target) && 
+        !dropdownToggle.contains(e.target)) {
+      dropdown.classList.remove('open');
+      dropdownToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
 
 // Back to top
 const backToTopBtn = document.getElementById('back-to-top');

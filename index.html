@@ -6,7 +6,7 @@
     <title>Roy Heinrich Delgado - Portfolio</title>
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2">
-  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <link rel="manifest" href="manifest.json?v=3" />
   <link rel="stylesheet" href="styles.css" />
@@ -16,32 +16,67 @@
     
     <canvas id="three-canvas"></canvas>
 
-            <nav id="navbar">
+            <nav id="navbar" class="navbar" role="navigation" aria-label="Main navigation">
                 <div class="nav-container">
-                    <div class="logo" title="Home" aria-label="Home">👾</div>
-                    <button id="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
-                                    <span class="theme-icon" aria-hidden="true">
-                                        <svg id="theme-icon-svg" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle">
-                                            <circle cx="11" cy="11" r="8" stroke="#667eea" stroke-width="2" fill="none"/>
-                                            <path id="theme-icon-sun" d="M11 3V1M11 21V19M4.93 4.93L3.51 3.51M18.49 18.49L17.07 17.07M3 11H1M21 11H19M4.93 17.07L3.51 18.49M18.49 3.51L17.07 4.93" stroke="#667eea" stroke-width="1.5" stroke-linecap="round"/>
-                                            <path id="theme-icon-moon" d="M15 11a4 4 0 1 1-8 0 6 6 0 0 0 8 0z" fill="#764ba2" opacity="0"/>
+                    <div class="nav-brand">
+                        <a href="#home" class="logo" title="Roy Heinrich Delgado - Home" aria-label="Home">
+                            <span class="logo-icon">👾</span>
+                            <span class="logo-text">Roy Heinrich</span>
+                        </a>
+                    </div>
+                    
+                    <div class="nav-controls">
+                        <button id="theme-toggle" class="nav-control-btn" aria-label="Toggle theme" title="Toggle theme">
+                            <span class="toggle-icons" aria-hidden="true">
+                                <span class="icon-sun">☀️</span>
+                                <span class="icon-moon">🌙</span>
+                            </span>
+                        </button>
+                        
+                        <button class="nav-control-btn hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                        </button>
+                    </div>
+                    
+                    <ul class="nav-links" id="nav-links" role="menubar">
+                        <li role="none"><a href="#home" role="menuitem" class="nav-link"><span class="nav-icon" aria-hidden="true">🏠</span> <span class="nav-text">Home</span></a></li>
+                        <li role="none"><a href="#about" role="menuitem" class="nav-link"><span class="nav-icon" aria-hidden="true">👤</span> <span class="nav-text">About</span></a></li>
+                        <li role="none"><a href="#projects" role="menuitem" class="nav-link"><span class="nav-icon" aria-hidden="true">💼</span> <span class="nav-text">Projects</span></a></li>
+                        <li role="none" class="dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" role="menuitem" aria-haspopup="true" aria-expanded="false">
+                                <span class="nav-icon" aria-hidden="true">🎮</span> 
+                                <span class="nav-text">Games</span>
+                                <span class="dropdown-arrow" aria-hidden="true">▾</span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu" aria-label="Games submenu">
+                                <li role="none"><a href="game.html" role="menuitem" class="dropdown-link">
+                                    <span class="nav-icon" aria-hidden="true">
+                                        <svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle">
+                                            <rect x="1" y="1" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+                                            <line x1="6" y1="1" x2="6" y2="17" stroke="currentColor" stroke-width="2"/>
+                                            <line x1="12" y1="1" x2="12" y2="17" stroke="currentColor" stroke-width="2"/>
+                                            <line x1="1" y1="6" x2="17" y2="6" stroke="currentColor" stroke-width="2"/>
+                                            <line x1="1" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="2"/>
+                                            <circle cx="4.5" cy="4.5" r="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                                            <line x1="13.5" y1="13.5" x2="16" y2="16" stroke="currentColor" stroke-width="2"/>
+                                            <line x1="16" y1="13.5" x2="13.5" y2="16" stroke="currentColor" stroke-width="2"/>
                                         </svg>
-                                    </span>
-                    </button>
-                    <div class="hamburger" id="hamburger">&#9776;</div>
-                    <ul class="nav-links" id="nav-links">
-                                    <li><a href="#home"><span class="nav-icon" aria-hidden="true">🏠</span> Home</a></li>
-                                    <li><a href="#about"><span class="nav-icon" aria-hidden="true">👤</span> About</a></li>
-                                    <li><a href="#projects"><span class="nav-icon" aria-hidden="true">💼</span> Projects</a></li>
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle"><span class="nav-icon" aria-hidden="true">🎮</span> Games ▾</a>
-                                        <ul class="dropdown-menu">
-                                              <li><a href="game.html"><span class="nav-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle"><rect x="1" y="1" width="16" height="16" rx="3" fill="none" stroke="#667eea" stroke-width="2"/><line x1="6" y1="1" x2="6" y2="17" stroke="#667eea" stroke-width="2"/><line x1="12" y1="1" x2="12" y2="17" stroke="#667eea" stroke-width="2"/><line x1="1" y1="6" x2="17" y2="6" stroke="#667eea" stroke-width="2"/><line x1="1" y1="12" x2="17" y2="12" stroke="#667eea" stroke-width="2"/><circle cx="4.5" cy="4.5" r="2" stroke="#764ba2" stroke-width="2" fill="none"/><line x1="13.5" y1="13.5" x2="16" y2="16" stroke="#764ba2" stroke-width="2"/><line x1="16" y1="13.5" x2="13.5" y2="16" stroke="#764ba2" stroke-width="2"/></svg></span> Tic Tac Toe</a></li>
-                                              <li class="dropdown-separator"></li>
-                                              <li><a href="sudoku.html"><span class="nav-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle"><rect x="1" y="1" width="16" height="16" rx="3" fill="none" stroke="#667eea" stroke-width="2"/><text x="4.5" y="13" font-size="8" fill="#764ba2" font-family="monospace">9</text></svg></span> Sudoku</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a href="#contact"><span class="nav-icon" aria-hidden="true">✉️</span> Contact</a></li>
+                                    </span> Tic Tac Toe
+                                </a></li>
+                                <li class="dropdown-separator" role="separator"></li>
+                                <li role="none"><a href="sudoku.html" role="menuitem" class="dropdown-link">
+                                    <span class="nav-icon" aria-hidden="true">
+                                        <svg width="18" height="18" viewBox="0 0 18 18" style="vertical-align:middle">
+                                            <rect x="1" y="1" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+                                            <text x="4.5" y="13" font-size="8" fill="currentColor" font-family="monospace">9</text>
+                                        </svg>
+                                    </span> Sudoku
+                                </a></li>
+                            </ul>
+                        </li>
+                        <li role="none"><a href="#contact" role="menuitem" class="nav-link"><span class="nav-icon" aria-hidden="true">✉️</span> <span class="nav-text">Contact</span></a></li>
                     </ul>
                 </div>
             </nav>
@@ -196,11 +231,11 @@
                         </div>
                         <div class="contact-item">
                             <h3>LinkedIn</h3>
-                            <a href="#" target="_blank">Roy Heinrich Delgado</a>
+                            <a href="https://www.linkedin.com/in/roy-heinrich-delgado-b621ba222/" target="_blank">Roy Heinrich Delgado</a>
                         </div>
                         <div class="contact-item">
                             <h3>GitHub</h3>
-                            <a id="github-link" href="#" target="_blank">@roy-heinrich</a>
+                            <a id="github-link" href="https://github.com/roy-heinrich" target="_blank">@roy-heinrich</a>
                             <button class="copy-btn" data-copy="#github-link" aria-label="Copy GitHub">Copy</button>
                         </div>
                     </div>
