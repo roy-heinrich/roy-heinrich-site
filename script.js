@@ -470,10 +470,77 @@ document.querySelectorAll(".fade-in").forEach(el => {
   observer.observe(el);
 });
 
+// Typewriter effect for the title
+function initTypewriterEffect() {
+  const typewriterText = document.getElementById('typewriter-text');
+  const typewriterCursor = document.getElementById('typewriter-cursor');
+  
+  if (!typewriterText || !typewriterCursor) return;
+  
+  const text1 = "Roy Heinrich Delgado";
+  const text2 = "heinz.is-a.dev";
+  
+  // Start the typewriter effect after a delay
+  setTimeout(() => {
+    typewriterLoop(typewriterText, typewriterCursor, text1, text2);
+  }, 2000); // 2 second delay before starting
+}
+
+function typewriterLoop(textElement, cursorElement, text1, text2) {
+  let currentText = text1;
+  let isDeleting = true;
+  let textIndex = text1.length;
+  let currentTarget = text1;
+  let nextTarget = text2;
+  
+  function type() {
+    if (isDeleting) {
+      // Delete characters one by one
+      if (textIndex > 0) {
+        currentText = currentTarget.substring(0, textIndex - 1);
+        textIndex--;
+      } else {
+        // Start typing the new text
+        isDeleting = false;
+        textIndex = 0;
+        currentText = "";
+        // Switch targets for next cycle
+        const temp = currentTarget;
+        currentTarget = nextTarget;
+        nextTarget = temp;
+      }
+    } else {
+      // Type new characters one by one
+      if (textIndex < currentTarget.length) {
+        currentText = currentTarget.substring(0, textIndex + 1);
+        textIndex++;
+      } else {
+        // Text complete, wait a bit then start deleting
+        setTimeout(() => {
+          isDeleting = true;
+          textIndex = currentText.length;
+          type();
+        }, 2000); // 2 second pause before starting to delete
+        return;
+      }
+    }
+    
+    textElement.textContent = currentText;
+    
+    // Variable typing speed
+    const baseSpeed = isDeleting ? 100 : 150;
+    const randomDelay = Math.random() * 100;
+    setTimeout(type, baseSpeed + randomDelay);
+  }
+  
+  type();
+}
+
 initThree();
 
 window.addEventListener("load", () => {
   document.body.style.opacity = "1";
+  initTypewriterEffect();
 });
 
 // Simplified navbar functionality

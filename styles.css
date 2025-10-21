@@ -435,6 +435,28 @@ body {
         padding: 3rem 2rem;
         padding: 0;
 }
+
+/* Typewriter effect styles */
+.typewriter-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background-color: var(--brand-1);
+    margin-left: -2px;
+    animation: blink 1s infinite;
+    vertical-align: text-top;
+    position: relative;
+    top: -0.1em;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.typewriter-text {
+    display: inline;
+}
 .hero-content .hero-subtitle {
     margin-top: 5rem;
     margin-bottom: 1.7rem;
