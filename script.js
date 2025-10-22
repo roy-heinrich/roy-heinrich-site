@@ -580,7 +580,110 @@ const dropdownToggle = document.querySelector('.dropdown-toggle');
 const dropdownMenu = document.querySelector('.dropdown-menu');
 
 if (dropdown && dropdownToggle && dropdownMenu) {
-  // Keyboard support
+  // Game loading animation logic
+  function showGameLoader(game) {
+    // Remove any existing loader
+    let loader = document.getElementById('game-loader');
+    if (loader) loader.remove();
+    loader = document.createElement('div');
+    loader.id = 'game-loader';
+    loader.style.position = 'fixed';
+    loader.style.top = '0';
+    loader.style.left = '0';
+    loader.style.width = '100vw';
+    loader.style.height = '100vh';
+  loader.style.background = '#0a0a0a';
+    loader.style.zIndex = '9999';
+    loader.style.display = 'flex';
+    loader.style.alignItems = 'center';
+    loader.style.justifyContent = 'center';
+    loader.innerHTML = game === 'tic' ? `
+      <div style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:1.5rem;font-family:'Press Start 2P','Courier New',Courier,monospace;letter-spacing:1px;color:#fff;">Tic Tac Toe</div>
+        <div style="display:flex;gap:1.5rem;justify-content:center;">
+          <div style="width:60px;height:60px;background:#222;border-radius:16px;display:flex;align-items:center;justify-content:center;animation:loaderBounce 1s infinite alternate;">
+            <span style="font-size:2.5rem;color:#667eea;">X</span>
+          </div>
+          <div style="width:60px;height:60px;background:#222;border-radius:16px;display:flex;align-items:center;justify-content:center;animation:loaderBounce 1s 0.5s infinite alternate;">
+            <span style="font-size:2.5rem;color:#764ba2;">O</span>
+          </div>
+        </div>
+        <div style="margin-top:2rem;color:#ccc;font-size:1.1rem;">Loading game...</div>
+      </div>
+    ` : `
+      <div style="text-align:center;">
+        <div style="font-size:2rem;margin-bottom:1.5rem;font-family:'Press Start 2P','Courier New',Courier,monospace;letter-spacing:1px;color:#fff;">Sudoku</div>
+        <div style="display:grid;grid-template-columns:repeat(3,32px);gap:8px;justify-content:center;margin-bottom:1.5rem;">
+          <div style="width:32px;height:32px;background:#222;border-radius:8px;display:flex;align-items:center;justify-content:center;animation:loaderBounce 1s infinite alternate;">
+            <span style="font-size:1.5rem;color:#667eea;">5</span>
+          </div>
+          <div style="width:32px;height:32px;background:#222;border-radius:8px;display:flex;align-items:center;justify-content:center;animation:loaderBounce 1s 0.3s infinite alternate;">
+            <span style="font-size:1.5rem;color:#764ba2;">9</span>
+          </div>
+          <div style="width:32px;height:32px;background:#222;border-radius:8px;display:flex;align-items:center;justify-content:center;animation:loaderBounce 1s 0.6s infinite alternate;">
+            <span style="font-size:1.5rem;color:#eab667;">3</span>
+          </div>
+        </div>
+        <div style="margin-top:2rem;color:#ccc;font-size:1.1rem;">Loading game...</div>
+      </div>
+    `;
+    document.body.appendChild(loader);
+    // Add keyframes for bounce
+    if (!document.getElementById('loader-bounce-style')) {
+      const style = document.createElement('style');
+      style.id = 'loader-bounce-style';
+      style.innerHTML = `@keyframes loaderBounce { 0%{transform:translateY(0);} 100%{transform:translateY(-24px);} }`;
+      document.head.appendChild(style);
+    }
+  }
+
+  // Intercept game links
+  document.querySelectorAll('.dropdown-link').forEach(link => {
+    if (link.getAttribute('href') === 'game.html') {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        showGameLoader('tic');
+        setTimeout(() => { window.location.href = 'game.html'; }, 1200);
+      });
+    }
+    if (link.getAttribute('href') === 'sudoku.html') {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        showGameLoader('sudoku');
+        setTimeout(() => { window.location.href = 'sudoku.html'; }, 1200);
+      });
+    }
+  });
+  // Only open dropdown on click for mobile, hover for desktop
+  function isMobile() {
+    return window.innerWidth <= 900;
+  }
+
+  // Click for mobile
+  dropdownToggle.addEventListener('click', (e) => {
+    if (isMobile()) {
+      e.preventDefault();
+      dropdown.classList.toggle('open');
+      const isOpen = dropdown.classList.contains('open');
+      dropdownToggle.setAttribute('aria-expanded', String(isOpen));
+    }
+  });
+
+  // Hover for desktop
+  dropdown.addEventListener('mouseenter', () => {
+    if (!isMobile()) {
+      dropdown.classList.add('open');
+      dropdownToggle.setAttribute('aria-expanded', 'true');
+    }
+  });
+  dropdown.addEventListener('mouseleave', () => {
+    if (!isMobile()) {
+      dropdown.classList.remove('open');
+      dropdownToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Keyboard accessibility
   dropdownToggle.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -590,23 +693,9 @@ if (dropdown && dropdownToggle && dropdownMenu) {
     }
   });
 
-  // Click to toggle on mobile
-  dropdownToggle.addEventListener('click', (e) => {
-    // Only treat as accordion when mobile menu is active
-    const isMobileMenu = navLinks.classList.contains('active');
-    if (isMobileMenu) {
-      e.preventDefault();
-      dropdown.classList.toggle('open');
-      const isOpen = dropdown.classList.contains('open');
-      dropdownToggle.setAttribute('aria-expanded', String(isOpen));
-    }
-  });
-
-  // Close dropdown when clicking outside on mobile
+  // Close dropdown when clicking outside
   document.addEventListener('click', (e) => {
-    if (navLinks.classList.contains('active') && 
-        !dropdown.contains(e.target) && 
-        !dropdownToggle.contains(e.target)) {
+    if (!dropdown.contains(e.target) && !dropdownToggle.contains(e.target)) {
       dropdown.classList.remove('open');
       dropdownToggle.setAttribute('aria-expanded', 'false');
     }
@@ -731,8 +820,21 @@ contactForm && contactForm.addEventListener('submit', (e) => {
 // Copy to clipboard
 document.querySelectorAll('.copy-btn').forEach(btn => {
   btn.addEventListener('click', async () => {
-    const sel = btn.getAttribute('data-copy');
-    const el = sel ? document.querySelector(sel) : null;
+    let sel = btn.getAttribute('data-copy');
+    let el = null;
+    // Only use # for id selectors, otherwise treat as class or element
+    if (sel && sel.startsWith('#')) {
+      if (sel.length > 1) {
+        el = document.getElementById(sel.slice(1));
+      } // else: skip, invalid selector '#'
+    } else if (sel && sel !== '#') {
+      try {
+        el = document.querySelector(sel);
+      } catch (e) {
+        el = null;
+      }
+    }
+    if (!el) return;
     const text = el?.tagName === 'A' ? (el.getAttribute('href') || el.textContent) : el?.textContent;
     if (!text) return;
     try { await navigator.clipboard.writeText(text.replace('mailto:','')); btn.textContent = 'Copied'; setTimeout(()=> btn.textContent = 'Copy', 1500); }

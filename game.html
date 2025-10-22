@@ -8,9 +8,16 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
 </head>
 <body>
+
   <nav id="navbar">
     <div class="nav-container">
       <div class="logo">👾</div>
+      <button id="theme-toggle" class="nav-control-btn" aria-label="Toggle theme" title="Toggle theme" style="margin-left:1rem;">
+        <span class="toggle-icons" aria-hidden="true">
+          <span class="icon-sun">☀️</span>
+          <span class="icon-moon">🌙</span>
+        </span>
+      </button>
       <a class="project-link" href="index.html">← Back</a>
     </div>
   </nav>
@@ -18,6 +25,17 @@
   <main class="section" style="padding-top: 7rem;">
     <div class="container">
       <h2 class="section-title">Tic Tac Toe</h2>
+        <style>
+          .section-title {
+    font-family: 'Press Start 2P', cursive;
+    letter-spacing: 1px;
+    font-size: 2rem;
+    color: var(--brand-1);
+    text-shadow: 2px 2px 0 #222, 4px 4px 0 #764ba2;
+    margin: 2.5rem 0;
+    text-align: center;
+}
+        </style>
       <div id="game" class="game">
         <div id="board" class="board" role="grid" aria-label="Tic Tac Toe board">
           <button class="cell" data-idx="0" aria-label="cell 1" role="gridcell"></button>
@@ -39,6 +57,36 @@
   </main>
 
   <script src="game.js"></script>
+</body>
+<script>
+// Theme toggle logic (copied from main site)
+const themeToggle = document.getElementById('theme-toggle');
+const body = document.body;
+function setTheme(theme) {
+  if (theme === 'light') {
+    body.classList.add('theme-light');
+    localStorage.setItem('theme', 'light');
+  } else {
+    body.classList.remove('theme-light');
+    localStorage.setItem('theme', 'dark');
+  }
+}
+function toggleTheme() {
+  if (body.classList.contains('theme-light')) {
+    setTheme('dark');
+  } else {
+    setTheme('light');
+  }
+}
+if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+// On load, set theme from localStorage or system
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme) {
+  setTheme(savedTheme);
+} else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+  setTheme('light');
+}
+</script>
 </body>
 </html>
 
