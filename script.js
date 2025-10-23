@@ -228,7 +228,7 @@ function createRetroComputer() {
   // Create screen canvas for hero content
   screenCanvas = document.createElement('canvas');
   screenCanvas.width = 1024;
-  screenCanvas.height = 820;
+  screenCanvas.height = 550;
   
   // Create screen - Sized to fit in monitor
   const screenGeometry = new THREE.PlaneGeometry(46, 36);
@@ -241,6 +241,17 @@ function createRetroComputer() {
   screen.position.set(0, 8, 3.1); // Positioned in front of monitor
   screen.name = 'screen';
   retroComputer.add(screen);
+  
+  // Add screen bezel/border for better visibility in light mode
+  const bezelGeometry = new THREE.PlaneGeometry(48, 38);
+  const bezelMaterial = new THREE.MeshPhongMaterial({
+    color: 0x1a1a1a,
+    shininess: 50
+  });
+  const bezel = new THREE.Mesh(bezelGeometry, bezelMaterial);
+  bezel.position.set(0, 8, 3.05); // Slightly behind screen
+  bezel.name = 'bezel';
+  retroComputer.add(bezel);
   
   // No glow effect to prevent any blue tint
   
@@ -322,8 +333,8 @@ function createRetroComputer() {
   stand.name = 'stand';
   retroComputer.add(stand);
   
-  // Position the computer in the scene - Much bigger and closer for readability
-  retroComputer.position.set(0, 0, -15);
+  // Position the computer in the scene - Above the background
+  retroComputer.position.set(0, 3, -15);
   retroComputer.scale.set(1.6, 1.6, 1.6);
   scene.add(retroComputer);
   
@@ -357,6 +368,7 @@ function updateComputerScroll() {
     
     // Move from close (-15) to far (20)
     retroComputer.position.z = -15 + (easeOut * 35);
+    retroComputer.position.y = 3; // Positioned above background
     
     // Scale from large (1.6) to small (0.5)
     const scale = 1.6 - (easeOut * 1.1);
@@ -371,15 +383,21 @@ function updateComputerScroll() {
     const fadeProgress = Math.min((scrollProgress - 0.7) / 0.3, 1); // 0 to 1
     
     retroComputer.position.z = 20 + (fadeProgress * 30); // 20 to 50
+    retroComputer.position.y = 3; // Positioned above background
     const scale = 0.5 - (fadeProgress * 0.5); // 0.5 to 0
     retroComputer.scale.set(Math.max(scale, 0.01), Math.max(scale, 0.01), Math.max(scale, 0.01));
     
-    // Fade entire computer together
+    // Fade entire computer together, but keep screen bright
     const opacity = 1 - fadeProgress;
     retroComputer.children.forEach(child => {
       if (child.material) {
         child.material.transparent = true;
-        child.material.opacity = opacity;
+        // Keep screen at full brightness, fade other parts
+        if (child.name === 'screen') {
+          child.material.opacity = 1; // Screen stays bright
+        } else {
+          child.material.opacity = opacity;
+        }
       }
     });
   }
@@ -399,16 +417,16 @@ function updateScreenContent() {
   const isDark = document.body.classList.contains('dark-theme');
   
   // Clear canvas
-  ctx.fillStyle = isDark ? '#0a0a0a' : '#f5f5f5';
+  ctx.fillStyle = isDark ? '#0a0a0a' : '#ffffff';
   ctx.fillRect(0, 0, screenCanvas.width, screenCanvas.height);
   
   // Add scanline effect
   for (let i = 0; i < screenCanvas.height; i += 4) {
-    ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)';
+    ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.05)';
     ctx.fillRect(0, i, screenCanvas.width, 2);
   }
   
-  // Draw title with typewriter effect
+  // Draw title with typewriter effect - less top padding
   const titleText = document.getElementById('typewriter-text');
   if (titleText) {
     ctx.fillStyle = isDark ? '#fff' : '#0a0a0a';
@@ -416,7 +434,7 @@ function updateScreenContent() {
     ctx.textAlign = 'center';
     
     // Draw without glow to prevent blue tint
-    ctx.fillText(titleText.textContent, screenCanvas.width / 2, 200);
+    ctx.fillText(titleText.textContent, screenCanvas.width / 2, 140);
   }
   
   // Draw cursor if visible
@@ -424,32 +442,32 @@ function updateScreenContent() {
   if (cursor && cursor.style.opacity !== '0') {
     ctx.fillStyle = '#667eea';
     const titleWidth = ctx.measureText(titleText ? titleText.textContent : '').width;
-    ctx.fillRect(screenCanvas.width / 2 + titleWidth / 2 + 20, 172, 8, 42);
+    ctx.fillRect(screenCanvas.width / 2 + titleWidth / 2 + 20, 112, 8, 42);
   }
   
-  // Draw subtitle
+  // Draw subtitle - closer to title
   ctx.font = '32px "Press Start 2P", monospace';
   ctx.fillStyle = '#764ba2';
-  ctx.fillText('Novice Developer & AI Enthusiast', screenCanvas.width / 2, 320);
+  ctx.fillText('Novice Developer & AI Enthusiast', screenCanvas.width / 2, 240);
   
-  // Draw description
+  // Draw description - tighter spacing
   ctx.font = '28px sans-serif';
   ctx.fillStyle = isDark ? '#ccc' : '#555';
   const desc = 'Fourth-year Information Technology student at Aklan State University,';
   const desc2 = 'passionate about building intelligent systems';
   const desc3 = 'and crafting exceptional user experiences.';
-  ctx.fillText(desc, screenCanvas.width / 2, 410);
-  ctx.fillText(desc2, screenCanvas.width / 2, 460);
-  ctx.fillText(desc3, screenCanvas.width / 2, 510);
+  ctx.fillText(desc, screenCanvas.width / 2, 320);
+  ctx.fillText(desc2, screenCanvas.width / 2, 365);
+  ctx.fillText(desc3, screenCanvas.width / 2, 410);
   
-  // Draw tech stack scrolling at bottom
+  // Draw tech stack scrolling - at bottom with minimal padding
   ctx.font = '24px "Press Start 2P", monospace';
   ctx.fillStyle = '#667eea';
   const stackText = techStack.join('  •  ');
   const textWidth = ctx.measureText(stackText).width;
   const scrollOffset = (Date.now() / 50) % (textWidth + 200); // Add padding between loops
-  ctx.fillText(stackText, screenCanvas.width - scrollOffset, 750);
-  ctx.fillText(stackText, screenCanvas.width - scrollOffset + textWidth + 200, 750);
+  ctx.fillText(stackText, screenCanvas.width - scrollOffset, 480);
+  ctx.fillText(stackText, screenCanvas.width - scrollOffset + textWidth + 200, 480);
   
   // Update texture
   if (screenTexture) {
