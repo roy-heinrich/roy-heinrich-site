@@ -384,9 +384,9 @@ function createRetroComputer() {
   stand.renderOrder = 500; // In front of background
   retroComputer.add(stand);
   
-  // Position the computer in the scene - Above the background
-  retroComputer.position.set(0, 3, -15);
-  retroComputer.scale.set(1.6, 1.6, 1.6);
+  // Position the computer in the scene - Lower in viewport
+  retroComputer.position.set(0, -2, -15);
+  retroComputer.scale.set(1.3, 1.3, 1.3);
   scene.add(retroComputer);
   
   // Start rendering hero content to screen
@@ -447,10 +447,10 @@ function updateComputerScroll() {
     
     // Move from close (-15) to far (20)
     retroComputer.position.z = -15 + (easeOut * 35);
-    retroComputer.position.y = 3; // Positioned above background
+    retroComputer.position.y = -2; // Positioned lower in viewport
     
-    // Scale from large (1.6) to small (0.5)
-    const scale = 1.6 - (easeOut * 1.1);
+    // Scale from large (1.3) to small (0.5)
+    const scale = 1.3 - (easeOut * 0.8);
     retroComputer.scale.set(scale, scale, scale);
     
     // Add slight rotation as it moves away
@@ -462,7 +462,7 @@ function updateComputerScroll() {
     const fadeProgress = Math.min((scrollProgress - 0.7) / 0.3, 1); // 0 to 1
     
     retroComputer.position.z = 20 + (fadeProgress * 30); // 20 to 50
-    retroComputer.position.y = 3; // Positioned above background
+    retroComputer.position.y = -2; // Positioned lower in viewport
     const scale = 0.5 - (fadeProgress * 0.5); // 0.5 to 0
     retroComputer.scale.set(Math.max(scale, 0.01), Math.max(scale, 0.01), Math.max(scale, 0.01));
     
@@ -531,8 +531,8 @@ function updateScreenContent() {
     }
   }
   
-  // Draw subtitle - closer to title
-  ctx.font = '32px "Press Start 2P", monospace';
+  // Draw subtitle - closer to title with proper margins
+  ctx.font = '28px "Press Start 2P", monospace';
   ctx.fillStyle = isDark ? '#a78bfa' : '#764ba2';
   ctx.fillText('Novice Developer & AI Enthusiast', screenCanvas.width / 2, 240);
   
@@ -1286,6 +1286,29 @@ document.querySelectorAll('[data-analytics]').forEach(el => {
     console.log('analytics:event', { type, ts: Date.now() });
   });
 });
+
+// Scroll Guide - Show/Hide based on scroll position
+const scrollGuide = document.getElementById('scroll-guide');
+let lastScrollTop = 0;
+
+function updateScrollGuide() {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  
+  // Hide when scrolled more than 100px
+  if (scrollTop > 100) {
+    scrollGuide.classList.add('hidden');
+  } else {
+    scrollGuide.classList.remove('hidden');
+  }
+  
+  lastScrollTop = scrollTop;
+}
+
+// Update on scroll
+window.addEventListener('scroll', updateScrollGuide, { passive: true });
+
+// Initial check
+updateScrollGuide();
 
 // PWA registration
 if ('serviceWorker' in navigator) {

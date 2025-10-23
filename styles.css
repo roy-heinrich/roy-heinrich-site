@@ -1132,6 +1132,73 @@ footer {
     transition: width 0.1s ease;
 }
 
+/* Scroll Down Guide */
+.scroll-guide {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+}
+
+.scroll-guide.hidden {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+}
+
+.scroll-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.2rem;
+    color: var(--brand-1);
+    text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.scroll-arrow {
+    font-size: 3rem;
+    color: var(--brand-1);
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(10px);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+@media (max-width: 768px) {
+    .scroll-guide {
+        bottom: 20px;
+    }
+    
+    .scroll-text {
+        font-size: 0.6rem;
+    }
+    
+    .scroll-arrow {
+        font-size: 1.5rem;
+    }
+}
+
 
 /* Hamburger Menu */
 .hamburger {
