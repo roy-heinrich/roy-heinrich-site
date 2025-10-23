@@ -1,9 +1,12 @@
 // Creative Three.js Scene Setup
 let scene, camera, renderer, mouseX = 0, mouseY = 0;
 let codeBlocks = [], neuralNodes = [], floatingShapes = [];
+let retroComputer = null, screenTexture = null, screenCanvas = null;
 let time = 0;
+let scrollProgress = 0; // Track scroll position for animations
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const motionFactor = prefersReducedMotion ? 0.3 : 1;
+const isMobileView = () => window.innerWidth <= 768;
 
 // Roy's tech stack and interests
 const techStack = ['Python', 'JavaScript', 'React', 'Flask', 'MySQL', 'AI/ML', 'Three.js', 'Node.js'];
@@ -26,6 +29,17 @@ function initThree() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+  // Create the retro computer (desktop only)
+  if (!isMobileView()) {
+    createRetroComputer();
+    // Hide the HTML hero content on desktop to prevent duplication
+    const heroContent = document.querySelector('.hero-content');
+    if (heroContent) {
+      heroContent.style.opacity = '0';
+      heroContent.style.pointerEvents = 'none';
+    }
+  }
+  
   // Create floating code blocks
   createCodeBlocks();
   
@@ -36,13 +50,18 @@ function initThree() {
   createFloatingShapes();
   
   // Add ambient lighting
-  const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+  const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
   scene.add(ambientLight);
   
   // Add directional light
-  const directionalLight = new THREE.DirectionalLight(0x667eea, 0.8);
+  const directionalLight = new THREE.DirectionalLight(0x667eea, 1.2);
   directionalLight.position.set(10, 10, 5);
   scene.add(directionalLight);
+  
+  // Add point light for computer screen glow
+  const screenLight = new THREE.PointLight(0x667eea, 1.5, 30);
+  screenLight.position.set(0, 0, 5);
+  scene.add(screenLight);
 
   camera.position.z = 50;
   animate();
@@ -202,6 +221,242 @@ function createFloatingShapes() {
   });
 }
 
+function createRetroComputer() {
+  // Create computer group
+  retroComputer = new THREE.Group();
+  
+  // Create screen canvas for hero content
+  screenCanvas = document.createElement('canvas');
+  screenCanvas.width = 1024;
+  screenCanvas.height = 820;
+  
+  // Create screen - Sized to fit in monitor
+  const screenGeometry = new THREE.PlaneGeometry(46, 36);
+  screenTexture = new THREE.CanvasTexture(screenCanvas);
+  const screenMaterial = new THREE.MeshBasicMaterial({
+    map: screenTexture
+    // No emissive to prevent blue glow
+  });
+  const screen = new THREE.Mesh(screenGeometry, screenMaterial);
+  screen.position.set(0, 8, 3.1); // Positioned in front of monitor
+  screen.name = 'screen';
+  retroComputer.add(screen);
+  
+  // No glow effect to prevent any blue tint
+  
+  // Create monitor body - ALWAYS VISIBLE
+  const monitorGeometry = new THREE.BoxGeometry(50, 40, 6);
+  const monitorMaterial = new THREE.MeshPhongMaterial({
+    color: 0x2a2a2a,
+    shininess: 30
+  });
+  const monitor = new THREE.Mesh(monitorGeometry, monitorMaterial);
+  monitor.position.set(0, 8, -3);
+  monitor.name = 'monitor';
+  retroComputer.add(monitor);
+  
+  // Create keyboard base - ALWAYS VISIBLE (positioned below monitor)
+  const keyboardGeometry = new THREE.BoxGeometry(45, 2, 18);
+  const keyboardMaterial = new THREE.MeshPhongMaterial({
+    color: 0x3a3a3a,
+    shininess: 20
+  });
+  const keyboard = new THREE.Mesh(keyboardGeometry, keyboardMaterial);
+  keyboard.position.set(0, -14, 7);
+  keyboard.rotation.x = -0.1;
+  keyboard.name = 'keyboard';
+  retroComputer.add(keyboard);
+  
+  // Add keyboard keys - 2 DISTINCT SETS with clear separation
+  const keyboardKeys = new THREE.Group();
+  keyboardKeys.name = 'keys';
+  
+  // Top set of keys (3 rows) - Function keys area
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 15; j++) {
+      const keyGeometry = new THREE.BoxGeometry(2, 0.8, 2);
+      const keyMaterial = new THREE.MeshPhongMaterial({
+        color: 0x1a1a1a,
+        shininess: 50
+      });
+      const key = new THREE.Mesh(keyGeometry, keyMaterial);
+      key.position.set(
+        -17 + j * 2.5,           // X: spread across width
+        -13,                      // Y: same level
+        13 - i * 2.2             // Z: top section with spacing
+      );
+      key.rotation.x = -0.1;
+      keyboardKeys.add(key);
+    }
+  }
+  
+  // Bottom set of keys (3 rows) - Main keys area
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 15; j++) {
+      const keyGeometry = new THREE.BoxGeometry(2, 0.8, 2);
+      const keyMaterial = new THREE.MeshPhongMaterial({
+        color: 0x2a2a2a,  // Slightly lighter color for contrast
+        shininess: 50
+      });
+      const key = new THREE.Mesh(keyGeometry, keyMaterial);
+      key.position.set(
+        -17 + j * 2.5,           // X: spread across width
+        -13,                      // Y: same level
+        5 - i * 2.2              // Z: bottom section with gap
+      );
+      key.rotation.x = -0.1;
+      keyboardKeys.add(key);
+    }
+  }
+  
+  retroComputer.add(keyboardKeys);
+  
+  // Add base stand - ALWAYS VISIBLE
+  const standGeometry = new THREE.CylinderGeometry(4, 5, 4, 32);
+  const standMaterial = new THREE.MeshPhongMaterial({
+    color: 0x2a2a2a,
+    shininess: 30
+  });
+  const stand = new THREE.Mesh(standGeometry, standMaterial);
+  stand.position.set(0, -13, 0);
+  stand.name = 'stand';
+  retroComputer.add(stand);
+  
+  // Position the computer in the scene - Much bigger and closer for readability
+  retroComputer.position.set(0, 0, -15);
+  retroComputer.scale.set(1.6, 1.6, 1.6);
+  scene.add(retroComputer);
+  
+  // Start rendering hero content to screen
+  updateScreenContent();
+  setInterval(updateScreenContent, 100); // Update screen 10 times per second
+}
+
+// Scroll-based animation for the computer
+function updateComputerScroll() {
+  if (!retroComputer) return;
+  
+  // Calculate scroll progress (0 at top, 1 at hero section end)
+  const heroSection = document.querySelector('.hero');
+  if (!heroSection) return;
+  
+  const heroHeight = heroSection.offsetHeight;
+  const scrollY = window.scrollY || window.pageYOffset;
+  
+  // Progress from 0 (top) to 1 (end of hero section) to 2+ (further down)
+  scrollProgress = scrollY / (heroHeight * 0.8);
+  
+  // Simple scroll animation - entire computer moves and scales together
+  // Phase 1: 0-0.7 = Computer moves back and shrinks
+  // Phase 2: 0.7+ = Computer fades out
+  
+  if (scrollProgress < 0.7) {
+    // Computer moves back and shrinks smoothly
+    const progress = scrollProgress / 0.7; // 0 to 1
+    const easeOut = 1 - Math.pow(1 - progress, 3); // Ease out cubic
+    
+    // Move from close (-15) to far (20)
+    retroComputer.position.z = -15 + (easeOut * 35);
+    
+    // Scale from large (1.6) to small (0.5)
+    const scale = 1.6 - (easeOut * 1.1);
+    retroComputer.scale.set(scale, scale, scale);
+    
+    // Add slight rotation as it moves away
+    retroComputer.rotation.y = easeOut * 0.15;
+    retroComputer.rotation.x = easeOut * 0.08;
+    
+  } else {
+    // Computer fades out when very far
+    const fadeProgress = Math.min((scrollProgress - 0.7) / 0.3, 1); // 0 to 1
+    
+    retroComputer.position.z = 20 + (fadeProgress * 30); // 20 to 50
+    const scale = 0.5 - (fadeProgress * 0.5); // 0.5 to 0
+    retroComputer.scale.set(Math.max(scale, 0.01), Math.max(scale, 0.01), Math.max(scale, 0.01));
+    
+    // Fade entire computer together
+    const opacity = 1 - fadeProgress;
+    retroComputer.children.forEach(child => {
+      if (child.material) {
+        child.material.transparent = true;
+        child.material.opacity = opacity;
+      }
+    });
+  }
+}
+
+// Add scroll listener
+window.addEventListener('scroll', () => {
+  if (!isMobileView()) {
+    updateComputerScroll();
+  }
+}, { passive: true });
+
+function updateScreenContent() {
+  if (!screenCanvas) return;
+  
+  const ctx = screenCanvas.getContext('2d');
+  const isDark = document.body.classList.contains('dark-theme');
+  
+  // Clear canvas
+  ctx.fillStyle = isDark ? '#0a0a0a' : '#f5f5f5';
+  ctx.fillRect(0, 0, screenCanvas.width, screenCanvas.height);
+  
+  // Add scanline effect
+  for (let i = 0; i < screenCanvas.height; i += 4) {
+    ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.1)' : 'rgba(255, 255, 255, 0.1)';
+    ctx.fillRect(0, i, screenCanvas.width, 2);
+  }
+  
+  // Draw title with typewriter effect
+  const titleText = document.getElementById('typewriter-text');
+  if (titleText) {
+    ctx.fillStyle = isDark ? '#fff' : '#0a0a0a';
+    ctx.font = 'bold 48px "Press Start 2P", monospace';
+    ctx.textAlign = 'center';
+    
+    // Draw without glow to prevent blue tint
+    ctx.fillText(titleText.textContent, screenCanvas.width / 2, 200);
+  }
+  
+  // Draw cursor if visible
+  const cursor = document.getElementById('typewriter-cursor');
+  if (cursor && cursor.style.opacity !== '0') {
+    ctx.fillStyle = '#667eea';
+    const titleWidth = ctx.measureText(titleText ? titleText.textContent : '').width;
+    ctx.fillRect(screenCanvas.width / 2 + titleWidth / 2 + 20, 172, 8, 42);
+  }
+  
+  // Draw subtitle
+  ctx.font = '32px "Press Start 2P", monospace';
+  ctx.fillStyle = '#764ba2';
+  ctx.fillText('Novice Developer & AI Enthusiast', screenCanvas.width / 2, 320);
+  
+  // Draw description
+  ctx.font = '28px sans-serif';
+  ctx.fillStyle = isDark ? '#ccc' : '#555';
+  const desc = 'Fourth-year Information Technology student at Aklan State University,';
+  const desc2 = 'passionate about building intelligent systems';
+  const desc3 = 'and crafting exceptional user experiences.';
+  ctx.fillText(desc, screenCanvas.width / 2, 410);
+  ctx.fillText(desc2, screenCanvas.width / 2, 460);
+  ctx.fillText(desc3, screenCanvas.width / 2, 510);
+  
+  // Draw tech stack scrolling at bottom
+  ctx.font = '24px "Press Start 2P", monospace';
+  ctx.fillStyle = '#667eea';
+  const stackText = techStack.join('  •  ');
+  const textWidth = ctx.measureText(stackText).width;
+  const scrollOffset = (Date.now() / 50) % (textWidth + 200); // Add padding between loops
+  ctx.fillText(stackText, screenCanvas.width - scrollOffset, 750);
+  ctx.fillText(stackText, screenCanvas.width - scrollOffset + textWidth + 200, 750);
+  
+  // Update texture
+  if (screenTexture) {
+    screenTexture.needsUpdate = true;
+  }
+}
+
 function animate() {
   requestAnimationFrame(animate);
   time += 0.01 * motionFactor;
@@ -246,6 +501,23 @@ function animate() {
     shape.position.x += (mouseX * mouseInfluence - shape.position.x) * 0.008;
     shape.position.z += (mouseY * mouseInfluence - shape.position.z) * 0.008;
   });
+  
+  // Animate retro computer with mouse interaction
+  if (retroComputer && scrollProgress < 1.0) {
+    // Only apply mouse rotation when computer is visible (not too far away)
+    const mouseInfluenceStrength = Math.max(0, 1 - scrollProgress);
+    
+    // Subtle mouse-based rotation
+    const targetRotationY = (mouseX / window.innerWidth - 0.5) * 0.1 * mouseInfluenceStrength;
+    const targetRotationX = -(mouseY / window.innerHeight - 0.5) * 0.05 * mouseInfluenceStrength;
+    
+    retroComputer.rotation.y += (targetRotationY - retroComputer.rotation.y) * 0.03;
+    retroComputer.rotation.x += (targetRotationX - retroComputer.rotation.x) * 0.03;
+    
+    // Gentle floating animation
+    const floatAmount = (1 - scrollProgress) * 0.5 * motionFactor;
+    retroComputer.position.y = Math.sin(time * 0.5) * floatAmount;
+  }
   
   // Camera movement
   camera.position.x = Math.sin(time * 0.1) * (5 * motionFactor);
@@ -385,6 +657,29 @@ window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  
+  // Handle responsive computer visibility
+  const heroContent = document.querySelector('.hero-content');
+  if (isMobileView()) {
+    // Mobile: remove computer, show regular hero content
+    if (retroComputer) {
+      scene.remove(retroComputer);
+      retroComputer = null;
+    }
+    if (heroContent) {
+      heroContent.style.opacity = '1';
+      heroContent.style.pointerEvents = 'auto';
+    }
+  } else {
+    // Desktop: create computer if it doesn't exist, hide hero content
+    if (!retroComputer && scene) {
+      createRetroComputer();
+    }
+    if (heroContent) {
+      heroContent.style.opacity = '0';
+      heroContent.style.pointerEvents = 'none';
+    }
+  }
 });
 
 // Smooth scroll for navigation links
@@ -539,6 +834,25 @@ function typewriterLoop(textElement, cursorElement, text1, text2) {
 }
 
 initThree();
+
+// Set initial hero content visibility based on screen size
+const heroContent = document.querySelector('.hero-content');
+if (heroContent) {
+  if (isMobileView()) {
+    heroContent.style.opacity = '1';
+    heroContent.style.pointerEvents = 'auto';
+  } else {
+    heroContent.style.opacity = '0';
+    heroContent.style.pointerEvents = 'none';
+  }
+}
+
+// Initialize computer position based on current scroll
+setTimeout(() => {
+  if (!isMobileView()) {
+    updateComputerScroll();
+  }
+}, 100);
 
 window.addEventListener("load", () => {
   document.body.style.opacity = "1";
