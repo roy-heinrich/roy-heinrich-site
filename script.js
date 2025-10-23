@@ -92,14 +92,14 @@ function createCodeBlocks() {
       opacity: 0.8
     });
     
-    const geometry = new THREE.PlaneGeometry(8, 2);
+    const geometry = new THREE.PlaneGeometry(30, 8);  // MUCH bigger
     const mesh = new THREE.Mesh(geometry, material);
     
-    // Position randomly in 3D space
+    // Position randomly in 3D space - spread across entire screen, GUARANTEED far back
     mesh.position.set(
-      (Math.random() - 0.5) * 100,
-      (Math.random() - 0.5) * 100,
-      (Math.random() - 0.5) * 100
+      (Math.random() - 0.5) * 300,  // Spread very wide
+      (Math.random() - 0.5) * 300,  // Spread very tall
+      -60 - Math.random() * 60  // ALWAYS behind computer (-60 to -120)
     );
     
     mesh.userData = {
@@ -107,6 +107,8 @@ function createCodeBlocks() {
       speed: 0.01 + Math.random() * 0.02,
       amplitude: 5 + Math.random() * 10
     };
+    
+    mesh.renderOrder = 0; // Render behind everything
     
     codeBlocks.push(mesh);
     scene.add(mesh);
@@ -117,9 +119,9 @@ function createNeuralNetwork() {
   const nodeCount = 15;
   const connections = [];
   
-  // Create nodes
+  // Create nodes - positioned behind the computer
   for (let i = 0; i < nodeCount; i++) {
-    const geometry = new THREE.SphereGeometry(0.5, 16, 16);
+    const geometry = new THREE.SphereGeometry(3, 16, 16);  // HUGE nodes
     const material = new THREE.MeshPhongMaterial({
       color: new THREE.Color().setHSL(i / nodeCount, 0.7, 0.6),
       transparent: true,
@@ -128,9 +130,9 @@ function createNeuralNetwork() {
     
     const node = new THREE.Mesh(geometry, material);
     node.position.set(
-      (Math.random() - 0.5) * 80,
-      (Math.random() - 0.5) * 80,
-      (Math.random() - 0.5) * 80
+      (Math.random() - 0.5) * 300,  // Spread very wide
+      (Math.random() - 0.5) * 300,  // Spread very tall
+      -60 - Math.random() * 60  // ALWAYS behind computer (-60 to -120)
     );
     
     node.userData = {
@@ -138,6 +140,8 @@ function createNeuralNetwork() {
       speed: 0.005 + Math.random() * 0.01,
       connections: []
     };
+    
+    node.renderOrder = 0; // Render behind everything
     
     neuralNodes.push(node);
     scene.add(node);
@@ -161,6 +165,7 @@ function createNeuralNetwork() {
         });
         
         const line = new THREE.Line(geometry, material);
+        line.renderOrder = 0; // Render behind everything
         connections.push(line);
         scene.add(line);
         
@@ -178,16 +183,16 @@ function createFloatingShapes() {
     let geometry;
     switch (shapeType) {
       case 'box':
-        geometry = new THREE.BoxGeometry(2, 2, 2);
+        geometry = new THREE.BoxGeometry(10, 10, 10);  // HUGE
         break;
       case 'octahedron':
-        geometry = new THREE.OctahedronGeometry(1.5);
+        geometry = new THREE.OctahedronGeometry(8);  // HUGE
         break;
       case 'tetrahedron':
-        geometry = new THREE.TetrahedronGeometry(1.5);
+        geometry = new THREE.TetrahedronGeometry(8);  // HUGE
         break;
       case 'dodecahedron':
-        geometry = new THREE.DodecahedronGeometry(1.5);
+        geometry = new THREE.DodecahedronGeometry(8);  // HUGE
         break;
     }
     
@@ -200,9 +205,9 @@ function createFloatingShapes() {
     
     const shape = new THREE.Mesh(geometry, material);
     shape.position.set(
-      (Math.random() - 0.5) * 120,
-      (Math.random() - 0.5) * 120,
-      (Math.random() - 0.5) * 120
+      (Math.random() - 0.5) * 300,  // Spread very wide
+      (Math.random() - 0.5) * 300,  // Spread very tall
+      -60 - Math.random() * 60  // ALWAYS behind computer (-60 to -120)
     );
     
     shape.userData = {
@@ -215,6 +220,8 @@ function createFloatingShapes() {
       floatSpeed: 0.01 + Math.random() * 0.02,
       floatAmplitude: 3 + Math.random() * 5
     };
+    
+    shape.renderOrder = 0; // Render behind everything
     
     floatingShapes.push(shape);
     scene.add(shape);
@@ -234,23 +241,62 @@ function createRetroComputer() {
   const screenGeometry = new THREE.PlaneGeometry(46, 36);
   screenTexture = new THREE.CanvasTexture(screenCanvas);
   const screenMaterial = new THREE.MeshBasicMaterial({
-    map: screenTexture
+    map: screenTexture,
+    transparent: false,
+    opacity: 1,
+    depthTest: true,
+    depthWrite: true,
+    side: THREE.FrontSide,
+    alphaTest: 0
     // No emissive to prevent blue glow
   });
   const screen = new THREE.Mesh(screenGeometry, screenMaterial);
   screen.position.set(0, 8, 3.1); // Positioned in front of monitor
   screen.name = 'screen';
+  screen.renderOrder = 9999; // HIGHEST render order - ALWAYS on top
+  screen.material.needsUpdate = true;
+  screen.frustumCulled = false; // Never cull - always render
+  
+  // LOCK the material properties - make them read-only
+  Object.defineProperty(screen.material, 'transparent', {
+    value: false,
+    writable: false
+  });
+  Object.defineProperty(screen.material, 'opacity', {
+    value: 1,
+    writable: false
+  });
+  
   retroComputer.add(screen);
   
   // Add screen bezel/border for better visibility in light mode
   const bezelGeometry = new THREE.PlaneGeometry(48, 38);
   const bezelMaterial = new THREE.MeshPhongMaterial({
     color: 0x1a1a1a,
-    shininess: 50
+    shininess: 50,
+    transparent: false,
+    opacity: 1,
+    depthTest: true,
+    depthWrite: true,
+    side: THREE.FrontSide
   });
   const bezel = new THREE.Mesh(bezelGeometry, bezelMaterial);
   bezel.position.set(0, 8, 3.05); // Slightly behind screen
   bezel.name = 'bezel';
+  bezel.renderOrder = 9998; // Render before screen but after everything else
+  bezel.material.needsUpdate = true;
+  bezel.frustumCulled = false; // Never cull - always render
+  
+  // LOCK the material properties - make them read-only
+  Object.defineProperty(bezel.material, 'transparent', {
+    value: false,
+    writable: false
+  });
+  Object.defineProperty(bezel.material, 'opacity', {
+    value: 1,
+    writable: false
+  });
+  
   retroComputer.add(bezel);
   
   // No glow effect to prevent any blue tint
@@ -264,6 +310,7 @@ function createRetroComputer() {
   const monitor = new THREE.Mesh(monitorGeometry, monitorMaterial);
   monitor.position.set(0, 8, -3);
   monitor.name = 'monitor';
+  monitor.renderOrder = 500; // In front of background
   retroComputer.add(monitor);
   
   // Create keyboard base - ALWAYS VISIBLE (positioned below monitor)
@@ -276,6 +323,7 @@ function createRetroComputer() {
   keyboard.position.set(0, -14, 7);
   keyboard.rotation.x = -0.1;
   keyboard.name = 'keyboard';
+  keyboard.renderOrder = 500; // In front of background
   retroComputer.add(keyboard);
   
   // Add keyboard keys - 2 DISTINCT SETS with clear separation
@@ -297,6 +345,7 @@ function createRetroComputer() {
         13 - i * 2.2             // Z: top section with spacing
       );
       key.rotation.x = -0.1;
+      key.renderOrder = 500; // In front of background
       keyboardKeys.add(key);
     }
   }
@@ -316,6 +365,7 @@ function createRetroComputer() {
         5 - i * 2.2              // Z: bottom section with gap
       );
       key.rotation.x = -0.1;
+      key.renderOrder = 500; // In front of background
       keyboardKeys.add(key);
     }
   }
@@ -331,6 +381,7 @@ function createRetroComputer() {
   const stand = new THREE.Mesh(standGeometry, standMaterial);
   stand.position.set(0, -13, 0);
   stand.name = 'stand';
+  stand.renderOrder = 500; // In front of background
   retroComputer.add(stand);
   
   // Position the computer in the scene - Above the background
@@ -341,6 +392,34 @@ function createRetroComputer() {
   // Start rendering hero content to screen
   updateScreenContent();
   setInterval(updateScreenContent, 100); // Update screen 10 times per second
+  
+  // Update colors based on initial theme
+  updateComputerColors();
+}
+
+// Update computer colors based on theme
+function updateComputerColors() {
+  if (!retroComputer) return;
+  
+  const isDark = !document.body.classList.contains('theme-light');
+  
+  retroComputer.children.forEach(child => {
+    if (child.name === 'bezel') {
+      child.material.color.setHex(isDark ? 0xffffff : 0x1a1a1a);
+    } else if (child.name === 'keyboard') {
+      child.material.color.setHex(isDark ? 0xffffff : 0x3a3a3a);
+    } else if (child.name === 'keys') {
+      // Update all individual keys
+      child.children.forEach((key, index) => {
+        // First 45 keys are top set (darker), last 45 are bottom set (lighter)
+        if (isDark) {
+          key.material.color.setHex(0x3E3E42);  // Dark gray keycaps in dark mode
+        } else {
+          key.material.color.setHex(index < 45 ? 0x1a1a1a : 0x2a2a2a);  // Original colors
+        }
+      });
+    }
+  });
 }
 
 // Scroll-based animation for the computer
@@ -387,17 +466,19 @@ function updateComputerScroll() {
     const scale = 0.5 - (fadeProgress * 0.5); // 0.5 to 0
     retroComputer.scale.set(Math.max(scale, 0.01), Math.max(scale, 0.01), Math.max(scale, 0.01));
     
-    // Fade entire computer together, but keep screen bright
+    // Fade computer parts, but screen and bezel stay fully opaque
     const opacity = 1 - fadeProgress;
     retroComputer.children.forEach(child => {
+      // Screen and bezel never fade - always fully visible
+      if (child.name === 'screen' || child.name === 'bezel') {
+        // Do nothing - never touch screen or bezel opacity
+        return;
+      }
+      
+      // Fade other parts
       if (child.material) {
         child.material.transparent = true;
-        // Keep screen at full brightness, fade other parts
-        if (child.name === 'screen') {
-          child.material.opacity = 1; // Screen stays bright
-        } else {
-          child.material.opacity = opacity;
-        }
+        child.material.opacity = opacity;
       }
     });
   }
@@ -414,45 +495,50 @@ function updateScreenContent() {
   if (!screenCanvas) return;
   
   const ctx = screenCanvas.getContext('2d');
-  const isDark = document.body.classList.contains('dark-theme');
+  const isDark = !document.body.classList.contains('theme-light');
   
   // Clear canvas
-  ctx.fillStyle = isDark ? '#0a0a0a' : '#ffffff';
+  ctx.fillStyle = isDark ? '#3E3E42' : '#ffffff';
   ctx.fillRect(0, 0, screenCanvas.width, screenCanvas.height);
   
   // Add scanline effect
   for (let i = 0; i < screenCanvas.height; i += 4) {
-    ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.1)' : 'rgba(0, 0, 0, 0.05)';
+    ctx.fillStyle = isDark ? 'rgba(0, 0, 0, 0.15)' : 'rgba(0, 0, 0, 0.05)';
     ctx.fillRect(0, i, screenCanvas.width, 2);
   }
   
   // Draw title with typewriter effect - less top padding
   const titleText = document.getElementById('typewriter-text');
   if (titleText) {
-    ctx.fillStyle = isDark ? '#fff' : '#0a0a0a';
+    ctx.fillStyle = isDark ? '#ffffff' : '#0a0a0a';
     ctx.font = 'bold 48px "Press Start 2P", monospace';
     ctx.textAlign = 'center';
     
     // Draw without glow to prevent blue tint
     ctx.fillText(titleText.textContent, screenCanvas.width / 2, 140);
-  }
-  
-  // Draw cursor if visible
-  const cursor = document.getElementById('typewriter-cursor');
-  if (cursor && cursor.style.opacity !== '0') {
-    ctx.fillStyle = '#667eea';
-    const titleWidth = ctx.measureText(titleText ? titleText.textContent : '').width;
-    ctx.fillRect(screenCanvas.width / 2 + titleWidth / 2 + 20, 112, 8, 42);
+    
+    // Draw blinking cursor - always show it with blink animation
+    const blinkSpeed = 530; // Blink every 530ms
+    const showCursor = Math.floor(Date.now() / blinkSpeed) % 2 === 0;
+    
+    if (showCursor) {
+      ctx.fillStyle = '#667eea';
+      const titleWidth = ctx.measureText(titleText.textContent).width;
+      // Position cursor right after text, aligned with text baseline
+      const cursorX = screenCanvas.width / 2 + titleWidth / 2 + 10;
+      const cursorY = 140 - 40; // Align with text (text is at Y=140, cursor height is 48)
+      ctx.fillRect(cursorX, cursorY, 8, 48);
+    }
   }
   
   // Draw subtitle - closer to title
   ctx.font = '32px "Press Start 2P", monospace';
-  ctx.fillStyle = '#764ba2';
+  ctx.fillStyle = isDark ? '#a78bfa' : '#764ba2';
   ctx.fillText('Novice Developer & AI Enthusiast', screenCanvas.width / 2, 240);
   
   // Draw description - tighter spacing
   ctx.font = '28px sans-serif';
-  ctx.fillStyle = isDark ? '#ccc' : '#555';
+  ctx.fillStyle = isDark ? '#e5e5e5' : '#555';
   const desc = 'Fourth-year Information Technology student at Aklan State University,';
   const desc2 = 'passionate about building intelligent systems';
   const desc3 = 'and crafting exceptional user experiences.';
@@ -462,7 +548,7 @@ function updateScreenContent() {
   
   // Draw tech stack scrolling - at bottom with minimal padding
   ctx.font = '24px "Press Start 2P", monospace';
-  ctx.fillStyle = '#667eea';
+  ctx.fillStyle = isDark ? '#818cf8' : '#667eea';
   const stackText = techStack.join('  •  ');
   const textWidth = ctx.measureText(stackText).width;
   const scrollOffset = (Date.now() / 50) % (textWidth + 200); // Add padding between loops
@@ -488,6 +574,9 @@ function animate() {
     const mouseInfluence = 0.0001 * motionFactor;
     block.position.x += (mouseX * mouseInfluence - block.position.x) * 0.01;
     block.position.z += (mouseY * mouseInfluence - block.position.z) * 0.01;
+    
+    // CLAMP Z to always stay behind computer
+    block.position.z = Math.min(block.position.z, -20);
   });
   
   // Animate neural network nodes
@@ -503,6 +592,9 @@ function animate() {
     const mouseInfluence = 0.0002 * motionFactor;
     node.position.x += (mouseX * mouseInfluence - node.position.x) * 0.005;
     node.position.z += (mouseY * mouseInfluence - node.position.z) * 0.005;
+    
+    // CLAMP Z to always stay behind computer
+    node.position.z = Math.min(node.position.z, -20);
   });
   
   // Animate floating shapes
@@ -518,6 +610,9 @@ function animate() {
     const mouseInfluence = 0.0003 * motionFactor;
     shape.position.x += (mouseX * mouseInfluence - shape.position.x) * 0.008;
     shape.position.z += (mouseY * mouseInfluence - shape.position.z) * 0.008;
+    
+    // CLAMP Z to always stay behind computer
+    shape.position.z = Math.min(shape.position.z, -20);
   });
   
   // Animate retro computer with mouse interaction
@@ -658,6 +753,9 @@ themeToggle && themeToggle.addEventListener('change', () => {
     rootEl.classList.remove('theme-light');
   }
   localStorage.setItem(THEME_STORAGE_KEY, isLight ? 'light' : 'dark');
+  
+  // Update 3D computer colors
+  updateComputerColors();
   
   // Close mobile menu if open
   if (window.innerWidth <= 768) {
