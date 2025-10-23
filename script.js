@@ -346,36 +346,38 @@ const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
 const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
 const rootEl = document.documentElement;
 
-
-const themeToggleBtn = document.getElementById('theme-toggle');
-const themeIconSvg = document.getElementById('theme-icon-svg');
-const sunPath = themeIconSvg?.querySelector('#theme-icon-sun');
-const moonPath = themeIconSvg?.querySelector('#theme-icon-moon');
+const themeToggle = document.getElementById('theme-toggle');
 
 function applyTheme(theme) {
   if (theme === 'light') {
     rootEl.classList.add('theme-light');
-    if (sunPath && moonPath) {
-      sunPath.style.opacity = '1';
-      moonPath.style.opacity = '0';
-    }
+    if (themeToggle) themeToggle.checked = true;
   } else {
     rootEl.classList.remove('theme-light');
-    if (sunPath && moonPath) {
-      sunPath.style.opacity = '0';
-      moonPath.style.opacity = '1';
-    }
+    if (themeToggle) themeToggle.checked = false;
   }
 }
 
 applyTheme(savedTheme || (prefersLight ? 'light' : 'dark'));
 
-themeToggleBtn && themeToggleBtn.addEventListener('click', () => {
-  const isLight = rootEl.classList.toggle('theme-light');
+themeToggle && themeToggle.addEventListener('change', () => {
+  const isLight = themeToggle.checked;
+  if (isLight) {
+    rootEl.classList.add('theme-light');
+  } else {
+    rootEl.classList.remove('theme-light');
+  }
   localStorage.setItem(THEME_STORAGE_KEY, isLight ? 'light' : 'dark');
-  if (sunPath && moonPath) {
-    sunPath.style.opacity = isLight ? '1' : '0';
-    moonPath.style.opacity = isLight ? '0' : '1';
+  
+  // Close mobile menu if open
+  if (window.innerWidth <= 768) {
+    const navLinksEl = document.getElementById('nav-links');
+    const hamburgerEl = document.getElementById('hamburger');
+    if (navLinksEl && navLinksEl.classList.contains('active')) {
+      navLinksEl.classList.remove('active');
+      hamburgerEl && hamburgerEl.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
   }
 });
 
@@ -547,6 +549,73 @@ window.addEventListener("load", () => {
 const navbar = document.getElementById('navbar');
 const hamburger = document.getElementById('hamburger');
 const navLinks = document.getElementById('nav-links');
+const navOverflowContainer = document.getElementById('nav-overflow-container');
+const navOverflow = document.getElementById('nav-overflow');
+
+// Handle navbar overflow - move items to second row instead of clipping
+function handleNavbarOverflow() {
+  // Only handle overflow on desktop (not mobile hamburger menu)
+  if (window.innerWidth <= 770) {
+    // On mobile, restore all items to main nav and hide overflow
+    const overflowItems = Array.from(navOverflow.children);
+    overflowItems.forEach(item => {
+      navLinks.appendChild(item);
+    });
+    navOverflowContainer.classList.remove('has-overflow');
+    return;
+  }
+
+  // Get the nav container width
+  const navContainer = document.querySelector('.nav-container');
+  const navBrand = document.querySelector('.nav-brand');
+  const navControls = document.querySelector('.nav-controls');
+  
+  if (!navContainer || !navBrand || !navControls) return;
+  
+  const containerWidth = navContainer.offsetWidth;
+  const brandWidth = navBrand.offsetWidth;
+  const controlsWidth = navControls.offsetWidth;
+  const availableWidth = containerWidth - brandWidth - controlsWidth - 80; // 80px buffer
+  
+  // Get all nav items (excluding those in overflow)
+  const navItems = Array.from(navLinks.children);
+  
+  // First, move all items back to main nav
+  const overflowItems = Array.from(navOverflow.children);
+  overflowItems.forEach(item => {
+    navLinks.appendChild(item);
+  });
+  
+  // Calculate widths and determine which items overflow
+  let totalWidth = 0;
+  const itemsToMove = [];
+  
+  Array.from(navLinks.children).forEach((item, index) => {
+    const itemWidth = item.offsetWidth;
+    totalWidth += itemWidth;
+    
+    if (totalWidth > availableWidth) {
+      itemsToMove.push(item);
+    }
+  });
+  
+  // Move overflowing items to overflow container
+  if (itemsToMove.length > 0) {
+    itemsToMove.forEach(item => {
+      navOverflow.appendChild(item);
+    });
+    navOverflowContainer.classList.add('has-overflow');
+  } else {
+    navOverflowContainer.classList.remove('has-overflow');
+  }
+}
+
+// Run on load and resize
+window.addEventListener('load', handleNavbarOverflow);
+window.addEventListener('resize', handleNavbarOverflow);
+
+// Also run after a short delay to ensure layout is settled
+setTimeout(handleNavbarOverflow, 100);
 
 // Hamburger menu toggle
 hamburger.addEventListener('click', () => {
@@ -659,14 +728,12 @@ if (dropdown && dropdownToggle && dropdownMenu) {
     return window.innerWidth <= 900;
   }
 
-  // Click for mobile
+  // Click to toggle open on all screen sizes
   dropdownToggle.addEventListener('click', (e) => {
-    if (isMobile()) {
-      e.preventDefault();
-      dropdown.classList.toggle('open');
-      const isOpen = dropdown.classList.contains('open');
-      dropdownToggle.setAttribute('aria-expanded', String(isOpen));
-    }
+    e.preventDefault();
+    dropdown.classList.toggle('open');
+    const isOpen = dropdown.classList.contains('open');
+    dropdownToggle.setAttribute('aria-expanded', String(isOpen));
   });
 
   // Hover for desktop
@@ -849,7 +916,7 @@ document.addEventListener('keydown', (e) => {
     if (input && document.activeElement !== input) { e.preventDefault(); input.focus(); }
   }
   if (e.key.toLowerCase() === 't') {
-    themeToggleBtn?.click();
+    themeToggle?.click();
   }
 });
 

@@ -75,13 +75,6 @@
                     </div>
                     
                     <div class="nav-controls">
-                        <button id="theme-toggle" class="nav-control-btn" aria-label="Toggle theme" title="Toggle theme">
-                            <span class="toggle-icons" aria-hidden="true">
-                                <span class="icon-sun">☀️</span>
-                                <span class="icon-moon">🌙</span>
-                            </span>
-                        </button>
-                        
                         <button class="nav-control-btn hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
                             <span class="hamburger-line"></span>
                             <span class="hamburger-line"></span>
@@ -127,7 +120,21 @@
                             </ul>
                         </li>
                         <li role="none"><a href="#contact" role="menuitem" class="nav-link"><span class="nav-icon" aria-hidden="true">✉️</span> <span class="nav-text">Contact</span></a></li>
+                        <li role="none" class="theme-toggle-item">
+                            <label class="theme-toggle-label" role="menuitem" aria-label="Toggle theme">
+                                <input type="checkbox" id="theme-toggle" class="theme-toggle-input" aria-label="Toggle theme" />
+                                <span class="theme-toggle-track" aria-hidden="true">
+                                    <span class="theme-toggle-icon sun">☀️</span>
+                                    <span class="theme-toggle-thumb"></span>
+                                    <span class="theme-toggle-icon moon">🌙</span>
+                                </span>
+                            </label>
+                        </li>
                     </ul>
+                </div>
+                <!-- Overflow menu for nav items that don't fit -->
+                <div class="nav-overflow-container" id="nav-overflow-container">
+                    <ul class="nav-overflow" id="nav-overflow" role="menubar"></ul>
                 </div>
             </nav>
 

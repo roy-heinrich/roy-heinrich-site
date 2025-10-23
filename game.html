@@ -57,36 +57,29 @@
   </main>
 
   <script src="game.js"></script>
-</body>
-<script>
-// Theme toggle logic (copied from main site)
-const themeToggle = document.getElementById('theme-toggle');
-const body = document.body;
-function setTheme(theme) {
-  if (theme === 'light') {
-    body.classList.add('theme-light');
-    localStorage.setItem('theme', 'light');
-  } else {
-    body.classList.remove('theme-light');
-    localStorage.setItem('theme', 'dark');
-  }
-}
-function toggleTheme() {
-  if (body.classList.contains('theme-light')) {
-    setTheme('dark');
-  } else {
-    setTheme('light');
-  }
-}
-if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
-// On load, set theme from localStorage or system
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme) {
-  setTheme(savedTheme);
-} else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-  setTheme('light');
-}
-</script>
+  <script>
+    (function() {
+      const THEME_STORAGE_KEY = 'site-theme';
+      const rootEl = document.documentElement;
+      const btn = document.getElementById('theme-toggle');
+
+      function applyTheme(theme) {
+        if (theme === 'light') rootEl.classList.add('theme-light');
+        else rootEl.classList.remove('theme-light');
+        btn && btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+      }
+
+      const saved = localStorage.getItem(THEME_STORAGE_KEY);
+      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+      applyTheme(saved || (prefersLight ? 'light' : 'dark'));
+
+      btn && btn.addEventListener('click', () => {
+        const next = rootEl.classList.contains('theme-light') ? 'dark' : 'light';
+        applyTheme(next);
+        localStorage.setItem(THEME_STORAGE_KEY, next);
+      });
+    })();
+  </script>
 </body>
 </html>
 

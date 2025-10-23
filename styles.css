@@ -276,6 +276,48 @@ body {
     position: relative;
 }
 
+/* Overflow container for nav items that don't fit */
+.nav-overflow-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: none;
+}
+
+.nav-overflow-container.has-overflow {
+    display: block;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.nav-overflow {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure overflow items maintain same styling as main nav */
+.nav-overflow li {
+    list-style: none;
+    margin: 0;
+}
+
+
+/* Hide separator when theme toggle is in overflow */
+.nav-overflow .theme-toggle-item::before {
+    display: none;
+}
+
+.nav-overflow .theme-toggle-item {
+    margin-left: 0;
+    padding-left: 0;
+}
+
 /* Brand/Logo */
 .nav-brand {
     display: flex;
@@ -314,6 +356,8 @@ body {
 .logo-text {
     font-weight: 600;
     letter-spacing: 0.5px;
+    white-space: nowrap;
+    min-width: max-content;
 }
 
 /* Navigation Controls */
@@ -361,6 +405,20 @@ body {
     padding: 0;
     align-items: center;
 }
+/* Align theme toggle visually with nav items */
+.theme-toggle-item { display: flex; align-items: center; }
+.theme-toggle-label { 
+    display: inline-flex; 
+    align-items: center; 
+    height: 40px; 
+    padding: 0 10px; 
+    border-radius: 12px; 
+}
+.theme-toggle-label:hover .theme-toggle-track { 
+    border-color: var(--brand-1); 
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+}
+.theme-toggle-track { margin: 0; }
 
 .nav-link {
     display: flex;
@@ -462,6 +520,12 @@ body {
     visibility: visible;
     transform: translateY(0) scale(1);
 }
+/* Also show dropdown when parent has .open (for click/tap on desktop) */
+.dropdown.open .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
 
 .dropdown-menu li {
     margin: 0;
@@ -495,6 +559,58 @@ body {
     vertical-align: middle;
     display: inline-block;
 }
+
+/* Theme toggle (switch) */
+.theme-toggle-label { 
+    padding: 0.25rem; 
+    cursor: pointer; 
+}
+.theme-toggle-label::before { display: none; }
+.theme-toggle-input { 
+    position: absolute; 
+    width: 1px; 
+    height: 1px; 
+    margin: -1px; 
+    padding: 0; 
+    border: 0; 
+    clip: rect(0 0 0 0); 
+    clip-path: inset(50%); 
+    overflow: hidden; 
+}
+.theme-toggle-track {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 64px;
+    height: 32px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    position: relative;
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    padding: 0 6px;
+}
+.theme-toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-1) 0%, var(--brand-2) 100%);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    transition: transform 0.3s ease;
+}
+.theme-toggle-icon { font-size: 0.9rem; line-height: 1; opacity: 0.75; }
+.theme-toggle-icon.sun { color: var(--brand-1); }
+.theme-toggle-icon.moon { color: var(--brand-2); }
+.theme-toggle-input:focus-visible + .theme-toggle-track { outline: 2px solid var(--brand-1); outline-offset: 2px; }
+.theme-toggle-input:checked + .theme-toggle-track .theme-toggle-thumb { transform: translateX(32px); }
+.theme-toggle-input:checked + .theme-toggle-track .sun { opacity: 0.4; }
+.theme-toggle-input:checked + .theme-toggle-track .moon { opacity: 1; }
+.theme-toggle-input:not(:checked) + .theme-toggle-track .sun { opacity: 1; }
+.theme-toggle-input:not(:checked) + .theme-toggle-track .moon { opacity: 0.4; }
 
 /* Smaller icons for games dropdown */
 .dropdown-menu .nav-icon {
@@ -664,6 +780,23 @@ body {
         display: flex;
         align-items: center;
         gap: 0.5rem;
+    }
+
+    /* Center the theme toggle in hamburger menu */
+    .theme-toggle-item { 
+        max-width: 300px; 
+        width: 100%; 
+        display: flex; 
+        justify-content: center; 
+        margin: 0.25rem 0; 
+    }
+    .theme-toggle-label { 
+        height: 48px; 
+        padding: 0; 
+        width: auto; 
+    }
+    .theme-toggle-track { 
+        margin: 0 auto; 
     }
     
     /* Mobile dropdown as accordion */
