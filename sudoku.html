@@ -12,13 +12,15 @@
   <nav id="navbar">
     <div class="nav-container">
       <div class="logo">👾</div>
-      <button id="theme-toggle" class="nav-control-btn" aria-label="Toggle theme" title="Toggle theme" style="margin-left:1rem;">
-        <span class="toggle-icons" aria-hidden="true">
-          <span class="icon-sun">☀️</span>
-          <span class="icon-moon">🌙</span>
+      <label class="theme-toggle-label" role="button" aria-label="Toggle theme" style="margin-left:1rem;">
+        <input type="checkbox" id="theme-toggle" class="theme-toggle-input" aria-label="Toggle theme" />
+        <span class="theme-toggle-track" aria-hidden="true">
+          <span class="theme-toggle-icon sun">☀️</span>
+          <span class="theme-toggle-thumb"></span>
+          <span class="theme-toggle-icon moon">🌙</span>
         </span>
-      </button>
-      <a class="project-link" href="index.html">← Back</a>
+      </label>
+      <a class="project-link" href="index.html" style="margin-left:1rem;">← Back</a>
     </div>
   </nav>
 
@@ -69,22 +71,30 @@
     (function() {
       const THEME_STORAGE_KEY = 'site-theme';
       const rootEl = document.documentElement;
-      const btn = document.getElementById('theme-toggle');
+      const themeToggle = document.getElementById('theme-toggle');
 
       function applyTheme(theme) {
-        if (theme === 'light') rootEl.classList.add('theme-light');
-        else rootEl.classList.remove('theme-light');
-        btn && btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+        if (theme === 'light') {
+          rootEl.classList.add('theme-light');
+          if (themeToggle) themeToggle.checked = true;
+        } else {
+          rootEl.classList.remove('theme-light');
+          if (themeToggle) themeToggle.checked = false;
+        }
       }
 
       const saved = localStorage.getItem(THEME_STORAGE_KEY);
       const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
       applyTheme(saved || (prefersLight ? 'light' : 'dark'));
 
-      btn && btn.addEventListener('click', () => {
-        const next = rootEl.classList.contains('theme-light') ? 'dark' : 'light';
-        applyTheme(next);
-        localStorage.setItem(THEME_STORAGE_KEY, next);
+      themeToggle && themeToggle.addEventListener('change', () => {
+        const isLight = themeToggle.checked;
+        if (isLight) {
+          rootEl.classList.add('theme-light');
+        } else {
+          rootEl.classList.remove('theme-light');
+        }
+        localStorage.setItem(THEME_STORAGE_KEY, isLight ? 'light' : 'dark');
       });
     })();
   </script>
