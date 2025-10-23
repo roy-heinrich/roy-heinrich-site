@@ -301,12 +301,12 @@
                     <p class="contact-text">
                         I'm always interested in discussing new opportunities, innovative projects, or just connecting with fellow developers.
                     </p>
-                    <form id="contact-form" novalidate>
+                    <form id="contact-form" action="https://formspree.io/f/mwprdedg" method="POST">
                         <div class="form-row">
                             <input type="text" id="name" name="name" placeholder="Your name" required />
                             <input type="email" id="email" name="email" placeholder="Your email" required />
                         </div>
-                        <input type="text" id="company" name="company" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+                        <input type="text" id="_gotcha" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
                         <textarea id="message" name="message" placeholder="Your message" rows="5" required></textarea>
                         <button type="submit" class="cta-button">Send Message</button>
                         <p id="form-status" role="status" aria-live="polite"></p>

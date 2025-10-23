@@ -189,18 +189,25 @@ body {
     background: var(--glass);
     backdrop-filter: blur(20px);
     border-radius: 20px;
-    padding: 4.5rem 2rem;
+    padding: 2.5rem 1.5rem;
     border: 1px solid var(--card-border);
     box-sizing: border-box;
     overflow-wrap: anywhere;
     word-break: break-word;
-    min-width: 320px;
+    min-width: 0;
     max-width: 1100px;
+    width: 100%;
     margin: 0 auto;
+    overflow: hidden;
 }
 @media (min-width: 900px) {
     .hero-content {
-        padding: 7rem 3rem;
+        padding: 3.5rem 2.5rem;
+    }
+}
+@media (max-width: 480px) {
+    .hero-content {
+        padding: 2rem 1rem;
     }
 }
 
@@ -652,9 +659,9 @@ body {
 
 .retro-title {
     font-family: 'Press Start 2P', monospace, cursive;
-    font-size: clamp(1.6rem, 4vw, 3rem);
+    font-size: clamp(1.4rem, 3.5vw, 2.8rem);
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     color: var(--brand-1);
     text-shadow: 2px 2px 0 #222, 4px 4px 0 #764ba2;
     margin-bottom: 2rem;
@@ -662,8 +669,10 @@ body {
     line-height: 1.4;
     white-space: normal;
     word-break: break-word;
+    overflow-wrap: break-word;
     text-align: center;
     max-width: 100%;
+    width: 100%;
 }
 
 /* Typewriter effect styles */
@@ -672,7 +681,7 @@ body {
     width: 2px;
     height: 1em;
     background-color: var(--brand-1);
-    margin-left: -2px;
+    margin-left: 1px;
     animation: blink 1s infinite;
     vertical-align: text-top;
     position: relative;
@@ -708,8 +717,15 @@ body {
 
 @media (max-width: 1024px) {
     .retro-title {
-        font-size: clamp(1.4rem, 4.5vw, 2.8rem);
-        letter-spacing: 1px;
+        font-size: clamp(1.2rem, 4vw, 2.5rem);
+        letter-spacing: 0.5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .retro-title {
+        font-size: clamp(1rem, 5vw, 1.8rem);
+        letter-spacing: 0.5px;
     }
 }
 

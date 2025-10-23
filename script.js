@@ -863,25 +863,80 @@ carousel && carousel.addEventListener('mouseenter', stopAuto);
 carousel && carousel.addEventListener('mouseleave', startAuto);
 startAuto();
 
-// Contact form validation (client-side only demo)
+// Contact form validation and Formspree submission
 const contactForm = document.getElementById('contact-form');
 const formStatus = document.getElementById('form-status');
-contactForm && contactForm.addEventListener('submit', (e) => {
+contactForm && contactForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const formData = new FormData(contactForm);
-  if (formData.get('company')) { // honeypot filled
+  
+  // Honeypot check
+  if (formData.get('_gotcha')) {
     formStatus.textContent = 'Submission blocked.';
+    formStatus.style.color = 'var(--muted)';
     return;
   }
+  
+  // Client-side validation
   const name = String(formData.get('name') || '').trim();
   const email = String(formData.get('email') || '').trim();
   const message = String(formData.get('message') || '').trim();
-  if (!name || !email || !message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    formStatus.textContent = 'Please complete all fields with a valid email.';
+  
+  if (!name || !email || !message) {
+    formStatus.textContent = 'Please complete all fields.';
+    formStatus.style.color = '#ef4444';
     return;
   }
-  formStatus.textContent = 'Thanks! Your message was validated (demo).';
-  contactForm.reset();
+  
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    formStatus.textContent = 'Please enter a valid email address.';
+    formStatus.style.color = '#ef4444';
+    return;
+  }
+  
+  // Show sending status
+  const submitBtn = contactForm.querySelector('button[type="submit"]');
+  const originalBtnText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+  formStatus.textContent = 'Sending your message...';
+  formStatus.style.color = 'var(--brand-1)';
+  
+  try {
+    // Submit to Formspree
+    const response = await fetch(contactForm.action, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
+    if (response.ok) {
+      formStatus.textContent = '✓ Message sent successfully! I\'ll get back to you soon.';
+      formStatus.style.color = '#10b981';
+      contactForm.reset();
+    } else {
+      const data = await response.json();
+      if (data.errors) {
+        formStatus.textContent = data.errors.map(error => error.message).join(', ');
+      } else {
+        formStatus.textContent = 'Oops! There was a problem sending your message.';
+      }
+      formStatus.style.color = '#ef4444';
+    }
+  } catch (error) {
+    formStatus.textContent = 'Oops! There was a problem sending your message.';
+    formStatus.style.color = '#ef4444';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText;
+    
+    // Clear status message after 5 seconds
+    setTimeout(() => {
+      formStatus.textContent = '';
+    }, 5000);
+  }
 });
 
 // Copy to clipboard
