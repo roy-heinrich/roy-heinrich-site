@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Roy Heinrich Delgado - Portfolio</title>
+    <title>heinz.is-a.dev | Portfolio</title>
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -12,55 +12,42 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <!-- Pac-Man Ghost Loader -->
+    <!-- HeinrichOS Boot Sequence -->
     <div id="site-loader">
-            <div id="ghost">
-                <div id="red">
-                    <div id="pupil"></div>
-                    <div id="pupil1"></div>
-                    <div id="eye"></div>
-                    <div id="eye1"></div>
-                    <div id="top0"></div>
-                    <div id="top1"></div>
-                    <div id="top2"></div>
-                    <div id="top3"></div>
-                    <div id="top4"></div>
-                    <div id="st0"></div>
-                    <div id="st1"></div>
-                    <div id="st2"></div>
-                    <div id="st3"></div>
-                    <div id="st4"></div>
-                    <div id="st5"></div>
-                    <div id="an1"></div>
-                    <div id="an2"></div>
-                    <div id="an3"></div>
-                    <div id="an4"></div>
-                    <div id="an5"></div>
-                    <div id="an6"></div>
-                    <div id="an7"></div>
-                    <div id="an8"></div>
-                    <div id="an9"></div>
-                    <div id="an10"></div>
-                    <div id="an11"></div>
-                    <div id="an12"></div>
-                    <div id="an13"></div>
-                    <div id="an14"></div>
-                    <div id="an15"></div>
-                    <div id="an16"></div>
-                    <div id="an17"></div>
-                    <div id="an18"></div>
-                    <div id="mouthstart"></div>
-                    <div id="mouth1"></div>
-                    <div id="mouth2"></div>
-                    <div id="mouth3"></div>
-                    <div id="mouth4"></div>
-                    <div id="mouth5"></div>
-                    <div id="mouthend"></div>
-                </div>
-                <div id="shadow"></div>
-                <div id="loader-label" style="font-family: 'Press Start 2P', 'Courier New', Courier, monospace; color: #fff; font-size: 0.85rem; text-align: center; margin-top: 1.5rem; letter-spacing: 1px;">Loading...</div>
+        <div class="boot-container">
+            <div class="boot-logo">
+                <span class="boot-ghost">👾</span>
+                <h1 class="boot-title">HeinrichOS</h1>
+                <span class="boot-version">v1.0</span>
             </div>
+            <div class="boot-messages" id="boot-messages">
+                <!-- Messages will be added dynamically -->
+            </div>
+            <div class="boot-progress">
+                <div class="boot-progress-bar" id="boot-progress-bar"></div>
+            </div>
+        </div>
     </div>
+    <!-- HeinrichOS Status Bar -->
+    <div class="heinrichos-status-bar">
+        <div class="status-left">
+            <span class="status-item">
+                <span class="status-icon">👾</span>
+                <span class="status-text">HeinrichOS v1.0</span>
+            </span>
+        </div>
+        <div class="status-right">
+            <span class="status-item">
+                <span class="status-icon">☕</span>
+                <span class="status-text">Coffee: <span id="coffee-level">High</span></span>
+            </span>
+            <span class="status-item">
+                <span class="status-icon">🕐</span>
+                <span class="status-text" id="current-time">00:00</span>
+            </span>
+        </div>
+    </div>
+    
     <div class="scroll-indicator"></div>
     
     <!-- Scroll Down Guide -->
@@ -70,6 +57,9 @@
     </div>
     
     <canvas id="three-canvas"></canvas>
+    
+    <!-- CRT Overlay for screen effects -->
+    <div class="crt-overlay"></div>
 
             <nav id="navbar" class="navbar" role="navigation" aria-label="Main navigation">
                 <div class="nav-container">
@@ -119,11 +109,11 @@
                     <span class="typewriter-text" id="typewriter-text">Roy Heinrich Delgado</span>
                     <span class="typewriter-cursor" id="typewriter-cursor"></span>
                 </h1>
-                <p class="subtitle">Novice Developer & AI Enthusiast</p>
+                <p class="subtitle">Developer & AI Enthusiast</p>
                 <p class="description">
-                    Fourth-year Information Technology student at Aklan State University, passionate about building intelligent systems and crafting exceptional user experiences.
+                    Fourth-year IT student who spent more time debugging Flask apps than sleeping. I build chatbots that actually understand you, web apps that don't suck, and occasionally 3D graphics that make people say "wait, you made that?"
                 </p>
-                <a href="#projects" class="cta-button">View My Work</a>
+                <a href="#projects" class="cta-button">See What I've Built</a>
             </div>
         </section>
 
@@ -133,13 +123,13 @@
                 <div class="about-content fade-in">
                     <div class="about-text">
                         <p>
-                            I'm a <span class="about-highlight">resourceful</span> developer who thrives on technical challenges. I've built and improved chatbots with multiple integrations including Flask, MySQL, ChromaDB, fastText, Ollama, and OpenRouter, demonstrating my ability to learn and adapt quickly.
+                            Hey! I'm a <span class="about-highlight">fourth-year IT student</span> at Aklan State University who learned more from Stack Overflow at 2 AM than from any textbook. I've built multilingual chatbots (Tagalog, English, Hiligaynon) with Flask, ChromaDB, and Ollama—basically, I make computers understand humans better than I understand social cues.
                         </p>
                         <p>
-                            I'm <span class="about-highlight">goal-driven</span> and detail-oriented, always asking precise questions about deployment, optimization, and user experience because I don't just want things to work—I want them to work exceptionally well.
+                            I'm the kind of person who <span class="about-highlight">reads entire documentation sites</span> for fun and genuinely cares whether your app loads in 2 seconds or 3. I don't just want things to work—I want them to work so well that nobody notices them working. That's good design.
                         </p>
                         <p>
-                            My approach is <span class="about-highlight">user-centered</span>. I've customized applications to handle multiple languages naturally, implement graceful fallbacks, and respect data privacy. This reflects my values of clarity, professionalism, and empathy in design.
+                            Currently surviving on coffee ☕ and localhost debugging sessions. I believe in <span class="about-highlight">building stuff that helps people</span>, respecting user privacy, and writing code that doesn't make future-me want to cry. This site? Built from scratch. Every line. No templates. Just me, VS Code, and way too much attention to detail.
                         </p>
                     </div>
                     <div class="skills-grid">
@@ -174,7 +164,7 @@
 
         <section id="projects" class="section">
             <div class="container">
-                <h2 class="section-title fade-in">Featured Projects</h2>
+                <h2 class="section-title fade-in">Stuff I've Built</h2>
             <div class="projects-controls">
               <button class="filter-btn active" data-filter="all">All</button>
               <button class="filter-btn" data-filter="ai">AI/ML</button>
@@ -186,7 +176,7 @@
                     <div class="project-card" data-category="ai" tabindex="0">
                         <h3 class="project-title">TomasChatBot</h3>
                         <p class="project-description">
-                            A multilingual school-focused chatbot with NLP, context memory, and privacy-friendly design. Built with Python and web UI for interactive testing and demos.
+                            I built a chatbot that speaks three languages (Tagalog, English, Hiligaynon) because why not? It remembers context, doesn't leak your data, and actually tries to understand what you're asking. Used Flask, ChromaDB, and Ollama—basically threw the entire NLP kitchen sink at it until it worked.
                         </p>
                         <div class="project-tech">
                             <span class="tech-tag">Python</span>
@@ -194,14 +184,14 @@
                             <span class="tech-tag">FastAPI</span>
                         </div>
                         <div class="project-links">
-                            <a href="https://github.com/roy-heinrich/TomasChatBot" class="project-link" target="_blank" rel="noopener" data-analytics="code">Source Code</a>
+                            <a href="https://github.com/roy-heinrich/TomasChatBot" class="project-link" target="_blank" rel="noopener" data-analytics="code">Check it out →</a>
                         </div>
                     </div>
 
                     <div class="project-card" data-category="web" tabindex="0">
                         <h3 class="project-title">Linux Leap Advisor</h3>
                         <p class="project-description">
-                            A comprehensive tool to check Windows application compatibility with Linux distributions, featuring intelligent search and multiple package sources.
+                            Ever wondered if your Windows apps will run on Linux? Yeah, me too. So I made a tool that checks compatibility across ProtonDB, WineHQ, and other sources. No more guessing whether your favorite app will break when you switch to Linux.
                         </p>
                         <div class="project-tech">
                             <span class="tech-tag">JavaScript</span>
@@ -209,7 +199,7 @@
                             <span class="tech-tag">UX</span>
                         </div>
                         <div class="project-links">
-                            <a href="https://github.com/roy-heinrich/linux-leap-advisor" class="project-link" target="_blank" rel="noopener" data-analytics="code">Source Code</a>
+                            <a href="https://github.com/roy-heinrich/linux-leap-advisor" class="project-link" target="_blank" rel="noopener" data-analytics="code">Check it out →</a>
                         </div>
                     </div>
                 </div>
@@ -218,19 +208,19 @@
 
         <section id="testimonials" class="section">
             <div class="container">
-                <h2 class="section-title fade-in">What People Say</h2>
+                <h2 class="section-title fade-in">Things People Have Said</h2>
                 <div class="carousel fade-in" aria-roledescription="carousel">
                     <div class="carousel-track">
                         <div class="carousel-item" aria-roledescription="slide">
-                            <p>“Roy delivered beyond expectations with clean, maintainable code.”</p>
+                            <p>"Actually writes code that doesn't make me want to cry when I read it six months later."</p>
                             <span class="author">— Project Mentor</span>
                         </div>
                         <div class="carousel-item" aria-roledescription="slide">
-                            <p>“Proactive, thoughtful, and user-focused. Great collaborator.”</p>
+                            <p>"Asks way too many questions, but somehow they're always the right questions."</p>
                             <span class="author">— Teammate</span>
                         </div>
                         <div class="carousel-item" aria-roledescription="slide">
-                            <p>“Understands AI and product tradeoffs, not just the tech.”</p>
+                            <p>"Gets that good code isn't just about making it work—it's about making it work for people."</p>
                             <span class="author">— Advisor</span>
                         </div>
                     </div>
@@ -242,8 +232,8 @@
 
         <section id="github" class="section">
                 <div class="container">
-                    <h2 class="section-title fade-in">Github</h2>
-                    <p class="github-contrib-desc fade-in" style="font-size:1.1rem;color:var(--muted-2);margin-bottom:2rem;max-width:900px;margin-left:auto;margin-right:auto;text-align:center;">A snapshot of my open source activity and coding stats. Charts below are powered by <a href="https://github.com/roy-heinrich" target="_blank">GitHub</a> and third-party services.</p>
+                    <h2 class="section-title fade-in">My GitHub Stats</h2>
+                    <p class="github-contrib-desc fade-in" style="font-size:1.1rem;color:var(--muted-2);margin-bottom:2rem;max-width:900px;margin-left:auto;margin-right:auto;text-align:center;">Here's proof that I actually code instead of just talking about it. The green squares are my favorite color now. Check out my <a href="https://github.com/roy-heinrich" target="_blank">GitHub profile →</a></p>
                     <div class="github-charts-grid fade-in" style="display:grid;grid-template-columns:repeat(2,minmax(320px,1fr));gap:2rem;width:100%;max-width:1000px;margin:0 auto;">
                         <!-- Row 1 -->
                         <div class="github-chart-card" style="background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:2rem 1rem 1.5rem 1rem;box-sizing:border-box;width:100%;display:flex;flex-direction:column;align-items:center;">
@@ -251,8 +241,8 @@
                             <img src="https://ghchart.rshah.org/roy-heinrich" alt="GitHub Contributions Chart" class="github-contrib-img" style="width:100%;background:var(--card);border-radius:12px;border:1px solid var(--card-border);padding:1rem;" loading="lazy" />
                         </div>
                         <div class="github-chart-card" style="background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:2rem 1rem 1.5rem 1rem;box-sizing:border-box;width:100%;display:flex;flex-direction:column;align-items:center;">
-                            <h3 class="github-chart-title" style="font-family:'Press Start 2P','Courier New',Courier,monospace;color:var(--brand-1);font-size:1.1rem;margin-bottom:1rem;text-align:center;letter-spacing:1px;">Streak Stats</h3>
-                            <img src="https://github-readme-streak-stats.herokuapp.com/?user=roy-heinrich&theme=tokyonight&hide_border=true" alt="GitHub Streak Stats" class="github-contrib-img" style="width:100%;background:var(--card);border-radius:12px;border:1px solid var(--card-border);padding:1rem;" loading="lazy" />
+                            <h3 class="github-chart-title" style="font-family:'Press Start 2P','Courier New',Courier,monospace;color:var(--brand-1);font-size:1.1rem;margin-bottom:1rem;text-align:center;letter-spacing:1px;">Activity Graph</h3>
+                            <img src="https://github-readme-activity-graph.vercel.app/graph?username=roy-heinrich&theme=tokyo-night&hide_border=true&bg_color=0d1117&color=667eea&line=667eea&point=764ba2" alt="GitHub Activity Graph" class="github-contrib-img" style="width:100%;background:var(--card);border-radius:12px;border:1px solid var(--card-border);padding:1rem;" loading="lazy" />
                         </div>
                         <!-- Row 2 -->
                         <div class="github-chart-card" style="background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:2rem 1rem 1.5rem 1rem;box-sizing:border-box;width:100%;display:flex;flex-direction:column;align-items:center;">
@@ -270,10 +260,10 @@
         </section>
         <section id="contact" class="section">
             <div class="container">
-                <h2 class="section-title fade-in">Let's Connect</h2>
+                <h2 class="section-title fade-in">Let's Talk</h2>
                 <div class="contact-content fade-in">
                     <p class="contact-text">
-                        I'm always interested in discussing new opportunities, innovative projects, or just connecting with fellow developers.
+                        Got a project idea? Want to collaborate? Or just want to argue about tabs vs spaces? (It's spaces, by the way.) Hit me up. I actually respond to emails, unlike normal people.
                     </p>
                     <form id="contact-form" action="https://formspree.io/f/mwprdedg" method="POST">
                         <div class="form-row">
@@ -308,7 +298,12 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Roy Heinrich Delgado. Built with passion and Three.js.</p>
+            <p>&copy; 2025 Roy Heinrich Delgado. Built with passion and Three.js. 
+            <span class="footer-separator">|</span> 
+            <a href="#" id="about-os-link" class="about-os-link">About HeinrichOS</a>
+            <span class="footer-separator">|</span>
+            <span class="easter-egg-hint" title="Try clicking the ghost or pressing Ctrl+Shift+K">👾</span>
+            </p>
         </div>
     </footer>
 
@@ -322,15 +317,6 @@
 
   <button id="back-to-top" aria-label="Back to top" title="Back to top">▲</button>
 
-  <script src="script.js?v=3"></script>
-    <script>
-        // Hide loader after page load
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                const loader = document.getElementById('site-loader');
-                if (loader) loader.style.display = 'none';
-            }, 600); // show at least 600ms for effect
-        });
-    </script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>

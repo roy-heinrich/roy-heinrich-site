@@ -1,3 +1,67 @@
+// HeinrichOS Boot Sequence
+const bootMessages = [
+    { text: "INITIALIZING HEINRICHOS v1.0...", type: "info", delay: 100 },
+    { text: "Loading system modules...", type: "success", delay: 300 },
+    { text: "Checking coffee levels...", type: "info", delay: 200 },
+    { text: "Coffee levels: OPTIMAL ☕", type: "success", delay: 400 },
+    { text: "Initializing Three.js renderer...", type: "info", delay: 200 },
+    { text: "Three.js renderer ready", type: "success", delay: 300 },
+    { text: "Loading ghost trail system...", type: "info", delay: 200 },
+    { text: "Ghost trail active 👾", type: "success", delay: 300 },
+    { text: "Compiling stylesheets...", type: "info", delay: 200 },
+    { text: "Stylesheets compiled", type: "success", delay: 250 },
+    { text: "Running diagnostics...", type: "warn", delay: 300 },
+    { text: "All systems operational", type: "success", delay: 400 },
+    { text: "Welcome to HeinrichOS!", type: "success", delay: 500 }
+];
+
+function runBootSequence() {
+    const bootMessagesContainer = document.getElementById('boot-messages');
+    const progressBar = document.getElementById('boot-progress-bar');
+    const loader = document.getElementById('site-loader');
+    
+    if (!bootMessagesContainer || !progressBar || !loader) return;
+    
+    let currentMessage = 0;
+    let totalProgress = 0;
+    const progressIncrement = 100 / bootMessages.length;
+    
+    function displayNextMessage() {
+        if (currentMessage >= bootMessages.length) {
+            // Boot complete, fade out loader
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 400);
+            }, 500);
+            return;
+        }
+        
+        const message = bootMessages[currentMessage];
+        const messageEl = document.createElement('div');
+        messageEl.className = `boot-message ${message.type}`;
+        messageEl.textContent = message.text;
+        bootMessagesContainer.appendChild(messageEl);
+        
+        // Update progress bar
+        totalProgress += progressIncrement;
+        progressBar.style.width = Math.min(totalProgress, 100) + '%';
+        
+        // Scroll to bottom of messages
+        bootMessagesContainer.scrollTop = bootMessagesContainer.scrollHeight;
+        
+        currentMessage++;
+        setTimeout(displayNextMessage, message.delay);
+    }
+    
+    // Start boot sequence after a short delay
+    setTimeout(displayNextMessage, 300);
+}
+
+// Run boot sequence on page load
+window.addEventListener('load', runBootSequence);
+
 // Creative Three.js Scene Setup
 let scene, camera, renderer, mouseX = 0, mouseY = 0;
 let codeBlocks = [], neuralNodes = [], floatingShapes = [];
@@ -1310,9 +1374,716 @@ window.addEventListener('scroll', updateScrollGuide, { passive: true });
 // Initial check
 updateScrollGuide();
 
+// Terminal Command Handler
+const terminalInput = document.getElementById('terminal-input');
+const terminalOutput = document.getElementById('terminal-output');
+let commandHistory = [];
+let historyIndex = -1;
+
+const ghostAscii = `
+    .-""""-.
+   /        \\
+  /_        _\\
+ // \\      / \\\\
+ |\\__\\    /__/|
+  \\    ||    /
+   \\        /
+    \\  __  /
+     '.__.'
+      .  .
+     ( || )
+      '  '
+`;
+
+const commands = {
+  help: () => {
+    return `
+<span class="terminal-success">Available Commands:</span>
+
+  <span class="terminal-highlight">help</span>        - Show this help message
+  <span class="terminal-highlight">hello</span>       - Get a friendly greeting
+  <span class="terminal-highlight">hire</span>        - See hiring/contact info with ASCII art
+  <span class="terminal-highlight">email</span>       - Display email address
+  <span class="terminal-highlight">linkedin</span>    - Display LinkedIn profile
+  <span class="terminal-highlight">github</span>      - Display GitHub profile
+  <span class="terminal-highlight">about</span>       - Learn more about me
+  <span class="terminal-highlight">projects</span>    - List my projects
+  <span class="terminal-highlight">skills</span>      - Show my tech stack
+  <span class="terminal-highlight">clear</span>       - Clear the terminal
+  <span class="terminal-highlight">contact</span>     - Send me a message
+  <span class="terminal-highlight">whoami</span>      - Who are you talking to?
+  <span class="terminal-highlight">ghost</span>       - Meet the HeinrichOS mascot
+  <span class="terminal-highlight">coffee</span>      - Check coffee levels
+  <span class="terminal-highlight">matrix</span>      - Enter the matrix...
+`;
+  },
+  
+  hello: () => {
+    const greetings = [
+      "Hey! 👋 You found the terminal. Type 'help' to see what you can do.",
+      "Hello! Welcome to HeinrichOS. It's like a real OS but with less crashing.",
+      "Hi! Type 'help' for commands, or just explore. I won't judge.",
+      "Yo! You're curious. I like that. Try 'ghost' or 'coffee' for fun.",
+      "Greetings! This terminal actually works, unlike my sleep schedule."
+    ];
+    return `<span class="terminal-success">${greetings[Math.floor(Math.random() * greetings.length)]}</span>`;
+  },
+  
+  hire: () => {
+    return `
+<span class="terminal-success">╔══════════════════════════════════════════════════╗</span>
+<span class="terminal-success">║            WANT TO WORK TOGETHER?               ║</span>
+<span class="terminal-success">╚══════════════════════════════════════════════════╝</span>
+${ghostAscii}
+<span class="terminal-highlight">What I can do:</span>
+  • Full-stack dev (Flask, React, Node.js)
+  • AI/ML stuff (NLP, chatbots, making computers smarter)
+  • Web apps that actually work
+  • Figuring out why your code broke at 3 AM
+
+<span class="terminal-highlight">How to reach me:</span>
+  📧 <a href="mailto:royheinrich.delgado0@gmail.com" class="terminal-link">royheinrich.delgado0@gmail.com</a>
+  💼 <a href="https://www.linkedin.com/in/roy-heinrich-delgado-b621ba222/" target="_blank" class="terminal-link">LinkedIn</a>
+  🐙 <a href="https://github.com/roy-heinrich" target="_blank" class="terminal-link">@roy-heinrich</a>
+
+I respond to emails. Promise.
+`;
+  },
+  
+  email: () => {
+    navigator.clipboard.writeText('royheinrich.delgado0@gmail.com');
+    return `<span class="terminal-success">📧 royheinrich.delgado0@gmail.com</span>\n(Copied to clipboard!)`;
+  },
+  
+  linkedin: () => {
+    return `<span class="terminal-success">💼 LinkedIn:</span> <a href="https://www.linkedin.com/in/roy-heinrich-delgado-b621ba222/" target="_blank" class="terminal-link">Roy Heinrich Delgado</a>`;
+  },
+  
+  github: () => {
+    return `<span class="terminal-success">🐙 GitHub:</span> <a href="https://github.com/roy-heinrich" target="_blank" class="terminal-link">@roy-heinrich</a>`;
+  },
+  
+  about: () => {
+    return `
+<span class="terminal-highlight">About Me:</span>
+
+Fourth-year IT student at Aklan State University. I learned more from
+Stack Overflow at 2 AM than from any textbook.
+
+I build stuff that actually works: multilingual chatbots, Linux compatibility
+checkers, and this entire website (no templates, just me and VS Code).
+
+Fun facts:
+• I care whether your app loads in 2 seconds or 3
+• I read documentation for fun (yes, really)
+• Coffee is my primary fuel source
+• I write code that doesn't make future-me cry
+
+Type <span class="terminal-highlight">skills</span> for tech stack or <span class="terminal-highlight">projects</span> to see what I've built!
+`;
+  },
+  
+  projects: () => {
+    return `
+<span class="terminal-highlight">Projects I've Built:</span>
+
+1. <span class="terminal-success">TomasChatBot</span>
+   Built a chatbot that speaks 3 languages (Tagalog, English, Hiligaynon).
+   It remembers context and doesn't leak your data.
+   Tech: Python, FastText, ChromaDB, Ollama, FastAPI
+   Translation: I threw the entire NLP kitchen sink at it until it worked.
+   
+2. <span class="terminal-success">Linux Leap Advisor</span>
+   Ever wonder if your Windows apps will run on Linux?
+   This checks compatibility so you don't have to guess.
+   Tech: JavaScript, ProtonDB/WineHQ APIs, UX Design
+
+See more: <span class="terminal-link">github.com/roy-heinrich</span>
+`;
+  },
+  
+  skills: () => {
+    return `
+<span class="terminal-highlight">Tech Stack:</span>
+
+<span class="terminal-success">Languages:</span>  Python, JavaScript, SQL
+<span class="terminal-success">Frontend:</span>   HTML, CSS, React, Three.js
+<span class="terminal-success">Backend:</span>    Flask, Node.js, FastAPI
+<span class="terminal-success">AI/ML:</span>      FastText, Ollama, ChromaDB, NLP
+<span class="terminal-success">Database:</span>   MySQL, SQLite
+<span class="terminal-success">Tools:</span>      Git, Docker, Linux
+<span class="terminal-success">Cloud:</span>      Render, InfinityFree
+
+Currently learning: More AI/ML, advanced React patterns
+`;
+  },
+  
+  clear: () => {
+    terminalOutput.innerHTML = `
+      <div class="terminal-line">
+        <span class="terminal-prompt">root@heinrichos:~$</span> clear
+      </div>
+      <div class="terminal-line">Terminal cleared. Type <span class="terminal-highlight">help</span> for commands.</div>
+      <div class="terminal-line terminal-blank"></div>
+    `;
+    return null;
+  },
+  
+  contact: () => {
+    return `
+<span class="terminal-success">Let's Talk:</span>
+
+Got a project? Want to collaborate? Just want to argue about tabs vs spaces?
+(It's spaces, by the way.)
+
+Hit me up:
+  📧 Email: <a href="mailto:royheinrich.delgado0@gmail.com" class="terminal-link">royheinrich.delgado0@gmail.com</a>
+  💼 LinkedIn: <a href="https://www.linkedin.com/in/roy-heinrich-delgado-b621ba222/" target="_blank" class="terminal-link">Roy Heinrich Delgado</a>
+  🐙 GitHub: <a href="https://github.com/roy-heinrich" target="_blank" class="terminal-link">@roy-heinrich</a>
+
+I actually respond to emails, unlike normal people.
+`;
+  },
+  
+  whoami: () => {
+    return `<span class="terminal-success">root</span> (Roy Heinrich Delgado)\n\nFourth-year IT student. I turn coffee into code.\nCurrently debugging life, one commit at a time.`;
+  },
+  
+  ghost: () => {
+    return `<span class="terminal-success">Meet the HeinrichOS Ghost!</span>${ghostAscii}\n<span class="terminal-highlight">"I follow your cursor around because Roy thought it would be cool.\nSpoiler: It is cool. 👾"</span>`;
+  },
+  
+  coffee: () => {
+    const level = Math.floor(Math.random() * 100);
+    const bar = '█'.repeat(Math.floor(level / 10)) + '░'.repeat(10 - Math.floor(level / 10));
+    return `
+<span class="terminal-highlight">Coffee Level Check:</span>
+
+☕ [${bar}] ${level}%
+
+${level > 70 ? '<span class="terminal-success">Fully caffeinated and ready to code!</span>' : 
+  level > 30 ? '<span class="terminal-highlight">Running low... might need a refill soon.</span>' :
+  '<span class="terminal-error">CRITICAL: Emergency coffee break needed!</span>'}
+`;
+  },
+  
+  matrix: () => {
+    return `
+<span class="terminal-success" style="animation: matrixRain 2s linear;">Wake up, Neo...</span>
+<span class="terminal-highlight">The Matrix has you...</span>
+
+Just kidding! But seriously, check out the 3D background animation.
+It's powered by Three.js—basically my version of the Matrix.
+
+Type <span class="terminal-highlight">help</span> to return to reality.
+`;
+  }
+};
+
+function addToTerminal(command, output) {
+  const commandLine = document.createElement('div');
+  commandLine.classList.add('terminal-line');
+  commandLine.innerHTML = `<span class="terminal-prompt">root@heinrichos:~$</span> ${command}`;
+  terminalOutput.appendChild(commandLine);
+  
+  if (output) {
+    const outputLine = document.createElement('div');
+    outputLine.classList.add('terminal-line');
+    outputLine.innerHTML = output;
+    terminalOutput.appendChild(outputLine);
+  }
+  
+  const blank = document.createElement('div');
+  blank.classList.add('terminal-line', 'terminal-blank');
+  terminalOutput.appendChild(blank);
+  
+  // Scroll to bottom
+  terminalOutput.scrollTop = terminalOutput.scrollHeight;
+}
+
+function handleCommand(input) {
+  const cmd = input.trim().toLowerCase();
+  
+  if (cmd === '') return;
+  
+  // Add to history
+  commandHistory.unshift(input);
+  if (commandHistory.length > 50) commandHistory.pop();
+  historyIndex = -1;
+  
+  // Check if command exists
+  if (commands[cmd]) {
+    const output = commands[cmd]();
+    if (output !== null) {
+      addToTerminal(input, output);
+    }
+  } else {
+    addToTerminal(input, `<span class="terminal-error">Command not found: ${input}</span>\nType <span class="terminal-highlight">help</span> for available commands.`);
+  }
+}
+
+if (terminalInput) {
+  terminalInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const input = terminalInput.value;
+      handleCommand(input);
+      terminalInput.value = '';
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIndex < commandHistory.length - 1) {
+        historyIndex++;
+        terminalInput.value = commandHistory[historyIndex];
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        historyIndex--;
+        terminalInput.value = commandHistory[historyIndex];
+      } else {
+        historyIndex = -1;
+        terminalInput.value = '';
+      }
+    }
+  });
+  
+  // Auto-focus terminal on click
+  document.querySelector('.terminal-container')?.addEventListener('click', () => {
+    terminalInput.focus();
+  });
+}
+
+// Ghost Cursor Trail
+const ghostTrails = [];
+const maxGhosts = 10;
+let ghostMouseX = 0;
+let ghostMouseY = 0;
+let lastGhostTime = 0;
+
+// Create ghost trail elements
+for (let i = 0; i < maxGhosts; i++) {
+  const ghost = document.createElement('div');
+  ghost.classList.add('ghost-trail');
+  ghost.textContent = '👾';
+  document.body.appendChild(ghost);
+  ghostTrails.push({
+    element: ghost,
+    x: 0,
+    y: 0,
+    delay: i * 50
+  });
+}
+
+// Track mouse position for ghost trail
+document.addEventListener('mousemove', (e) => {
+  ghostMouseX = e.clientX;
+  ghostMouseY = e.clientY;
+});
+
+// Animate ghost trail
+function animateGhostTrail() {
+  const currentTime = Date.now();
+  
+  ghostTrails.forEach((ghost, index) => {
+    // Calculate target position with delay
+    const targetX = ghostMouseX;
+    const targetY = ghostMouseY;
+    
+    // Smoothly interpolate position
+    ghost.x += (targetX - ghost.x) * (0.1 - index * 0.008);
+    ghost.y += (targetY - ghost.y) * (0.1 - index * 0.008);
+    
+    // Update ghost position
+    ghost.element.style.left = ghost.x + 'px';
+    ghost.element.style.top = ghost.y + 'px';
+    
+    // Fade out ghosts that are far from cursor
+    const distance = Math.sqrt(Math.pow(targetX - ghost.x, 2) + Math.pow(targetY - ghost.y, 2));
+    if (distance < 100) {
+      ghost.element.classList.add('active');
+    } else {
+      ghost.element.classList.remove('active');
+    }
+  });
+  
+  requestAnimationFrame(animateGhostTrail);
+}
+
+// Only enable ghost trail on desktop
+if (window.innerWidth > 768 && !prefersReducedMotion) {
+  animateGhostTrail();
+}
+
+// CRT Section Transitions
+const crtOverlay = document.querySelector('.crt-overlay');
+
+function triggerCRTFlicker() {
+  if (!crtOverlay || prefersReducedMotion) return;
+  
+  crtOverlay.style.animation = 'none';
+  setTimeout(() => {
+    crtOverlay.style.animation = 'crtSectionFlicker 0.3s ease-in-out';
+  }, 10);
+}
+
+// Section transition observer
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      // Add visible class for fade-in animations
+      entry.target.classList.add('visible');
+      
+      // Trigger CRT flicker effect
+      if (!prefersReducedMotion) {
+        triggerCRTFlicker();
+      }
+    }
+  });
+}, {
+  threshold: 0.15,
+  rootMargin: '0px 0px -100px 0px'
+});
+
+// Observe all sections and fade-in elements
+document.querySelectorAll('.section, .fade-in').forEach(el => {
+  sectionObserver.observe(el);
+});
+
+// Add CRT flicker on nav link clicks
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    if (!prefersReducedMotion) {
+      triggerCRTFlicker();
+    }
+  });
+});
+
+// About HeinrichOS Easter Egg
+const aboutOSLink = document.getElementById('about-os-link');
+
+if (aboutOSLink && lightbox && lightboxTitle && lightboxDesc) {
+  aboutOSLink.addEventListener('click', () => {
+    lightboxTitle.textContent = 'About HeinrichOS v1.0';
+    lightboxDesc.innerHTML = `
+      <p style="font-family: 'Courier New', monospace; line-height: 1.8;">
+        <strong>HeinrichOS</strong> is a retro-futuristic operating system designed for showcasing projects, skills, and personality in a way that doesn't make your eyes glaze over.
+      </p>
+      <p style="font-family: 'Courier New', monospace; line-height: 1.8;">
+        <strong>System Requirements:</strong><br>
+        • A sense of humor<br>
+        • Appreciation for 90s nostalgia<br>
+        • Coffee (optional but recommended)<br>
+        • Basic terminal skills (type <code>help</code> in Terminal section)
+      </p>
+      <p style="font-family: 'Courier New', monospace; line-height: 1.8;">
+        <strong>Features:</strong><br>
+        • CRT screen effects for that authentic retro feel<br>
+        • Ghost mascot cursor trail (desktop only)<br>
+        • Interactive terminal with hidden commands<br>
+        • Boot sequence that's faster than Windows 95<br>
+        • 100% caffeine-powered development
+      </p>
+      <p style="font-family: 'Courier New', monospace; line-height: 1.8;">
+        <strong>Version History:</strong><br>
+        v1.0 (2025) - Initial release. Built from scratch with HTML, CSS, JavaScript, and way too much attention to detail.
+      </p>
+      <p style="font-family: 'Courier New', monospace; line-height: 1.8; color: var(--brand-1);">
+        👾 Fun fact: This entire site was built without templates. Every line of code was written by a sleep-deprived IT student fueled by coffee and determination.
+      </p>
+    `;
+    lightbox.classList.add('show');
+    lightbox.setAttribute('aria-hidden', 'false');
+  });
+}
+
+if (lightboxClose) {
+  lightboxClose.addEventListener('click', () => {
+    lightbox.classList.remove('show');
+    lightbox.setAttribute('aria-hidden', 'true');
+  });
+}
+
+if (lightbox) {
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+      lightbox.classList.remove('show');
+      lightbox.setAttribute('aria-hidden', 'true');
+    }
+  });
+}
+
+// Computer Monitor Frame Scroll Effect
+const computerMonitor = document.getElementById('computer-monitor');
+const heroSection = document.querySelector('.hero-immersive');
+
+function updateMonitorVisibility() {
+  if (!computerMonitor || !heroSection) return;
+  
+  const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+  const scrollPosition = window.scrollY + window.innerHeight * 0.3; // Trigger when 30% down viewport
+  
+  if (scrollPosition > heroBottom * 0.7) {
+    // Show monitor frame when scrolling past hero
+    computerMonitor.classList.add('visible');
+  } else {
+    // Hide monitor frame when at hero
+    computerMonitor.classList.remove('visible');
+  }
+}
+
+// Update on scroll
+window.addEventListener('scroll', updateMonitorVisibility, { passive: true });
+
+// Initial check
+updateMonitorVisibility();
+
+// Ensure page starts at top on load
+window.addEventListener('load', () => {
+  // Force scroll to top on page load
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+  }, 100);
+});
+
+// Also reset on page refresh
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+// HeinrichOS Status Bar
+function updateStatusBar() {
+  const timeElement = document.getElementById('current-time');
+  const coffeeLevelElement = document.getElementById('coffee-level');
+  
+  // Update time
+  if (timeElement) {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    timeElement.textContent = `${hours}:${minutes}`;
+  }
+  
+  // Update coffee level based on time (it decreases as day goes on)
+  if (coffeeLevelElement) {
+    const hour = new Date().getHours();
+    let coffeeStatus = 'High';
+    
+    if (hour >= 6 && hour < 10) {
+      coffeeStatus = 'Maximum';
+    } else if (hour >= 10 && hour < 14) {
+      coffeeStatus = 'High';
+    } else if (hour >= 14 && hour < 18) {
+      coffeeStatus = 'Medium';
+    } else if (hour >= 18 && hour < 22) {
+      coffeeStatus = 'Low';
+    } else {
+      coffeeStatus = 'Critical!';
+    }
+    
+    coffeeLevelElement.textContent = coffeeStatus;
+  }
+}
+
+// Update status bar immediately and every minute
+updateStatusBar();
+setInterval(updateStatusBar, 60000);
+
 // PWA registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js').catch(()=>{});
   });
 }
+
+// HeinrichOS Easter Eggs and Enhanced Interactions
+
+// Console welcome message
+console.log('%c👾 HeinrichOS v1.0', 'font-size: 20px; color: #667eea; font-weight: bold; font-family: "Press Start 2P", monospace;');
+console.log('%cWelcome to the developer console!', 'font-size: 14px; color: #888;');
+console.log('%cTip: Try typing "help()" for available commands', 'font-size: 12px; color: #aaa;');
+console.log('%c', 'font-size: 2px;'); // spacing
+
+// Console commands
+window.help = function() {
+    console.log('%cAvailable Commands:', 'font-size: 16px; color: #667eea; font-weight: bold;');
+    console.log('%c  about()      - Learn about this site', 'color: #00ff00;');
+    console.log('%c  coffee()     - Check coffee levels', 'color: #00ff00;');
+    console.log('%c  konami()     - Activate konami code', 'color: #00ff00;');
+    console.log('%c  ghost()      - Ghost info', 'color: #00ff00;');
+    console.log('%c  quote()      - Get a random dev quote', 'color: #00ff00;');
+};
+
+window.about = function() {
+    console.log('%cHeinrichOS - My retro OS themed portfolio', 'color: #667eea; font-size: 14px;');
+    console.log('Built from scratch. No templates. No frameworks.');
+    console.log('Just me, VS Code, and way too much coffee.');
+    console.log('Created by Roy Heinrich Delgado - IT student who codes more than sleeps');
+};
+
+window.coffee = function() {
+    const level = Math.floor(Math.random() * 100);
+    const bar = '█'.repeat(Math.floor(level / 10)) + '░'.repeat(10 - Math.floor(level / 10));
+    console.log(`%c☕ Coffee Level: [${bar}] ${level}%`, 'font-size: 14px; color: #ff9800;');
+    return level > 50 ? 'Fully caffeinated! 🚀' : 'Time for a refill... ☕';
+};
+
+window.ghost = function() {
+    console.log('%c   👾', 'font-size: 50px;');
+    console.log('%cThe HeinrichOS ghost follows your cursor!', 'color: #667eea;');
+    console.log('I made it because I thought it would be cool. And it is.');
+};
+
+window.quote = function() {
+    const quotes = [
+        '"It works on my machine." - Every developer ever',
+        '"Code never lies, comments sometimes do." - Ron Jeffries',
+        '"First, solve the problem. Then, write the code." - John Johnson',
+        '"Debugging is like being a detective in a crime movie where you are also the murderer."',
+        '"The best error message is the one that never shows up." - Thomas Fuchs',
+        '"Programming isn\'t about what you know; it\'s about what you can figure out."'
+    ];
+    const quote = quotes[Math.floor(Math.random() * quotes.length)];
+    console.log(`%c${quote}`, 'font-style: italic; color: #888; font-size: 13px;');
+    return quote;
+};
+
+// Konami Code Easter Egg
+let konamiCode = [];
+const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+window.konami = function() {
+    activateKonamiCode();
+};
+
+function activateKonamiCode() {
+    document.body.style.animation = 'rainbow 2s linear infinite';
+    console.log('%c🎉 KONAMI CODE ACTIVATED! 🎉', 'font-size: 20px; color: #ff00ff; font-weight: bold;');
+    
+    // Add rainbow animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    setTimeout(() => {
+        document.body.style.animation = '';
+        console.log('%cRainbow mode deactivated', 'color: #888;');
+    }, 5000);
+}
+
+document.addEventListener('keydown', (e) => {
+    konamiCode.push(e.key);
+    konamiCode = konamiCode.slice(-konamiSequence.length);
+    
+    if (konamiCode.join(',') === konamiSequence.join(',')) {
+        activateKonamiCode();
+        konamiCode = [];
+    }
+});
+
+// Click logo easter egg - shows random coding fact
+const logo = document.querySelector('.logo');
+const logoQuotes = [
+    'First Git commit: "Initial commit - here we go 🚀"',
+    'This site took 3 cups of coffee and 2 all-nighters ☕',
+    'Built from scratch. Every. Single. Line. ✨',
+    'The ghost cursor? Yeah, that was my idea 👾',
+    'I debugged this more times than I slept this month 🐛',
+    'Easter egg found! You actually click on stuff. Nice. 🎉',
+    'No templates were used in the making of this site 💪',
+    'I care about load times. This site is FAST ⚡'
+];
+
+let logoClickCount = 0;
+if (logo) {
+    logo.addEventListener('click', (e) => {
+        if (e.target.closest('.logo')) {
+            logoClickCount++;
+            const quote = logoQuotes[Math.floor(Math.random() * logoQuotes.length)];
+            
+            // Create floating message
+            const message = document.createElement('div');
+            message.textContent = quote;
+            message.style.cssText = `
+                position: fixed;
+                top: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--card);
+                border: 2px solid var(--brand-1);
+                padding: 1rem 2rem;
+                border-radius: 12px;
+                z-index: 10001;
+                font-family: 'Press Start 2P', monospace;
+                font-size: 0.7rem;
+                text-align: center;
+                max-width: 80%;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                animation: fadeInDown 0.5s ease;
+            `;
+            
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.style.animation = 'fadeOutUp 0.5s ease';
+                setTimeout(() => message.remove(), 500);
+            }, 3000);
+            
+            if (logoClickCount === 5) {
+                console.log('%c🎊 Achievement Unlocked: Logo Clicker! 🎊', 'font-size: 16px; color: #ffa500; font-weight: bold;');
+            }
+        }
+    });
+}
+
+// Add animation keyframes for logo easter egg
+const easterEggStyle = document.createElement('style');
+easterEggStyle.textContent = `
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+    
+    @keyframes fadeOutUp {
+        from {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+        }
+    }
+`;
+document.head.appendChild(easterEggStyle);
+
+// Enhanced keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    // Ctrl/Cmd + Shift + K = Show secret console
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        console.clear();
+        console.log('%c👾 SECRET CONSOLE ACTIVATED 👾', 'font-size: 24px; color: #667eea; font-weight: bold;');
+        console.log('%cType help() for available commands', 'font-size: 14px; color: #888;');
+        help();
+    }
+    
+    // Ctrl/Cmd + Shift + G = Toggle ghost trail
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'g') {
+        e.preventDefault();
+        const trails = document.querySelectorAll('.ghost-trail');
+        trails.forEach(trail => {
+            trail.style.display = trail.style.display === 'none' ? 'block' : 'none';
+        });
+        console.log('%c👾 Ghost trail toggled!', 'color: #667eea;');
+    }
+});
