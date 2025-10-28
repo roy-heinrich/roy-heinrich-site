@@ -83,6 +83,7 @@
                         <li role="none"><a href="#about" role="menuitem" class="nav-link"><span class="nav-icon" aria-hidden="true">👤</span> <span class="nav-text">About</span></a></li>
                         <li role="none"><a href="#projects" role="menuitem" class="nav-link"><span class="nav-icon" aria-hidden="true">💼</span> <span class="nav-text">Projects</span></a></li>
                         <li role="none"><a href="#github" role="menuitem" class="nav-link"><span class="nav-icon" aria-hidden="true">🐙</span> <span class="nav-text">Github</span></a></li>
+                        <li role="none"><a href="#terminal" role="menuitem" class="nav-link"><span class="nav-icon" aria-hidden="true">💻</span> <span class="nav-text">Terminal</span></a></li>
                         <li role="none"><a href="#contact" role="menuitem" class="nav-link"><span class="nav-icon" aria-hidden="true">✉️</span> <span class="nav-text">Contact</span></a></li>
                         <li role="none" class="theme-toggle-item">
                             <label class="theme-toggle-label" role="menuitem" aria-label="Toggle theme">
@@ -258,6 +259,38 @@
                 </div>
             </div>
         </section>
+        <section id="terminal" class="section">
+            <div class="container">
+                <h2 class="section-title fade-in">HeinrichOS Terminal</h2>
+                <div class="terminal-container fade-in">
+                    <div class="terminal-header">
+                        <span class="terminal-title">root@heinrichos:~</span>
+                        <div class="terminal-controls">
+                            <span class="terminal-control close"></span>
+                            <span class="terminal-control minimize"></span>
+                            <span class="terminal-control maximize"></span>
+                        </div>
+                    </div>
+                    <div class="terminal-output" id="terminal-output">
+                        <div class="terminal-line">
+                            <span class="terminal-prompt">root@heinrichos:~$</span> welcome
+                        </div>
+                        <div class="terminal-line">
+                            Welcome to HeinrichOS Terminal v1.0
+                        </div>
+                        <div class="terminal-line">
+                            Type <span class="terminal-highlight">help</span> for available commands.
+                        </div>
+                        <div class="terminal-line terminal-blank"></div>
+                    </div>
+                    <div class="terminal-input-line">
+                        <span class="terminal-prompt">root@heinrichos:~$</span>
+                        <input type="text" class="terminal-input" id="terminal-input" placeholder="Type a command..." autocomplete="off" />
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="contact" class="section">
             <div class="container">
                 <h2 class="section-title fade-in">Let's Talk</h2>
@@ -302,7 +335,7 @@
             <span class="footer-separator">|</span> 
             <a href="#" id="about-os-link" class="about-os-link">About HeinrichOS</a>
             <span class="footer-separator">|</span>
-            <span class="easter-egg-hint" title="Try clicking the ghost or pressing Ctrl+Shift+K">👾</span>
+            <span class="easter-egg-hint" title="Try clicking the 👾 logo or pressing Ctrl+Shift+H">👾</span>
             </p>
         </div>
     </footer>

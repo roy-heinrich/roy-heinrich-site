@@ -1334,11 +1334,19 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
 
 // Keyboard shortcuts
 document.addEventListener('keydown', (e) => {
+  // Only trigger shortcuts when NOT typing in input/textarea
+  const isTyping = document.activeElement.tagName === 'INPUT' || 
+                   document.activeElement.tagName === 'TEXTAREA' ||
+                   document.activeElement.isContentEditable;
+  
+  // "/" - Focus project search (works even when typing)
   if (e.key === '/') {
     const input = document.getElementById('project-search');
     if (input && document.activeElement !== input) { e.preventDefault(); input.focus(); }
   }
-  if (e.key.toLowerCase() === 't') {
+  
+  // "T" - Toggle theme (only when NOT typing)
+  if (e.key.toLowerCase() === 't' && !isTyping) {
     themeToggle?.click();
   }
 });
@@ -2068,13 +2076,39 @@ document.head.appendChild(easterEggStyle);
 
 // Enhanced keyboard shortcuts
 document.addEventListener('keydown', (e) => {
-    // Ctrl/Cmd + Shift + K = Show secret console
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'k') {
+    // Ctrl/Cmd + Shift + H = Show HeinrichOS secret console
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'h') {
         e.preventDefault();
         console.clear();
-        console.log('%c👾 SECRET CONSOLE ACTIVATED 👾', 'font-size: 24px; color: #667eea; font-weight: bold;');
+        console.log('%c👾 HEINRICHOS SECRET CONSOLE ACTIVATED 👾', 'font-size: 24px; color: #667eea; font-weight: bold;');
         console.log('%cType help() for available commands', 'font-size: 14px; color: #888;');
         help();
+        
+        // Visual feedback
+        const message = document.createElement('div');
+        message.textContent = '🎉 Secret console activated! Check your browser console.';
+        message.style.cssText = `
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card);
+            border: 2px solid var(--brand-1);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            z-index: 10001;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.7rem;
+            text-align: center;
+            max-width: 80%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: fadeInDown 0.5s ease;
+        `;
+        document.body.appendChild(message);
+        setTimeout(() => {
+            message.style.animation = 'fadeOutUp 0.5s ease';
+            setTimeout(() => message.remove(), 500);
+        }, 3000);
     }
     
     // Ctrl/Cmd + Shift + G = Toggle ghost trail
@@ -2087,3 +2121,40 @@ document.addEventListener('keydown', (e) => {
         console.log('%c👾 Ghost trail toggled!', 'color: #667eea;');
     }
 });
+
+// Footer ghost emoji easter egg
+const footerGhost = document.querySelector('.easter-egg-hint');
+if (footerGhost) {
+    footerGhost.addEventListener('click', () => {
+        console.clear();
+        console.log('%c👾 EASTER EGG FOUND! 👾', 'font-size: 24px; color: #667eea; font-weight: bold;');
+        console.log('%cYou found the secret ghost! Type help() for console commands.', 'font-size: 14px; color: #888;');
+        help();
+        
+        // Show fun message
+        const message = document.createElement('div');
+        message.textContent = '👾 Boo! You found the secret ghost! Check your console.';
+        message.style.cssText = `
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card);
+            border: 2px solid var(--brand-1);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            z-index: 10001;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.7rem;
+            text-align: center;
+            max-width: 80%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: fadeInDown 0.5s ease;
+        `;
+        document.body.appendChild(message);
+        setTimeout(() => {
+            message.style.animation = 'fadeOutUp 0.5s ease';
+            setTimeout(() => message.remove(), 500);
+        }, 3000);
+    });
+}
