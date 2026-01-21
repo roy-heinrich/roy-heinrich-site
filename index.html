@@ -248,11 +248,27 @@
                         <!-- Row 2 -->
                         <div class="github-chart-card" style="background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:2rem 1rem 1.5rem 1rem;box-sizing:border-box;width:100%;display:flex;flex-direction:column;align-items:center;">
                             <h3 class="github-chart-title" style="font-family:'Press Start 2P','Courier New',Courier,monospace;color:var(--brand-1);font-size:1.1rem;margin-bottom:1rem;text-align:center;letter-spacing:1px;">Stats Overview</h3>
-                            <img src="https://github-readme-stats.vercel.app/api?username=roy-heinrich&show_icons=true&theme=tokyonight&hide_border=true" alt="GitHub Stats" class="github-contrib-img" style="width:100%;background:var(--card);border-radius:12px;border:1px solid var(--card-border);padding:1rem;" loading="lazy" />
+                                                        <img
+                                                            src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api?username=roy-heinrich&show_icons=true&theme=tokyonight&hide_border=true&rank_icon=github&cache_seconds=86400&v=2"
+                                                            data-fallback-src="https://github-readme-stats.vercel.app/api?username=roy-heinrich&show_icons=true&theme=tokyonight&hide_border=true&rank_icon=github&cache_seconds=86400&v=2"
+                                                            alt="GitHub Stats"
+                                                            class="github-contrib-img"
+                                                            style="width:100%;background:var(--card);border-radius:12px;border:1px solid var(--card-border);padding:1rem;"
+                                                            loading="lazy"
+                                                            referrerpolicy="no-referrer"
+                                                        />
                         </div>
                         <div class="github-chart-card" style="background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:2rem 1rem 1.5rem 1rem;box-sizing:border-box;width:100%;display:flex;flex-direction:column;align-items:center;">
                             <h3 class="github-chart-title" style="font-family:'Press Start 2P','Courier New',Courier,monospace;color:var(--brand-1);font-size:1.1rem;margin-bottom:1rem;text-align:center;letter-spacing:1px;">Top Languages</h3>
-                            <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=roy-heinrich&layout=compact&theme=tokyonight&hide_border=true" alt="Top Languages" class="github-contrib-img" style="width:100%;background:var(--card);border-radius:12px;border:1px solid var(--card-border);padding:1rem;" loading="lazy" />
+                                                        <img
+                                                            src="https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/top-langs/?username=roy-heinrich&layout=compact&theme=tokyonight&hide_border=true&cache_seconds=86400&langs_count=8&v=2"
+                                                            data-fallback-src="https://github-readme-stats.vercel.app/api/top-langs/?username=roy-heinrich&layout=compact&theme=tokyonight&hide_border=true&cache_seconds=86400&langs_count=8&v=2"
+                                                            alt="Top Languages"
+                                                            class="github-contrib-img"
+                                                            style="width:100%;background:var(--card);border-radius:12px;border:1px solid var(--card-border);padding:1rem;"
+                                                            loading="lazy"
+                                                            referrerpolicy="no-referrer"
+                                                        />
                         </div>
                     </div>
                 </div>
@@ -349,6 +365,20 @@
   </div>
 
   <button id="back-to-top" aria-label="Back to top" title="Back to top">▲</button>
+
+    <script>
+        // Retry GitHub stat images with fallback if the primary mirror fails
+        document.addEventListener('DOMContentLoaded', () => {
+            const statImages = document.querySelectorAll('[data-fallback-src]');
+            statImages.forEach((img) => {
+                img.addEventListener('error', () => {
+                    if (img.dataset.fallbackUsed === 'true') return;
+                    img.dataset.fallbackUsed = 'true';
+                    img.src = img.dataset.fallbackSrc;
+                });
+            });
+        });
+    </script>
 
   <script src="script.js?v=4"></script>
 </body>
