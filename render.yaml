@@ -3,7 +3,10 @@ services:
   - type: static
     name: new-portfolio-2026
     branch: main
-    buildCommand: "npm ci && npm run build"
+    # If your environment uses Bun (bunfig.toml exists), run Bun install + build so
+    # the Vite `dist` output is created during the render build step.
+    # If you prefer npm, change this to: "npm ci && npm run build"
+    buildCommand: "bun install && bun run build"
     publishPath: "dist"
     # Add any build-time env vars here as key/value pairs
     envVars: []
