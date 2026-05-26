@@ -1,11 +1,10 @@
 # Render in-repo configuration for deploying this Vite static site
 services:
-  - type: static
+  - type: web
     name: new-portfolio-2026
     branch: main
-    # Use npm to install and build so the Vite `dist` output is created during
-    # the Render build step. Change if you prefer another package manager.
     buildCommand: "npm ci && npm run build"
-    publishPath: "dist"
-    # Add any build-time env vars here as key/value pairs
-    envVars: []
+    startCommand: "node server.js"
+    envVars:
+      - key: PORT
+        value: "10000"
