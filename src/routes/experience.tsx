@@ -28,13 +28,22 @@ export const Route = createFileRoute("/experience")({
 
 const timeline = [
   {
-    period: "2024 — Present",
-    role: "Freelance VA & AI Systems Specialist",
+    period: "Present",
+    role: "Available — Free for you",
     org: "Independent",
     points: [
+      "Open for short-term and long-term engagements",
+      "Contact or hire me for VA, automation, and AI tasks",
+    ],
+    tech: ["React", "Node", "OpenAI", "Supabase", "n8n"],
+  },
+  {
+    period: "May 2026",
+    role: "GVA (General Virtual Assistant) Trainee",
+    org: "Independent",
+    points: [
+      "Training in virtual assistance and AI-driven automation",
       "Built AI chatbots and automation flows for SMEs and educators",
-      "Provided VA + tech support hybrid engagements",
-      "Shipped full-stack tools and dashboards end-to-end",
     ],
     tech: ["React", "Node", "OpenAI", "Supabase", "n8n"],
   },
@@ -51,7 +60,7 @@ const timeline = [
   },
   {
     period: "2022 — 2023",
-    role: "Technical Staff / Student Assistant",
+    role: "GCSO Student Assistant",
     org: "University IT Department",
     points: [
       "Frontline tech support for staff and students",

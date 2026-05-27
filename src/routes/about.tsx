@@ -1,7 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal, Section, SectionHeading } from "@/components/site/Section";
+import * as React from "react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -48,6 +55,21 @@ const traits = [
   "Organized and efficient",
   "Strong problem-solving skills",
   "Strong internet research skills",
+];
+
+const testimonies = [
+  {
+    quote:
+      "Roy was a huge help during our pilot — reliable, clear, and fast. Highly recommended for small teams.",
+    author: "Alex Garcia",
+    role: "Founder, EduTools",
+  },
+  {
+    quote:
+      "Provided excellent VA support and shipped simple automations that saved us hours each week.",
+    author: "Marisol Tan",
+    role: "Operations Lead",
+  },
 ];
 
 function AboutPage() {
@@ -98,7 +120,7 @@ function AboutPage() {
 
           <Reveal delay={0.1}>
             <div className="relative">
-              <div className="aspect-[4/5] overflow-hidden rounded-3xl border border-secondary p-1 shadow-elegant bg-gradient-hero dark:shadow-[0_0_24px_color-mix(in_oklab,var(--yellow)_20%,transparent)] dark:ring-1 dark:ring-accent/20">
+              <div className="aspect-4/5 overflow-hidden rounded-3xl border border-secondary p-1 shadow-elegant bg-gradient-hero dark:shadow-[0_0_24px_color-mix(in_oklab,var(--yellow)_20%,transparent)] dark:ring-1 dark:ring-accent/20">
                 <div className="relative h-full w-full rounded-[22px] bg-gradient-hero">
                   <img
                     src="/about-photo.jpg"
@@ -107,7 +129,7 @@ function AboutPage() {
                   />
 
                   {/* Gradient overlay to improve text legibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-transparent rounded-[22px]" />
+                  <div className="absolute inset-0 rounded-[22px] bg-linear-to-t from-black/60 via-black/25 to-transparent" />
 
                   {/* Responsive overlay text */}
                   <div className="absolute left-6 right-6 bottom-6 flex flex-col items-start text-white md:left-8 md:right-auto">
@@ -145,7 +167,7 @@ function AboutPage() {
         <div className="grid gap-3 md:grid-cols-2">
           {highlights.map((h, i) => (
             <Reveal key={h} delay={i * 0.04}>
-              <div className="flex items-start gap-3 rounded-xl border border-border bg-card p-4 border-l-4 border-accent">
+              <div className="flex items-start gap-3 rounded-xl border border-border border-l-4 border-l-accent bg-card p-4">
                 <p className="text-sm text-foreground">{h}</p>
               </div>
             </Reveal>
@@ -153,7 +175,114 @@ function AboutPage() {
         </div>
       </Section>
 
+      <Section className="pt-24 md:pt-32">
+        <SectionHeading eyebrow="Testimonies" title="What people say" />
+
+        <div className="mt-6">
+          <TestimoniesCarousel items={testimonies} />
+        </div>
+      </Section>
+
       
     </>
+  );
+}
+
+function TestimoniesCarousel({ items }: { items: typeof testimonies }) {
+  const [api, setApi] = React.useState<CarouselApi | null>(null);
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [canScrollPrev, setCanScrollPrev] = React.useState(false);
+  const [canScrollNext, setCanScrollNext] = React.useState(false);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  const syncControls = React.useCallback((carouselApi: CarouselApi) => {
+    if (!carouselApi) return;
+
+    setCanScrollPrev(carouselApi.canScrollPrev());
+    setCanScrollNext(carouselApi.canScrollNext());
+    setCurrentIndex(carouselApi.selectedScrollSnap());
+  }, []);
+
+  React.useEffect(() => {
+    if (!api) return;
+
+    syncControls(api);
+    api.on("select", syncControls);
+    api.on("reInit", syncControls);
+
+    let id: number | undefined;
+    if (!isHovered) {
+      id = window.setInterval(() => {
+        api.scrollNext();
+      }, 4000);
+    }
+
+    return () => {
+      if (id) window.clearInterval(id);
+      api.off("select", syncControls);
+      api.off("reInit", syncControls);
+    };
+  }, [api, isHovered, syncControls]);
+
+  return (
+    <div className="mx-auto w-full max-w-4xl" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+      <div className="mb-4 flex items-center justify-between gap-4 border-b border-border/40 pb-3">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.26em] text-muted-foreground">
+            Testimonies
+          </p>
+          <p className="text-xs text-muted-foreground">Swipe or use the arrows</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="hidden min-w-16 text-right text-xs font-medium tabular-nums text-muted-foreground md:block">
+            {String(currentIndex + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+          </div>
+          <button
+            type="button"
+            onClick={() => api?.scrollPrev()}
+            disabled={!canScrollPrev}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/40 bg-background/60 text-foreground transition hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-30"
+            aria-label="Previous testimony"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => api?.scrollNext()}
+            disabled={!canScrollNext}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/40 bg-background/60 text-foreground transition hover:bg-foreground hover:text-background disabled:cursor-not-allowed disabled:opacity-30"
+            aria-label="Next testimony"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      <Carousel opts={{ loop: true, containScroll: "keepSnaps" }} setApi={setApi} className="w-full">
+        <CarouselContent className="flex touch-pan-y select-none">
+          {items.map((t, i) => (
+            <CarouselItem key={i} className="pl-6 first:pl-6 md:pl-8 md:first:pl-8">
+              <Reveal delay={i * 0.04}>
+                <div className="mx-auto w-[calc(100%-1rem)] rounded-[2rem] border border-border/50 bg-linear-to-br from-card via-card/90 to-background p-8 shadow-[0_30px_80px_rgba(0,0,0,0.18)] md:w-[calc(100%-1.5rem)] md:p-10">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                    Featured testimony
+                  </p>
+                  <p className="mt-6 max-w-3xl text-2xl leading-tight text-foreground md:text-3xl">
+                    “{t.quote}”
+                  </p>
+                  <div className="mt-8 flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-foreground/10" />
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">{t.author}</p>
+                      <p className="text-xs text-muted-foreground">{t.role}</p>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+    </div>
   );
 }
