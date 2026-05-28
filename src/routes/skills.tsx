@@ -103,6 +103,44 @@ const certs = [
 ];
 
 function SkillsPage() {
+  const [certFiles, setCertFiles] = useState<Array<any>>([]);
+  const [modalItem, setModalItem] = useState<any | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadCerts() {
+      try {
+        const [localResponse] = await Promise.allSettled([
+          fetch('/certs/index.json'),
+        ]);
+
+        const localData =
+          localResponse.status === 'fulfilled' && localResponse.value.ok
+            ? await localResponse.value.json()
+            : [];
+
+        if (!mounted) return;
+
+        const localList = Array.isArray(localData) ? localData : [];
+
+        if (localList.length === 0) {
+          setCertFiles([]);
+          return;
+        }
+
+        setCertFiles(localList);
+      } catch (err) {
+        if (mounted) setCertFiles([]);
+      }
+    }
+
+    loadCerts();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   return (
     <>
       <Section className="pt-12 md:pt-20">
@@ -141,6 +179,55 @@ function SkillsPage() {
               </div>
             </Reveal>
           ))}
+        </div>
+      </Section>
+
+      <Section className="pt-8">
+        <SectionHeading
+          eyebrow="Certificates"
+          title="My Certificates"
+          subtitle="Click to open the full certificate (PDF or image)."
+        />
+
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {certFiles.length === 0 ? (
+            <div className="text-sm text-muted-foreground">No certificates found. Run <strong>npm run sync:certs</strong> to sync files into <strong>public/certs</strong>.</div>
+          ) : (
+            certFiles.map((f, i) => (
+              <Reveal key={f.id ?? f.name ?? i} delay={i * 0.03}>
+                <button
+                  type="button"
+                  onClick={() => setModalItem(f)}
+                  className="group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-border bg-card text-left shadow-soft transition-all hover:-translate-y-1 hover:shadow-elegant"
+                >
+                  <div className="relative aspect-video w-full border-b border-border/60 bg-muted/20 p-4">
+                    <div className="flex h-full items-center justify-center overflow-hidden rounded-2xl bg-background/70">
+                      <CertificatePreview item={f} />
+                    </div>
+                  </div>
+                  <div className="flex flex-1 flex-col gap-3 p-5">
+                    <p
+                      className="text-base font-semibold leading-snug"
+                      style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                    >
+                      {f.name ?? f.title ?? (f.id ?? `Certificate ${i + 1}`)}
+                    </p>
+                    <div className="flex flex-wrap gap-2 text-xs">
+                      <span className="rounded-full border border-border bg-background px-2.5 py-1 font-medium text-foreground">
+                        {f.certificateType ?? 'Certificate'}
+                      </span>
+                      <span className="rounded-full border border-border bg-background px-2.5 py-1 text-muted-foreground">
+                        {f.date ?? 'Date unavailable'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground line-clamp-2 break-all">
+                      {f.name ?? f.previewUrl ?? f.url}
+                    </p>
+                  </div>
+                </button>
+              </Reveal>
+            ))
+          )}
         </div>
       </Section>
 
@@ -200,8 +287,10 @@ function SkillsPage() {
           ))}
         </div>
       </Section>
+      {modalItem ? <CertModal item={modalItem} onClose={() => setModalItem(null)} /> : null}
     </>
   );
+}
 
 function OllamaIcon({ svg, colorClass }: { svg: string; colorClass?: string }) {
   const [mounted, setMounted] = useState(false);
@@ -274,6 +363,15 @@ function OllamaIcon({ svg, colorClass }: { svg: string; colorClass?: string }) {
   );
 }
 
+function isImageCertificate(item: any): boolean {
+  return /\.(png|jpe?g|webp|gif|bmp|svg)$/i.test(item?.name ?? item?.title ?? item?.previewUrl ?? '');
+}
+
+function getImageSrc(item: any): string {
+  if (!item?.id) return item?.directUrl ?? item?.previewUrl ?? item?.url ?? '';
+  return item.thumbnailUrl ?? `https://drive.google.com/thumbnail?id=${item.id}&sz=w1600`;
+}
+
 function ToolTile({ href, name, icon, iconUrl, iconRaw, iconColor }: { href: string; name: string; icon?: string; iconUrl?: string; iconRaw?: string; iconColor?: string }) {
   return (
     <a
@@ -284,7 +382,7 @@ function ToolTile({ href, name, icon, iconUrl, iconRaw, iconColor }: { href: str
       title={name}
     >
       {iconRaw ? (
-        <OllamaIcon svg={iconRaw} colorClass={iconColor} />
+        <OllamaIcon svg={iconRaw ?? ""} colorClass={iconColor} />
       ) : iconUrl ? (
         <img src={iconUrl} alt={name} className="h-6 w-6 object-contain" />
       ) : (
@@ -302,4 +400,103 @@ function ToolTile({ href, name, icon, iconUrl, iconRaw, iconColor }: { href: str
     </a>
   );
 }
+
+function CertificatePreview({ item }: { item: any }) {
+  const [isImage, setIsImage] = useState<boolean | null>(null);
+  const [imageSrc, setImageSrc] = useState<string>(() => getImageSrc(item));
+
+  useEffect(() => {
+    setIsImage(null);
+    setImageSrc(getImageSrc(item));
+  }, [item]);
+
+  if (isImage === false) {
+    return (
+      <div className="flex h-full w-full items-center justify-center rounded-2xl border border-dashed border-border/70 bg-background px-4 text-center">
+        <div>
+          <div className="text-sm font-semibold tracking-wide">PDF</div>
+          <div className="mt-1 text-[11px] text-muted-foreground">Open in preview</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Try to load as image using directUrl; if it errors, mark as not image.
+  return (
+    <img
+      src={imageSrc}
+      alt={item.name}
+      className="h-full w-full rounded-2xl object-contain"
+      onLoad={() => setIsImage(true)}
+      onError={() => {
+        const fallback = item?.directUrl ?? item?.previewUrl ?? item?.url;
+        if (fallback && imageSrc !== fallback) {
+          setImageSrc(fallback);
+          return;
+        }
+        setIsImage(false);
+      }}
+    />
+  );
+}
+
+// Modal viewer (image or embedded Drive preview)
+function CertModal({ item, onClose }: { item: any; onClose: () => void }) {
+  if (!item) return null;
+
+  const isImage = isImageCertificate(item);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-3 backdrop-blur-sm sm:p-6">
+      <div className="w-full max-w-6xl overflow-hidden rounded-3xl border border-border bg-card shadow-elegant">
+        <div className="flex items-start justify-between gap-4 border-b border-border px-4 py-3 sm:px-6">
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold sm:text-base">{item.title ?? item.name}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {item.certificateType ?? 'Certificate'} · {item.date ?? 'Date unavailable'}
+            </p>
+          </div>
+          <button onClick={onClose} className="shrink-0 rounded-full border border-border px-3 py-1.5 text-sm hover:bg-muted">
+            Close
+          </button>
+        </div>
+        <div className="bg-muted/20 p-4 sm:p-6">
+          {isImage ? (
+            <ImageModalView item={item} />
+          ) : (
+            <iframe
+              src={item.previewUrl}
+              title={item.name}
+              className="h-[78vh] w-full rounded-2xl border border-border bg-white"
+            />
+          )}
+        </div>
+        <div className="border-t border-border px-4 py-4 text-sm text-muted-foreground sm:px-6">
+          {item.name}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ImageModalView({ item }: { item: any }) {
+  const [imageSrc, setImageSrc] = useState<string>(() => getImageSrc(item));
+
+  useEffect(() => {
+    setImageSrc(getImageSrc(item));
+  }, [item]);
+
+  return (
+    <img
+      src={imageSrc}
+      alt={item.name}
+      className="mx-auto max-h-[78vh] w-full max-w-5xl object-contain"
+      onError={() => {
+        const fallback = item?.directUrl ?? item?.previewUrl ?? item?.url;
+        if (fallback && imageSrc !== fallback) {
+          setImageSrc(fallback);
+        }
+      }}
+    />
+  );
 }

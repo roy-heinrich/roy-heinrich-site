@@ -45,7 +45,7 @@ const timeline = [
       "Training in virtual assistance and AI-driven automation",
       "Built AI chatbots and automation flows for SMEs and educators",
     ],
-    tech: ["React", "Node", "OpenAI", "Supabase", "n8n"],
+    tech: ["React", "Node", "OpenAI", "Supabase"],
   },
   {
     period: "2023 — 2024",
@@ -56,12 +56,12 @@ const timeline = [
       "Helped digitize manual processes (logbook, reporting)",
       "Authored documentation for internal workflows",
     ],
-    tech: ["Windows Server", "Networking", "Docs", "Support"],
+    tech: ["Networking", "Docs", "Support"],
   },
   {
     period: "2022 — 2023",
     role: "GCSO Student Assistant",
-    org: "University IT Department",
+    org: "Aklan State University - GCSO",
     points: [
       "Frontline tech support for staff and students",
       "Maintained lab systems, accounts, and access workflows",

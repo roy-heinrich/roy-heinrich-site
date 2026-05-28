@@ -60,9 +60,9 @@ const traits = [
 const testimonies = [
   {
     quote:
-      "Roy was a huge help during our pilot — reliable, clear, and fast. Highly recommended for small teams.",
-    author: "Alex Garcia",
-    role: "Founder, EduTools",
+      "As a team leader, I appreciate Roy’s professionalism, teamwork, and effort in handling the web search, data entry, and CRM tasks with his co-member for the 5 mock clients. He showed good coordination, organized workflow, and effective follow-up communication throughout the project. His contribution helped the team complete the tasks efficiently and professionally. Keep up the good work, Roy, and continue developing your communication and client management skills.",
+    author: "Abbie Cebuano",
+    role: "Team Leader, Virtual Assistant Training",
   },
   {
     quote:
