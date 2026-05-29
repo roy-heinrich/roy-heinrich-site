@@ -152,12 +152,9 @@ function getImageUrl(item: any): string {
   return toDropboxDirect(item?.directUrl ?? item?.url ?? item?.previewUrl ?? "");
 }
 
-function getGoogleViewerUrl(rawUrl: string): string {
-  return `https://docs.google.com/viewer?url=${encodeURIComponent(rawUrl)}&embedded=true`;
-}
-
 function getPdfViewerUrl(item: any): string {
-  return getGoogleViewerUrl(toDropboxDirect(getPreviewUrl(item)));
+  const rawUrl = toDropboxDirect(getPreviewUrl(item));
+  return `/pdf-viewer.html?url=${encodeURIComponent(rawUrl)}`;
 }
 
 // (Removed PDF SVG placeholder — using direct previews instead)
