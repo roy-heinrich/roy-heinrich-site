@@ -148,12 +148,18 @@ function getPreviewUrl(item: any): string {
   return item?.previewUrl ?? item?.url ?? item?.directUrl ?? "";
 }
 
+function getLocalCertUrl(item: any): string {
+  const fileName = item?.name ?? item?.title ?? "";
+  if (!fileName) return "";
+  return `/certs/${encodeURIComponent(fileName)}`;
+}
+
 function getImageUrl(item: any): string {
-  return toDropboxDirect(item?.directUrl ?? item?.url ?? item?.previewUrl ?? "");
+  return getLocalCertUrl(item) || toDropboxDirect(item?.directUrl ?? item?.url ?? item?.previewUrl ?? "");
 }
 
 function getPdfViewerUrl(item: any): string {
-  const rawUrl = toDropboxDirect(getPreviewUrl(item));
+  const rawUrl = getLocalCertUrl(item) || toDropboxDirect(getPreviewUrl(item));
   return `/pdf-viewer.html?url=${encodeURIComponent(rawUrl)}`;
 }
 
