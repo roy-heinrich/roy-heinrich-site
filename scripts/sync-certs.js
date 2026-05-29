@@ -1,92 +1,128 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { Dropbox } from 'dropbox';
 
-const SRC = process.env.CERTS_SRC || `C:\\Users\\heinz\\Documents\\Certificates DICT`;
 const OUT_DIR = path.resolve(process.cwd(), 'public', 'certs');
-const DATE_PATTERNS = [
-  /\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+\d{1,2},?\s+\d{4}\b/i,
-  /\b\d{1,2}(?:st|nd|rd|th)?\s+(?:day of\s+)?(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?),?\s+\d{4}\b/i,
-  /\b\d{4}-\d{2}-\d{2}\b/,
-  /\b\d{1,2}\/\d{1,2}\/\d{4}\b/,
-];
+const MANIFEST_PATH = path.join(OUT_DIR, 'index.json');
+const IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif', '.bmp', '.svg']);
 
-function normalizeDateText(text) {
-  return text.replace(/\s+/g, ' ').trim();
-}
+function parseEnvFile(contents) {
+  const values = {};
 
-async function extractPdfText(filePath) {
-  const data = await fs.readFile(filePath);
-  const doc = await getDocument({ data: new Uint8Array(data) }).promise;
-  let text = '';
-  const pages = Math.min(doc.numPages, 3);
+  for (const rawLine of contents.split(/\r?\n/)) {
+    const line = rawLine.replace(/^\uFEFF/, '').trim();
+    if (!line || line.startsWith('#')) continue;
 
-  for (let pageNum = 1; pageNum <= pages; pageNum += 1) {
-    const page = await doc.getPage(pageNum);
-    const content = await page.getTextContent();
-    text += `${content.items.map((item) => item.str).join(' ')}\n`;
+    const equalsIndex = line.indexOf('=');
+    if (equalsIndex === -1) continue;
+
+    const key = line.slice(0, equalsIndex).trim();
+    let value = line.slice(equalsIndex + 1).trim();
+
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
+    }
+
+    values[key] = value;
   }
 
-  await doc.destroy();
-  return normalizeDateText(text);
+  return values;
 }
 
-function extractDate(text) {
-  for (const pattern of DATE_PATTERNS) {
-    const match = text.match(pattern);
-    if (match?.[0]) return match[0].replace(/\s+/g, ' ').trim();
+async function loadWorkspaceEnv() {
+  try {
+    const envPath = path.resolve(process.cwd(), '.env');
+    const contents = await fs.readFile(envPath, 'utf8');
+    return parseEnvFile(contents);
+  } catch {
+    return {};
   }
-  return '';
 }
 
-function formatDate(rawDate) {
-  const value = rawDate.replace(/\b(\d{1,2})(st|nd|rd|th)\b/gi, '$1');
-  const parsed = new Date(value);
-  if (!Number.isNaN(parsed.getTime())) {
-    return parsed.toLocaleDateString('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    });
+const workspaceEnv = await loadWorkspaceEnv();
+const DROPBOX_ACCESS_TOKEN =
+  process.env.DROPBOX_TOKEN ||
+  workspaceEnv.DROPBOX_TOKEN ||
+  process.env.DROPBOX_ACCESS_TOKEN ||
+  workspaceEnv.DROPBOX_ACCESS_TOKEN ||
+  '';
+const DROPBOX_CERTS_FOLDER =
+  process.env.DROPBOX_CERTS_FOLDER || workspaceEnv.DROPBOX_CERTS_FOLDER || '/Certificates';
+
+if (!DROPBOX_ACCESS_TOKEN) {
+  throw new Error('Missing Dropbox access token. Set DROPBOX_TOKEN in .env.');
+}
+
+const dbx = new Dropbox({ accessToken: DROPBOX_ACCESS_TOKEN });
+
+function toRawDropboxUrl(sharedUrl) {
+  if (!sharedUrl) return '';
+
+  try {
+    const parsed = new URL(sharedUrl);
+    parsed.searchParams.delete('dl');
+    parsed.searchParams.delete('raw');
+    parsed.searchParams.set('raw', '1');
+    return parsed.toString();
+  } catch {
+    return sharedUrl.includes('raw=1')
+      ? sharedUrl
+      : `${sharedUrl}${sharedUrl.includes('?') ? '&' : '?'}raw=1`;
   }
-  return rawDate;
+}
+
+function getType(fileName) {
+  const ext = path.extname(fileName).toLowerCase();
+  return IMAGE_EXTENSIONS.has(ext) ? `image/${ext.slice(1) === 'jpg' ? 'jpeg' : ext.slice(1)}` : 'application/pdf';
+}
+
+async function getSharedUrl(filePath) {
+  try {
+    const created = await dbx.filesGetTemporaryLink({ path: filePath });
+    return created.result.link;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function main() {
   try {
     await fs.mkdir(OUT_DIR, { recursive: true });
-    const entries = await fs.readdir(SRC);
-    const allowed = new Set(['.pdf', '.png', '.jpg', '.jpeg', '.webp']);
-    const items = [];
 
-    for (const name of entries) {
-      const ext = path.extname(name).toLowerCase();
-      if (!allowed.has(ext)) continue;
-      const srcPath = path.join(SRC, name);
-      const destPath = path.join(OUT_DIR, name);
-      try {
-        await fs.copyFile(srcPath, destPath);
-        const type = ext === '.pdf' ? 'application/pdf' : `image/${ext.slice(1)}`;
-        let date = '';
-        if (ext === '.pdf') {
-          try {
-            const text = await extractPdfText(srcPath);
-            const extracted = extractDate(text);
-            date = extracted ? formatDate(extracted) : '';
-          } catch (err) {
-            console.warn(`Failed to extract date from ${name}:`, err);
-          }
-        }
-        items.push({ name, url: `/certs/${encodeURIComponent(name)}`, type, date });
-      } catch (err) {
-        console.warn(`Failed to copy ${name}:`, err);
-      }
+    let existing = [];
+    try {
+      const raw = await fs.readFile(MANIFEST_PATH, 'utf8');
+      existing = Array.isArray(JSON.parse(raw)) ? JSON.parse(raw) : [];
+    } catch {
+      existing = [];
     }
 
-    await fs.writeFile(path.join(OUT_DIR, 'index.json'), JSON.stringify(items, null, 2), 'utf8');
-    console.log(`Copied ${items.length} certificate(s) to ${OUT_DIR}`);
-  } catch (err) {
-    console.error('sync-certs error:', err);
+    const metadataByName = new Map(
+      existing
+        .filter((item) => item?.name)
+        .map((item) => [item.name.trim().toLowerCase(), item])
+    );
+
+    const items = [];
+
+    for (const [normalizedName, metadata] of metadataByName.entries()) {
+      const dropboxPath = `${DROPBOX_CERTS_FOLDER.replace(/\/+$/, '')}/${metadata.name}`;
+      const sharedUrl = await getSharedUrl(dropboxPath);
+      items.push({
+        ...metadata,
+        id: metadata.id,
+        name: metadata.name,
+        type: metadata.type ?? getType(metadata.name),
+        url: sharedUrl,
+        previewUrl: sharedUrl,
+        directUrl: sharedUrl,
+      });
+    }
+
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(items, null, 2), 'utf8');
+    console.log(`Wrote ${items.length} Dropbox-backed certificate entries to ${MANIFEST_PATH}`);
+  } catch (error) {
+    console.error('sync-certs error:', error);
     process.exitCode = 1;
   }
 }

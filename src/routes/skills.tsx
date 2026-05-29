@@ -102,6 +102,66 @@ const certs = [
   },
 ];
 
+function normalizeDropboxUrl(url: string): string {
+  if (!url) return "";
+
+  try {
+    const parsed = new URL(url, "https://example.com");
+    const host = parsed.hostname.toLowerCase();
+
+    if (host.endsWith("dropbox.com") || host.endsWith("dropboxusercontent.com")) {
+      if (host === "www.dropbox.com" || host === "dropbox.com") {
+        parsed.hostname = "dl.dropboxusercontent.com";
+      }
+
+      parsed.searchParams.delete("dl");
+      parsed.searchParams.delete("raw");
+      parsed.searchParams.set("raw", "1");
+      return parsed.toString();
+    }
+
+    return url;
+  } catch {
+    if (url.includes("dropbox.com") && !url.includes("raw=1")) {
+      const separator = url.includes("?") ? "&" : "?";
+      return `${url}${separator}raw=1`;
+    }
+
+    return url;
+  }
+}
+
+function normalizeAssetUrl(url: string): string {
+  return normalizeDropboxUrl(url);
+}
+
+function toDropboxDirect(shareUrl: string): string {
+  return normalizeAssetUrl(shareUrl)
+    .replace("www.dropbox.com", "dl.dropboxusercontent.com")
+    .replace("?dl=0", "")
+    .replace("?raw=1", "")
+    .replace("&dl=0", "")
+    .replace("&raw=1", "");
+}
+
+function getPreviewUrl(item: any): string {
+  return item?.previewUrl ?? item?.url ?? item?.directUrl ?? "";
+}
+
+function getImageUrl(item: any): string {
+  return toDropboxDirect(item?.directUrl ?? item?.url ?? item?.previewUrl ?? "");
+}
+
+function getGoogleViewerUrl(rawUrl: string): string {
+  return `https://docs.google.com/viewer?url=${encodeURIComponent(rawUrl)}&embedded=true`;
+}
+
+function getPdfViewerUrl(item: any): string {
+  return getGoogleViewerUrl(toDropboxDirect(getPreviewUrl(item)));
+}
+
+// (Removed PDF SVG placeholder — using direct previews instead)
+
 function SkillsPage() {
   const [certFiles, setCertFiles] = useState<Array<any>>([]);
   const [modalItem, setModalItem] = useState<any | null>(null);
@@ -111,9 +171,7 @@ function SkillsPage() {
 
     async function loadCerts() {
       try {
-        const [localResponse] = await Promise.allSettled([
-          fetch('/certs/index.json'),
-        ]);
+        const [localResponse] = await Promise.allSettled([fetch('/certs/index.json')]);
 
         const localData =
           localResponse.status === 'fulfilled' && localResponse.value.ok
@@ -129,9 +187,18 @@ function SkillsPage() {
           return;
         }
 
-        setCertFiles(localList);
+        setCertFiles(
+          localList.map((item) => ({
+            ...item,
+            url: normalizeAssetUrl(item.url),
+            previewUrl: normalizeAssetUrl(item.previewUrl ?? item.url),
+            directUrl: normalizeAssetUrl(item.directUrl ?? item.url),
+          }))
+        );
       } catch (err) {
-        if (mounted) setCertFiles([]);
+        if (mounted) {
+          setCertFiles([]);
+        }
       }
     }
 
@@ -191,7 +258,7 @@ function SkillsPage() {
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {certFiles.length === 0 ? (
-            <div className="text-sm text-muted-foreground">No certificates found. Run <strong>npm run sync:certs</strong> to sync files into <strong>public/certs</strong>.</div>
+            <div className="text-sm text-muted-foreground">No certificates found. Add files to your Dropbox certs folder, then run <strong>npm run sync:certs</strong> to rebuild <strong>public/certs/index.json</strong>.</div>
           ) : (
             certFiles.map((f, i) => (
               <Reveal key={f.id ?? f.name ?? i} delay={i * 0.03}>
@@ -364,12 +431,16 @@ function OllamaIcon({ svg, colorClass }: { svg: string; colorClass?: string }) {
 }
 
 function isImageCertificate(item: any): boolean {
-  return /\.(png|jpe?g|webp|gif|bmp|svg)$/i.test(item?.name ?? item?.title ?? item?.previewUrl ?? '');
+  return /\.(png|jpe?g|webp|gif|bmp|svg)$/i.test(
+    item?.name ?? item?.title ?? item?.previewUrl ?? item?.directUrl ?? item?.url ?? ''
+  );
 }
 
 function getImageSrc(item: any): string {
-  if (!item?.id) return item?.directUrl ?? item?.previewUrl ?? item?.url ?? '';
-  return item.thumbnailUrl ?? `https://drive.google.com/thumbnail?id=${item.id}&sz=w1600`;
+  if (item?.directUrl) return normalizeAssetUrl(item.directUrl);
+  if (item?.previewUrl) return normalizeAssetUrl(item.previewUrl);
+  if (item?.url) return normalizeAssetUrl(item.url);
+  return '';
 }
 
 function ToolTile({ href, name, icon, iconUrl, iconRaw, iconColor }: { href: string; name: string; icon?: string; iconUrl?: string; iconRaw?: string; iconColor?: string }) {
@@ -402,42 +473,18 @@ function ToolTile({ href, name, icon, iconUrl, iconRaw, iconColor }: { href: str
 }
 
 function CertificatePreview({ item }: { item: any }) {
-  const [isImage, setIsImage] = useState<boolean | null>(null);
-  const [imageSrc, setImageSrc] = useState<string>(() => getImageSrc(item));
-
-  useEffect(() => {
-    setIsImage(null);
-    setImageSrc(getImageSrc(item));
-  }, [item]);
-
-  if (isImage === false) {
+  const isImage = isImageCertificate(item);
+  if (!isImage) {
     return (
-      <div className="flex h-full w-full items-center justify-center rounded-2xl border border-dashed border-border/70 bg-background px-4 text-center">
-        <div>
-          <div className="text-sm font-semibold tracking-wide">PDF</div>
-          <div className="mt-1 text-[11px] text-muted-foreground">Open in preview</div>
-        </div>
-      </div>
+      <iframe
+        src={getPdfViewerUrl(item)}
+        title={item.name}
+        className="h-full w-full rounded-2xl border-0 bg-white pointer-events-none"
+      />
     );
   }
 
-  // Try to load as image using directUrl; if it errors, mark as not image.
-  return (
-    <img
-      src={imageSrc}
-      alt={item.name}
-      className="h-full w-full rounded-2xl object-contain"
-      onLoad={() => setIsImage(true)}
-      onError={() => {
-        const fallback = item?.directUrl ?? item?.previewUrl ?? item?.url;
-        if (fallback && imageSrc !== fallback) {
-          setImageSrc(fallback);
-          return;
-        }
-        setIsImage(false);
-      }}
-    />
-  );
+  return <img src={getImageUrl(item)} alt={item.name} className="h-full w-full rounded-2xl object-contain" />;
 }
 
 // Modal viewer (image or embedded Drive preview)
@@ -462,10 +509,10 @@ function CertModal({ item, onClose }: { item: any; onClose: () => void }) {
         </div>
         <div className="bg-muted/20 p-4 sm:p-6">
           {isImage ? (
-            <ImageModalView item={item} />
+            <img src={getImageUrl(item)} alt={item.name} className="mx-auto max-h-[78vh] w-full max-w-5xl object-contain" />
           ) : (
             <iframe
-              src={item.previewUrl}
+              src={getPdfViewerUrl(item)}
               title={item.name}
               className="h-[78vh] w-full rounded-2xl border border-border bg-white"
             />
@@ -476,27 +523,5 @@ function CertModal({ item, onClose }: { item: any; onClose: () => void }) {
         </div>
       </div>
     </div>
-  );
-}
-
-function ImageModalView({ item }: { item: any }) {
-  const [imageSrc, setImageSrc] = useState<string>(() => getImageSrc(item));
-
-  useEffect(() => {
-    setImageSrc(getImageSrc(item));
-  }, [item]);
-
-  return (
-    <img
-      src={imageSrc}
-      alt={item.name}
-      className="mx-auto max-h-[78vh] w-full max-w-5xl object-contain"
-      onError={() => {
-        const fallback = item?.directUrl ?? item?.previewUrl ?? item?.url;
-        if (fallback && imageSrc !== fallback) {
-          setImageSrc(fallback);
-        }
-      }}
-    />
   );
 }

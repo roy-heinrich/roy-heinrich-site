@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PDF Viewer</title>
+    <style>
+      html,body{height:100%;margin:0}
+      #viewer{width:100%;height:100vh;display:flex;align-items:center;justify-content:center;background:#f3f4f6}
+      canvas{max-width:100%;height:auto;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.12)}
+      .loader{font-family:Inter,system-ui,Arial,sans-serif;color:#444}
+    </style>
+  </head>
+  <body>
+    <div id="toolbar" style="display:flex;gap:8px;align-items:center;padding:10px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.06);position:sticky;top:0;z-index:10">
+      <button id="zoomOut">−</button>
+      <button id="zoomIn">＋</button>
+      <button id="fitWidth">Fit</button>
+      <button id="actual">100%</button>
+      <span id="scaleLabel" style="margin-left:6px;color:#444;font-size:14px"></span>
+      <div style="flex:1"></div>
+      <a id="downloadLink" href="#" download style="margin-right:8px;">Download</a>
+      <button id="closeBtn">Close</button>
+    </div>
+
+    <div id="viewer"><div class="loader">Loading…</div></div>
+
+    <script src="https://unpkg.com/pdfjs-dist@3.5.141/build/pdf.min.js"></script>
+    <script>
+      (function(){
+        const params = new URLSearchParams(location.search);
+        const url = params.get('url');
+        const viewer = document.getElementById('viewer');
+        const scaleLabel = document.getElementById('scaleLabel');
+        let pdfDoc = null;
+        let currentScale = 1;
+        let renderTask = null;
+        let pdfDataBuffer = null;
+
+        document.getElementById('closeBtn').addEventListener('click', () => window.close());
+
+        function setScaleLabel() { scaleLabel.textContent = Math.round(currentScale*100) + '%'; }
+
+        async function fetchPdf() {
+          if(!url) throw new Error('No URL');
+          const res = await fetch(url);
+          if(!res.ok) throw new Error('Fetch failed: ' + res.status);
+          const data = await res.arrayBuffer();
+          pdfDataBuffer = data;
+          const blob = new Blob([data], { type: 'application/pdf' });
+          const blobUrl = URL.createObjectURL(blob);
+          const dl = document.getElementById('downloadLink');
+          dl.href = blobUrl;
+          dl.download = (new URL(url)).pathname.split('/').pop() || 'certificate.pdf';
+          return data;
+        }
+
+        async function renderPage(scale) {
+          if (!pdfDoc) return;
+          const page = await pdfDoc.getPage(1);
+          const viewport = page.getViewport({ scale });
+
+          // clear
+          viewer.innerHTML = '';
+          const canvas = document.createElement('canvas');
+          canvas.id = 'pdf-canvas';
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          canvas.style.maxWidth = '100%';
+          canvas.style.height = 'auto';
+          viewer.appendChild(canvas);
+          const ctx = canvas.getContext('2d');
+
+          if (renderTask) try { await renderTask.cancel(); } catch(e) {}
+          renderTask = page.render({ canvasContext: ctx, viewport });
+          await renderTask.promise;
+        }
+
+        async function init() {
+          try {
+            const data = await fetchPdf();
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.5.141/build/pdf.worker.min.js';
+            pdfDoc = await pdfjsLib.getDocument({ data }).promise;
+
+            // initial fit-to-width
+            const page = await pdfDoc.getPage(1);
+            const vw = page.getViewport({ scale: 1 }).width;
+            const fitScale = Math.max(0.5, Math.min(1.6, (window.innerWidth - 40) / vw));
+            currentScale = fitScale;
+            setScaleLabel();
+            await renderPage(currentScale);
+          } catch (err) {
+            viewer.innerText = 'Unable to load PDF: ' + (err.message || err);
+          }
+        }
+
+        document.getElementById('zoomIn').addEventListener('click', async () => {
+          currentScale = Math.min(4, currentScale * 1.2);
+          setScaleLabel();
+          await renderPage(currentScale);
+        });
+        document.getElementById('zoomOut').addEventListener('click', async () => {
+          currentScale = Math.max(0.25, currentScale / 1.2);
+          setScaleLabel();
+          await renderPage(currentScale);
+        });
+        document.getElementById('fitWidth').addEventListener('click', async () => {
+          if (!pdfDoc) return;
+          const page = await pdfDoc.getPage(1);
+          const vw = page.getViewport({ scale: 1 }).width;
+          currentScale = Math.max(0.25, (window.innerWidth - 40) / vw);
+          setScaleLabel();
+          await renderPage(currentScale);
+        });
+        document.getElementById('actual').addEventListener('click', async () => {
+          currentScale = 1; setScaleLabel(); await renderPage(currentScale);
+        });
+
+        // wheel-to-zoom on desktop
+        let isCtrl = false;
+        window.addEventListener('keydown', (e) => { if (e.ctrlKey || e.metaKey) isCtrl = true; });
+        window.addEventListener('keyup', (e) => { if (!e.ctrlKey && !e.metaKey) isCtrl = false; });
+        viewer.addEventListener('wheel', async (e) => {
+          if (!isCtrl) return;
+          e.preventDefault();
+          if (e.deltaY > 0) currentScale = Math.max(0.25, currentScale / 1.12);
+          else currentScale = Math.min(4, currentScale * 1.12);
+          setScaleLabel();
+          await renderPage(currentScale);
+        }, { passive: false });
+
+        if (url) init(); else viewer.innerText = 'No PDF URL provided.';
+      })();
+    </script>
+  </body>
+</html>
