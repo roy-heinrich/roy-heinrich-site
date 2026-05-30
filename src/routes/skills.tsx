@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Award, ShieldCheck, GraduationCap } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Reveal, Section, SectionHeading } from "@/components/site/Section";
 import renderRaw from "simple-icons/icons/render.svg?raw";
 import googlegeminiRaw from "simple-icons/icons/googlegemini.svg?raw";
@@ -102,51 +102,7 @@ const certs = [
   },
 ];
 
-function normalizeDropboxUrl(url: string): string {
-  if (!url) return "";
-
-  try {
-    const parsed = new URL(url, "https://example.com");
-    const host = parsed.hostname.toLowerCase();
-
-    if (host.endsWith("dropbox.com") || host.endsWith("dropboxusercontent.com")) {
-      if (host === "www.dropbox.com" || host === "dropbox.com") {
-        parsed.hostname = "dl.dropboxusercontent.com";
-      }
-
-      parsed.searchParams.delete("dl");
-      parsed.searchParams.delete("raw");
-      parsed.searchParams.set("raw", "1");
-      return parsed.toString();
-    }
-
-    return url;
-  } catch {
-    if (url.includes("dropbox.com") && !url.includes("raw=1")) {
-      const separator = url.includes("?") ? "&" : "?";
-      return `${url}${separator}raw=1`;
-    }
-
-    return url;
-  }
-}
-
-function normalizeAssetUrl(url: string): string {
-  return normalizeDropboxUrl(url);
-}
-
-function toDropboxDirect(shareUrl: string): string {
-  return normalizeAssetUrl(shareUrl)
-    .replace("www.dropbox.com", "dl.dropboxusercontent.com")
-    .replace("?dl=0", "")
-    .replace("?raw=1", "")
-    .replace("&dl=0", "")
-    .replace("&raw=1", "");
-}
-
-function getPreviewUrl(item: any): string {
-  return item?.previewUrl ?? item?.url ?? item?.directUrl ?? "";
-}
+// External hosting removed: prefer only local `/certs/...` images.
 
 function getLocalCertUrl(item: any): string {
   const fileName = item?.name ?? item?.title ?? "";
@@ -155,13 +111,12 @@ function getLocalCertUrl(item: any): string {
 }
 
 function getImageUrl(item: any): string {
-  return getLocalCertUrl(item) || toDropboxDirect(item?.directUrl ?? item?.url ?? item?.previewUrl ?? "");
+  // Prefer local certs in `public/certs` only. External Drive/Dropbox links are ignored.
+  return getLocalCertUrl(item);
 }
 
-function getPdfViewerUrl(item: any): string {
-  const rawUrl = getLocalCertUrl(item) || toDropboxDirect(getPreviewUrl(item));
-  return `/pdf-viewer.html?url=${encodeURIComponent(rawUrl)}`;
-}
+// PDFs removed: always use image previews from the `public/certs` folder or previewUrl/directUrl
+// The app no longer hosts or renders PDFs via a separate viewer.
 
 // (Removed PDF SVG placeholder — using direct previews instead)
 
@@ -193,9 +148,10 @@ function SkillsPage() {
         setCertFiles(
           localList.map((item) => ({
             ...item,
-            url: normalizeAssetUrl(item.url),
-            previewUrl: normalizeAssetUrl(item.previewUrl ?? item.url),
-            directUrl: normalizeAssetUrl(item.directUrl ?? item.url),
+            // Ensure all references point to the local `/certs/...` path.
+            url: getLocalCertUrl(item) || (item.url ?? ""),
+            previewUrl: getLocalCertUrl(item) || (item.previewUrl ?? item.url ?? ""),
+            directUrl: getLocalCertUrl(item) || (item.directUrl ?? item.url ?? ""),
           }))
         );
       } catch (err) {
@@ -256,26 +212,27 @@ function SkillsPage() {
         <SectionHeading
           eyebrow="Certificates"
           title="My Certificates"
-          subtitle="Click to open the full certificate (PDF or image)."
+          subtitle="Click to open the full certificate image."
         />
 
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3 auto-rows-fr items-stretch">
           {certFiles.length === 0 ? (
-            <div className="text-sm text-muted-foreground">No certificates found. Add files to your Dropbox certs folder, then run <strong>npm run sync:certs</strong> to rebuild <strong>public/certs/index.json</strong>.</div>
+            <div className="text-sm text-muted-foreground">No certificates found. Add image files to <strong>public/certs</strong> and create <strong>public/certs/index.json</strong>.</div>
           ) : (
             certFiles.map((f, i) => (
               <Reveal key={f.id ?? f.name ?? i} delay={i * 0.03}>
-                <button
-                  type="button"
-                  onClick={() => setModalItem(f)}
-                  className="group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-border bg-card text-left shadow-soft transition-all hover:-translate-y-1 hover:shadow-elegant"
-                >
-                  <div className="relative aspect-video w-full border-b border-border/60 bg-muted/20 p-4">
+                <div className="h-full">
+                  <button
+                    type="button"
+                    onClick={() => setModalItem(f)}
+                    className="group flex h-full w-full flex-col overflow-hidden rounded-3xl border border-border bg-card text-left shadow-soft transition-all hover:-translate-y-1 hover:shadow-elegant"
+                  >
+                  <div className="relative w-full h-36 sm:h-44 border-b border-border/60 bg-muted/20 p-0">
                     <div className="flex h-full items-center justify-center overflow-hidden rounded-2xl bg-background/70">
-                      <CertificatePreview item={f} />
+                      <CertificatePreview item={f} cover />
                     </div>
                   </div>
-                  <div className="flex flex-1 flex-col gap-3 p-5">
+                  <div className="flex flex-1 flex-col gap-3 p-4">
                     <p
                       className="text-base font-semibold leading-snug"
                       style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
@@ -295,7 +252,8 @@ function SkillsPage() {
                     </p>
                   </div>
                 </button>
-              </Reveal>
+              </div>
+            </Reveal>
             ))
           )}
         </div>
@@ -439,6 +397,34 @@ function isImageCertificate(item: any): boolean {
   );
 }
 
+function normalizeDropboxUrl(url: string | undefined) {
+  if (!url) return "";
+  try {
+    const parsed = new URL(url, "https://example.com");
+    const host = parsed.hostname.toLowerCase();
+    if (host.endsWith("dropbox.com") || host.endsWith("dropboxusercontent.com")) {
+      if (host === "www.dropbox.com" || host === "dropbox.com") {
+        parsed.hostname = "dl.dropboxusercontent.com";
+      }
+      parsed.searchParams.delete("dl");
+      parsed.searchParams.delete("raw");
+      parsed.searchParams.set("raw", "1");
+      return parsed.toString();
+    }
+    return url;
+  } catch {
+    if (url.includes("dropbox.com") && !url.includes("raw=1")) {
+      const separator = url.includes("?") ? "&" : "?";
+      return `${url}${separator}raw=1`;
+    }
+    return url;
+  }
+}
+
+function normalizeAssetUrl(url: string | undefined) {
+  return normalizeDropboxUrl(url);
+}
+
 function getImageSrc(item: any): string {
   if (item?.directUrl) return normalizeAssetUrl(item.directUrl);
   if (item?.previewUrl) return normalizeAssetUrl(item.previewUrl);
@@ -475,19 +461,174 @@ function ToolTile({ href, name, icon, iconUrl, iconRaw, iconColor }: { href: str
   );
 }
 
-function CertificatePreview({ item }: { item: any }) {
-  const isImage = isImageCertificate(item);
-  if (!isImage) {
-    return (
-      <iframe
-        src={getPdfViewerUrl(item)}
-        title={item.name}
-        className="h-full w-full rounded-2xl border-0 bg-white pointer-events-none"
-      />
-    );
+function buildCandidatesFromName(name: string) {
+  if (!name) return [];
+  const candidates = new Set<string>();
+
+  const raw = `/certs/${name}`;
+  candidates.add(raw);
+
+  try {
+    candidates.add(`/certs/${encodeURI(name)}`);
+    candidates.add(`/certs/${encodeURIComponent(name)}`);
+  } catch {
+    // ignore
   }
 
-  return <img src={getImageUrl(item)} alt={item.name} className="h-full w-full rounded-2xl object-contain" />;
+  // common quote variants
+  const variants = ["'", "’", "\u2019"]; // ASCII and curly
+  for (const v of variants) {
+    if (name.includes(v)) {
+      const replaceWith = ["'", "’", ""].map((r) => name.split(v).join(r));
+      for (const s of replaceWith) {
+        candidates.add(`/certs/${s}`);
+        try {
+          candidates.add(`/certs/${encodeURIComponent(s)}`);
+        } catch {}
+      }
+    }
+  }
+
+  // try removing common suffixes like " 1 of 1"
+  const suffixRegex = /\s1 of 1/i;
+  if (suffixRegex.test(name)) {
+    const stripped = name.replace(suffixRegex, "");
+    candidates.add(`/certs/${stripped}`);
+    try {
+      candidates.add(`/certs/${encodeURIComponent(stripped)}`);
+    } catch {}
+  }
+
+  return Array.from(candidates);
+}
+
+// Simple global resolver queue to limit concurrent image loads and avoid network bursts
+let __activeResolvers = 0;
+const __resolverQueue: Array<() => void> = [];
+const __MAX_ACTIVE = 6;
+function __enqueueResolver(fn: () => void) {
+  if (__activeResolvers < __MAX_ACTIVE) {
+    __activeResolvers++;
+    fn();
+  } else {
+    __resolverQueue.push(fn);
+  }
+}
+function __resolverDone() {
+  __activeResolvers = Math.max(0, __activeResolvers - 1);
+  const next = __resolverQueue.shift();
+  if (next) {
+    __activeResolvers++;
+    next();
+  }
+}
+
+function useResolvableImage(item: any) {
+  const [src, setSrc] = useState<string | null>(null);
+  return src;
+}
+
+function useResolvableImageLazy(item: any, enabled: boolean) {
+  const [src, setSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    let mounted = true;
+    const name = item?.name ?? item?.title ?? item?.id ?? "";
+    const candidates = buildCandidatesFromName(name);
+
+    // run the whole resolution process inside the global queue to limit concurrency
+    __enqueueResolver(() => {
+      let idx = 0;
+      function tryNext() {
+        if (!mounted) return finish();
+        if (idx >= candidates.length) return finish();
+
+        const url = candidates[idx++];
+        const img = new Image();
+        let started = false;
+        img.onload = () => {
+          if (!mounted) return finish();
+          setSrc(url);
+          finish();
+        };
+        img.onerror = () => {
+          // small backoff to avoid many simultaneous retries
+          setTimeout(tryNext, 30);
+        };
+        try {
+          started = true;
+          img.src = url;
+        } catch {
+          setTimeout(tryNext, 30);
+        }
+      }
+
+      function finish() {
+        // finish this resolver and allow next queued resolver to run
+        __resolverDone();
+      }
+
+      tryNext();
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [item, enabled]);
+
+  return src;
+}
+
+function useInView<T extends Element>(options: IntersectionObserverInit = {}) {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    const el = ref.current;
+    const obs = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          setInView(true);
+        }
+      }
+    }, options);
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [ref.current]);
+
+  return { ref, inView };
+}
+
+function CertificatePreview({ item, className, cover }: { item: any; className?: string; cover?: boolean }) {
+  const { ref, inView } = useInView<HTMLDivElement>({ rootMargin: '300px' });
+  const src = useResolvableImageLazy(item, inView);
+  const alt = item?.title ?? item?.name ?? "Certificate";
+  const emptyGif = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+  const placeholder = item?.placeholder ?? null;
+  const [loaded, setLoaded] = useState(false);
+  const previewSrc = item?.thumbnail ?? src ?? emptyGif;
+
+  return (
+    <div ref={ref} className={`relative overflow-hidden h-full w-full ${className ?? ''}`}>
+      <div
+        aria-hidden
+        className={`absolute inset-0 rounded-2xl bg-center bg-cover transition-opacity duration-300 pointer-events-none ${loaded ? 'opacity-0' : 'opacity-100'}`}
+        style={{ backgroundImage: placeholder ? `url(${placeholder})` : undefined, filter: 'blur(6px) brightness(0.9)'}}
+      />
+      <img
+        src={previewSrc}
+        alt={alt}
+        title={alt}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        className={`relative z-10 h-full w-full rounded-2xl transition-opacity duration-300 ${cover ? 'object-cover' : 'object-contain'} ${loaded ? 'opacity-100' : 'opacity-0'}`}
+      />
+    </div>
+  );
 }
 
 // Modal viewer (image or embedded Drive preview)
@@ -495,10 +636,17 @@ function CertModal({ item, onClose }: { item: any; onClose: () => void }) {
   if (!item) return null;
 
   const isImage = isImageCertificate(item);
+  const fullSrc = useResolvableImageLazy(item, true);
+  const emptyGif = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+  const [zoom, setZoom] = useState(1);
+
+  const increaseZoom = () => setZoom((z) => Math.min(3, Math.round((z + 0.25) * 100) / 100));
+  const decreaseZoom = () => setZoom((z) => Math.max(0.25, Math.round((z - 0.25) * 100) / 100));
+  const resetZoom = () => setZoom(1);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-3 backdrop-blur-sm sm:p-6">
-      <div className="w-full max-w-6xl overflow-hidden rounded-3xl border border-border bg-card shadow-elegant">
+      <div className="w-full max-w-6xl overflow-auto rounded-3xl border border-border bg-card shadow-elegant">
         <div className="flex items-start justify-between gap-4 border-b border-border px-4 py-3 sm:px-6">
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold sm:text-base">{item.title ?? item.name}</p>
@@ -506,20 +654,27 @@ function CertModal({ item, onClose }: { item: any; onClose: () => void }) {
               {item.certificateType ?? 'Certificate'} · {item.date ?? 'Date unavailable'}
             </p>
           </div>
-          <button onClick={onClose} className="shrink-0 rounded-full border border-border px-3 py-1.5 text-sm hover:bg-muted">
-            Close
-          </button>
+          <div className="flex items-center gap-2">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-2 py-1">
+              <button onClick={decreaseZoom} className="text-sm px-2 py-1 hover:bg-muted rounded">−</button>
+              <button onClick={resetZoom} className="text-sm px-2 py-1 hover:bg-muted rounded">100%</button>
+              <button onClick={increaseZoom} className="text-sm px-2 py-1 hover:bg-muted rounded">+</button>
+            </div>
+            <button onClick={onClose} className="shrink-0 rounded-full border border-border px-3 py-1.5 text-sm hover:bg-muted">
+              Close
+            </button>
+          </div>
         </div>
-        <div className="bg-muted/20 p-4 sm:p-6">
-          {isImage ? (
-            <img src={getImageUrl(item)} alt={item.name} className="mx-auto max-h-[78vh] w-full max-w-5xl object-contain" />
-          ) : (
-            <iframe
-              src={getPdfViewerUrl(item)}
-              title={item.name}
-              className="h-[78vh] w-full rounded-2xl border border-border bg-white"
+        <div className="bg-muted/20 p-4 sm:p-6 overflow-auto">
+          <div className="mx-auto max-h-[78vh]">
+            <img
+              src={fullSrc ?? item?.thumbnail ?? emptyGif}
+              alt={item.title ?? item.name}
+              title={item.title ?? item.name}
+              className={`mx-auto object-contain`}
+              style={{ transform: `scale(${zoom})`, transformOrigin: 'center top', transition: 'transform .12s' }}
             />
-          )}
+          </div>
         </div>
         <div className="border-t border-border px-4 py-4 text-sm text-muted-foreground sm:px-6">
           {item.name}
