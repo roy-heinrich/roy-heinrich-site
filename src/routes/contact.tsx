@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Github, Linkedin, Mail, Send } from "lucide-react";
+import { CalendarDays, Github, Linkedin, Mail, Send } from "lucide-react";
 import { useForm, ValidationError } from "@formspree/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,6 +82,22 @@ function ContactPage() {
 
           <div className="mt-10 space-y-3">
             <a
+              href="https://calendly.com/royheinrich-delgado/va-meeting-prospecting-client"
+              target="_blank"
+              rel="noreferrer"
+              className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/40"
+            >
+              <span className="grid h-10 w-10 place-items-center rounded-lg bg-accent text-accent-foreground">
+                <CalendarDays className="h-4 w-4" />
+              </span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                  Calendly
+                </p>
+                <p className="text-sm font-medium">Book a meeting</p>
+              </div>
+            </a>
+            <a
               href="mailto:hello@royheinrich.com"
               className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/40"
             >
@@ -96,7 +112,7 @@ function ContactPage() {
               </div>
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/roy-heinrich-delgado/"
               target="_blank"
               rel="noreferrer"
               className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/40"
@@ -112,7 +128,7 @@ function ContactPage() {
               </div>
             </a>
             <a
-              href="https://github.com"
+              href="https://github.com/roy-heinrich"
               target="_blank"
               rel="noreferrer"
               className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/40"
