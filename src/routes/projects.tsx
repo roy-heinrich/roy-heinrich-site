@@ -93,7 +93,7 @@ function ProjectsPage() {
       <SectionHeading
         eyebrow="Featured Projects"
         title="Selected work — built for clarity, shipped for impact."
-        subtitle="Two recent builds that capture the range: applied AI for education and full-stack tooling for the public sector."
+        subtitle="Three recent builds that capture the range: applied AI for education, full-stack database systems, and public-sector tooling."
       />
 
       <div className="space-y-10">

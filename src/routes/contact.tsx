@@ -98,7 +98,7 @@ function ContactPage() {
               </div>
             </a>
             <a
-              href="mailto:hello@royheinrich.com"
+              href="mailto:streamlinedbyheinz@gmail.com"
               className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/40"
             >
               <span className="grid h-10 w-10 place-items-center rounded-lg bg-accent text-accent-foreground">
