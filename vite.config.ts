@@ -14,6 +14,9 @@ export default defineConfig({
     server: { entry: "server" },
   },
   vite: {
+    build: {
+      chunkSizeWarningLimit: 1000,
+    },
     server: {
       host: "127.0.0.1",
       hmr: {
