@@ -1,3 +1,39 @@
 {
-  "framework": "tanstack-start"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/assets/(.*)",
+      "dest": "/dist/client/assets/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/certs/(.*)",
+      "dest": "/dist/client/certs/$1"
+    },
+    {
+      "src": "/about-photo.jpg",
+      "dest": "/dist/client/about-photo.jpg"
+    },
+    {
+      "src": "/Roy_Heinrich_Delgado_CV.pdf",
+      "dest": "/dist/client/Roy_Heinrich_Delgado_CV.pdf"
+    },
+    {
+      "src": "/((?!assets/|certs/|about-photo.jpg|Roy_Heinrich_Delgado_CV.pdf).*)",
+      "dest": "api/index.js"
+    }
+  ],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "dist/**"
+    }
+  }
 }
