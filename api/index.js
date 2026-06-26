@@ -5,7 +5,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Resolve path to the SSR worker entry built by Vite
-const { default: workerEntry } = await import("../dist/server/index.js");
+const { default: workerEntry } = await import("../dist/server/server.js");
 
 if (!workerEntry || typeof workerEntry.fetch !== "function") {
   throw new Error("Expected a fetch handler from dist/server/index.js");
