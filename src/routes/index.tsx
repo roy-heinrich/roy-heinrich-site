@@ -293,12 +293,17 @@ function Index() {
           title="Real systems. Real outcomes."
           subtitle="A glimpse of recent builds — designed for clarity, shipped for impact."
         />
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {[
             {
               tag: "AI · NLP",
               title: "Multilingual School Chatbot",
               text: "Conversational assistant serving students in multiple languages — automating FAQs and reducing staff load.",
+            },
+            {
+              tag: "Full-Stack · Education",
+              title: "PFLC Alumni Tracker",
+              text: "Alumni tracking database and admin portal with bulk imports, custom REST API, and multi-role OTP security.",
             },
             {
               tag: "Full-Stack",

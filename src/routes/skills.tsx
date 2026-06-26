@@ -56,15 +56,6 @@ const categories = [
     ],
   },
   {
-    name: "Development",
-    skills: [
-      { label: "React / TypeScript", level: 5 },
-      { label: "Node / APIs", level: 4 },
-      { label: "Tailwind / UI", level: 5 },
-      { label: "Postgres / Supabase", level: 4 },
-    ],
-  },
-  {
     name: "AI & Automation",
     skills: [
       { label: "Chatbots / LLM Prompts", level: 5 },
@@ -74,12 +65,44 @@ const categories = [
     ],
   },
   {
-    name: "Deployment & Tools",
+    name: "Frameworks & Tools",
     skills: [
+      { label: "React 19 & TypeScript", level: 5 },
+      { label: "TanStack Start / Router / Query", level: 5 },
+      { label: "Laravel & FastAPI", level: 4 },
+      { label: "REST APIs & Tailwind CSS", level: 5 },
       { label: "Git / GitHub", level: 5 },
-      { label: "Vercel / Cloudflare", level: 4 },
-      { label: "Docker (basics)", level: 3 },
-      { label: "n8n / Zapier / Make", level: 4 },
+    ],
+  },
+  {
+    name: "Databases & Cloud",
+    skills: [
+      { label: "MySQL & PostgreSQL (Neon)", level: 4 },
+      { label: "Supabase Storage", level: 4 },
+      { label: "Query Optimization", level: 4 },
+    ],
+  },
+  {
+    name: "Frontend",
+    skills: [
+      { label: "JavaScript, HTML & CSS", level: 5 },
+      { label: "Responsive UI Development", level: 5 },
+    ],
+  },
+  {
+    name: "Backend",
+    skills: [
+      { label: "PHP & Python", level: 4 },
+      { label: "Authentication (OTP)", level: 4 },
+      { label: "Session Management", level: 4 },
+    ],
+  },
+  {
+    name: "Data & Operations",
+    skills: [
+      { label: "Excel/CSV Processing", level: 5 },
+      { label: "SheetJS (xlsx) & Data Validation", level: 5 },
+      { label: "Application Testing", level: 4 },
     ],
   },
 ];

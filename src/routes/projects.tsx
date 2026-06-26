@@ -45,6 +45,31 @@ const projects = [
     github: "https://github.com/roy-heinrich/TomasChatBot",
   },
   {
+    tag: "Full-Stack · Education",
+    title: "PFLC Alumni Tracker",
+    overview:
+      "A full-stack alumni tracking and administration platform designed to streamline student record management and administrative workflows.",
+    problem:
+      "Administrative staff spent hours manually processing student spreadsheets, risking duplicate records, data inconsistencies, and data loss during upload interruptions.",
+    stack: [
+      "React 19",
+      "TypeScript",
+      "TanStack Start",
+      "PHP",
+      "PostgreSQL",
+      "Supabase",
+      "Tailwind CSS",
+    ],
+    impact: [
+      "Streamlined administrative workflows by replacing manual spreadsheet data entry with a validated bulk Excel/CSV import and side-by-side duplicate resolution",
+      "Strengthened platform security with secure multi-role auth, SMTP-based OTP recovery, session controls, and rate limiting (HTTP 429)",
+      "Ensured data upload continuity through a custom REST API with transactional data handling and local storage fallback mechanisms",
+      "Optimized dashboard responsiveness and data retrieval through query caching and structured PostgreSQL database design",
+    ],
+    github: "https://github.com/roy-heinrich/PFLCAlumniTracker",
+    live: "https://pflcalumnitracker.onrender.com/",
+  },
+  {
     tag: "Full-Stack · Government",
     title: "DICT Digital Logbook System",
     overview:
