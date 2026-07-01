@@ -161,7 +161,7 @@ function AboutPage() {
         <div className="grid gap-3 md:grid-cols-2">
           {highlights.map((h, i) => (
             <Reveal key={h} delay={i * 0.04}>
-              <div className="flex items-start gap-3 rounded-xl border border-border border-l-4 border-l-accent bg-card p-4">
+              <div className="flex items-start gap-3 rounded-xl border border-border bg-card p-4">
                 <p className="text-sm text-foreground">{h}</p>
               </div>
             </Reveal>
