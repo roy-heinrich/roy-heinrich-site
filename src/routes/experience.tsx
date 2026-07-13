@@ -8,7 +8,7 @@ export const Route = createFileRoute("/experience")({
       {
         name: "description",
         content:
-          "Professional timeline: DICT internship, student assistant role, and technical staff experience across IT, AI, and operations.",
+          "Professional timeline: DICT IT Application Support internship, Guidance & Counseling Technical Support assistant role, and Job Fair technical setup.",
       },
       {
         property: "og:title",
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/experience")({
       {
         property: "og:description",
         content:
-          "A grounded track record across public-sector IT, education, and applied AI.",
+          "A solid technical track record across IT systems support, software development, and database operations.",
       },
       { property: "og:url", content: "/experience" },
     ],
@@ -28,46 +28,50 @@ export const Route = createFileRoute("/experience")({
 
 const timeline = [
   {
-    period: "Present",
-    role: "Available — Free for you",
+    period: "June 2026 — Present",
+    role: "Digital Solutions & Tech Consultant",
     org: "Independent",
     points: [
-      "Open for short-term and long-term engagements",
-      "Contact or hire me for VA, automation, and AI tasks",
+      "Completed intensive DICT training focused on digital productivity, remote infrastructure, and client communication (awarded Medalist distinction).",
+      "Engaged in client consulting for web search, CRM management, data entry validation, and team workflows.",
+      "Building and deploying bespoke chatbot utilities and full-stack record tracking software.",
     ],
-    tech: ["React", "Node", "OpenAI", "Supabase", "n8n"],
+    tech: ["React 19", "Vite", "FastAPI", "CRM", "Automations"],
   },
   {
-    period: "May 2026",
-    role: "GVA (General Virtual Assistant) Trainee",
-    org: "Independent",
+    period: "Jan 2026 — Apr 2026",
+    role: "OJT Intern - IT Application & Technical Support",
+    org: "Department of Information and Communications Technology (DICT) - Aklan Provincial Field Office",
     points: [
-      "Training in virtual assistance and AI-driven automation",
-      "Built AI chatbots and automation flows for SMEs and educators",
+      "Developed and deployed the DICT DTC Aklan Digital Logbook System using Laravel/PHP, achieving 90% uptime and supporting 100+ daily entries at launch.",
+      "Validated and compared 100+ daily log entries using advanced Excel matching to verify data accuracy, eliminating discrepancies prior to supervisor review.",
+      "Authored and submitted 5 technical documents per week, including detailed system logs, step-by-step process guides, and incident reports.",
+      "Provided on-site ICT technical helpdesk support for two large-scale Skills Training programs and a 3-day eLGU System Refresher Training.",
     ],
-    tech: ["React", "Node", "OpenAI", "Supabase"],
+    tech: ["PHP", "Laravel", "MySQL", "Excel", "Helpdesk", "Docs"],
   },
   {
-    period: "2023 — 2024",
-    role: "IT Intern",
-    org: "DICT (Department of Information & Communications Technology)",
+    period: "May 2024",
+    role: "Technical Staff - ASU Job Fair 2024",
+    org: "Guidance and Counseling Service Office, Aklan State University",
     points: [
-      "Supported public-sector IT operations and on-site troubleshooting",
-      "Helped digitize manual processes (logbook, reporting)",
-      "Authored documentation for internal workflows",
+      "Configured and maintained 5 dedicated computer systems for 300+ attendees, reducing applicant wait times by ~30% through proactive setup and monitoring.",
+      "Assisted 80+ job applicants in navigating digital registration forms and online career platforms, resolving UI/navigation queries on the spot.",
+      "Resolved all on-site technical issues within a 5-10 minute average, sustaining 100% system uptime for the full duration of the event.",
     ],
-    tech: ["Networking", "Docs", "Support"],
+    tech: ["Systems Setup", "Troubleshooting", "Hardware Support"],
   },
   {
-    period: "2022 — 2023",
-    role: "GCSO Student Assistant",
-    org: "Aklan State University - GCSO",
+    period: "Sep 2023 — Sep 2024",
+    role: "Student Assistant - Technical Support",
+    org: "Guidance and Counseling Service Office, Aklan State University",
     points: [
-      "Frontline tech support for staff and students",
-      "Maintained lab systems, accounts, and access workflows",
-      "Trained peers on internal tools and best practices",
+      "Deployed and maintained an informational GCSO website (Hostinger), tripling student access to resources and centralizing counselor access for 200+ students.",
+      "Implemented a WordPress/Hostinger CMS structure for non-technical staff, reducing manual announcement distribution time by ~40% and eliminating IT dependency.",
+      "Diagnosed and resolved system and application issues during on-campus events within 5-10 minutes, maintaining uninterrupted operations.",
+      "Provided IT helpdesk-style assistance to 30+ faculty and students per semester, documenting recurring issues and resolving them in under 15 minutes on average.",
     ],
-    tech: ["Helpdesk", "AD Basics", "Hardware", "Training"],
+    tech: ["Hostinger", "CMS", "Helpdesk Support", "Problem Solving"],
   },
 ];
 
@@ -76,8 +80,8 @@ function ExperiencePage() {
     <Section className="pt-12 md:pt-20">
       <SectionHeading
         eyebrow="Experience"
-        title="A grounded track record across IT, AI, and operations."
-        subtitle="From public-sector internships to applied AI, every role compounded the same skill: making systems run smoother."
+        title="A track record across application support and full-stack development."
+        subtitle="From government-level IT support and ASU administrative assistance to custom database and chatbot engineering."
       />
 
       <div className="relative mt-8">

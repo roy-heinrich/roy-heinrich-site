@@ -10,7 +10,7 @@ export const Route = createFileRoute("/projects")({
       {
         name: "description",
         content:
-          "Featured projects including a Multilingual School Chatbot and the DICT Digital Logbook System.",
+          "Featured technical projects including the PFLC Alumni Tracker & Admin Portal, DICT DTC Aklan Digital Logbook, and Multilingual School Chatbot.",
       },
       {
         property: "og:title",
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/projects")({
       {
         property: "og:description",
         content:
-          "Selected case studies across AI, automation, and full-stack systems.",
+          "Selected case studies across software engineering, IT systems, and applied AI/NLP development.",
       },
       { property: "og:url", content: "/projects" },
     ],
@@ -30,60 +30,81 @@ export const Route = createFileRoute("/projects")({
 
 const projects = [
   {
-    tag: "AI · NLP · Education",
-    title: "Multilingual School Chatbot",
+    tag: "React 19 · TanStack · PHP · PostgreSQL",
+    title: "PFLC Alumni Tracker & Admin Portal",
     overview:
-      "A conversational assistant deployed for an academic institution, capable of handling student inquiries across multiple languages.",
-    problem:
-      "Staff were overwhelmed answering repetitive admission, enrollment, and policy questions — especially across language groups.",
-    stack: ["Python", "NLP", "React", "FastAPI", "OpenAI"],
-    impact: [
-      "Reduced repetitive inquiries by an estimated 60%",
-      "24/7 multilingual coverage for students and parents",
-      "Centralized FAQ knowledge into a versioned source of truth",
-    ],
-    github: "https://github.com/roy-heinrich/TomasChatBot",
-  },
-  {
-    tag: "Full-Stack · Education",
-    title: "PFLC Alumni Tracker",
-    overview:
-      "A full-stack alumni tracking and administration platform designed to streamline student record management and administrative workflows.",
+      "A full-stack alumni tracking and administration platform designed to streamline student record management, cohort promotions, and fee tracking for 500+ student records.",
     problem:
       "Administrative staff spent hours manually processing student spreadsheets, risking duplicate records, data inconsistencies, and data loss during upload interruptions.",
     stack: [
       "React 19",
       "TypeScript",
-      "TanStack Start",
+      "TanStack Start/Router/Query",
       "PHP",
-      "PostgreSQL",
+      "Neon PostgreSQL",
       "Supabase",
       "Tailwind CSS",
+      "Radix UI",
+      "SheetJS (xlsx)"
     ],
     impact: [
-      "Streamlined administrative workflows by replacing manual spreadsheet data entry with a validated bulk Excel/CSV import and side-by-side duplicate resolution",
-      "Strengthened platform security with secure multi-role auth, SMTP-based OTP recovery, session controls, and rate limiting (HTTP 429)",
-      "Ensured data upload continuity through a custom REST API with transactional data handling and local storage fallback mechanisms",
-      "Optimized dashboard responsiveness and data retrieval through query caching and structured PostgreSQL database design",
+      "Reduced administrative onboarding and registration time by ~80% through bulk Excel/CSV import operations and automated cohort promotion tools.",
+      "Designed a custom REST API in PHP using transactional repository patterns and automated memory caching, cutting average API response time to under 200ms.",
+      "Built a fallback mechanism redirecting media uploads to local storage during Supabase cloud outages, sustaining 99%+ operational continuity.",
+      "Built a multi-step Excel/CSV import pipeline with SheetJS (xlsx) and custom schema validation, processing 500+ legacy records per batch with an interactive duplicate Conflict Resolution Wizard.",
+      "Implemented secure, multi-role authentication with SMTP-driven 6-digit OTP recovery, rate-limiting (429 Too Many Requests), and inactivity-based session expiration."
     ],
     github: "https://github.com/roy-heinrich/PFLCAlumniTracker",
     live: "https://pflcalumnitracker.onrender.com/",
   },
   {
-    tag: "Full-Stack · Government",
-    title: "DICT Digital Logbook System",
+    tag: "PHP · Laravel · MySQL · GitHub",
+    title: "DICT DTC Aklan Digital Logbook System",
     overview:
-      "An internal logbook and reporting platform built during a DICT engagement to replace manual paper-based tracking.",
+      "An internal logbook and reporting platform built during a DICT engagement to replace manual paper-based tracking and automate administrative compliance.",
     problem:
-      "Manual logs were slow, lossy, and made reporting nearly impossible at scale across multiple offices.",
-    stack: ["React", "Node", "PostgreSQL", "Auth", "Reports"],
+      "Manual logs were slow, lossy, difficult to search, and made weekly/monthly reporting nearly impossible at scale across provincial offices.",
+    stack: [
+      "PHP",
+      "Laravel",
+      "JavaScript",
+      "HTML",
+      "CSS",
+      "MySQL",
+      "GitHub",
+      "Excel Queries"
+    ],
     impact: [
-      "Digitized daily logging with role-based access",
-      "Automated weekly and monthly reporting exports",
-      "Cut admin reporting time from hours to minutes",
+      "Developed and deployed the DICT DTC Aklan Digital Logbook System achieving 90% uptime and 100+ daily entries at production launch.",
+      "Validated and compared 100+ daily log entries using advanced Excel matching to verify data accuracy, eliminating discrepancies prior to supervisor review.",
+      "Prepared and submitted 5 technical documents per week - including system logs, process guides, and incident reports - maintaining a complete and audit-ready documentation trail.",
+      "Implemented SQL injection protection, dynamic logging, and maintained version control across 11 active GitHub repositories."
     ],
     github: "https://github.com/roy-heinrich/dtc_logbook",
     live: "https://dtc-logbook.onrender.com/",
+  },
+  {
+    tag: "Python · FastAPI · Redis · Supabase",
+    title: "Multilingual School Chatbot - Tomas S.M. Bautista Elementary School",
+    overview:
+      "A conversational natural language assistant deployed to handle admissions, policies, and general student inquiries across multiple language dialects.",
+    problem:
+      "Administrative staff were overwhelmed with repetitive inquiry questions in multiple local dialects, especially during enrollment seasons.",
+    stack: [
+      "Python",
+      "FastAPI",
+      "NLTK",
+      "TextBlob",
+      "Redis Caching",
+      "Supabase",
+      "Render"
+    ],
+    impact: [
+      "Planned and deployed a multilingual chatbot (English, Tagalog, Aklanon) handling 50+ FAQs with 95%+ intent accuracy across 15+ categories, improving query accuracy by 60% over the baseline.",
+      "Built a Python NLP engine (NLTK, TextBlob) with FastAPI, RESTful APIs, Redis caching (achieving an 80%+ hit rate), and Supabase integration.",
+      "Deployed on Render, sustaining sub-2s response times under simulated loads of 100+ concurrent users."
+    ],
+    github: "https://github.com/roy-heinrich/TomasChatBot",
   },
 ];
 
@@ -92,8 +113,8 @@ function ProjectsPage() {
     <Section className="pt-12 md:pt-20">
       <SectionHeading
         eyebrow="Featured Projects"
-        title="Selected work — built for clarity, shipped for impact."
-        subtitle="Three recent builds that capture the range: applied AI for education, full-stack database systems, and public-sector tooling."
+        title="Selected work — engineered for performance, shipped for impact."
+        subtitle="Three recent technical projects covering full-stack administrative platforms, public-sector application rollout, and applied AI/NLP solutions."
       />
 
       <div className="space-y-10">

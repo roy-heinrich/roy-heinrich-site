@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal, Section, SectionHeading } from "@/components/site/Section";
 import * as React from "react";
@@ -13,20 +13,20 @@ import {
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Roy Heinrich — IT Professional & VA Specialist" },
+      { title: "About Roy Heinrich — IT Specialist & Developer" },
       {
         name: "description",
         content:
-          "Roy Heinrich Delgado is an IT professional blending virtual assistance, technical support, AI, and full-stack development to streamline modern teams.",
+          "Roy Heinrich Delgado is an IT Graduate and IT Application Support Specialist blending troubleshooting, system testing, full-stack development, and custom AI systems.",
       },
       {
         property: "og:title",
-        content: "About Roy Heinrich — IT Professional & VA Specialist",
+        content: "About Roy Heinrich — IT Specialist & Developer",
       },
       {
         property: "og:description",
         content:
-          "From DICT internship to chatbots and full-stack systems — a systems-first operator built for modern teams.",
+          "From DICT application support to full-stack systems and NLP chatbots — built to keep operations highly available.",
       },
       { property: "og:url", content: "/about" },
     ],
@@ -36,25 +36,25 @@ export const Route = createFileRoute("/about")({
 });
 
 const highlights = [
-  "DICT Internship — public-sector IT operations",
-  "Built multilingual AI chatbots for education",
-  "Full-stack systems & internal tooling",
-  "Frontline technical support & documentation",
-  "Clear, client-focused communication",
-  "Workflow optimization mindset",
+  "IT Application & Technical Support Intern @ DICT",
+  "Built full-stack alumni tracking platforms (React/PHP/PostgreSQL)",
+  "Developed multilingual NLP chatbots for schools (Python/FastAPI)",
+  "Google & Cisco Certified (Technical Support, JS Essentials)",
+  "SLA-driven issue resolution & helpdesk support",
+  "Created audit-ready technical docs and user training guides",
 ];
 
 const traits = [
-  "Detail-oriented",
-  "Fast learner",
-  "Reliable communication",
-  "Tech-savvy",
-  "Knowledgeable in digital workflows",
-  "Responsive and goal-driven",
-  "Committed to delivering quality work",
-  "Organized and efficient",
-  "Strong problem-solving skills",
-  "Strong internet research skills",
+  "SLA-focused",
+  "Analytical & troubleshooting",
+  "Audit-ready documentation",
+  "Full-stack development",
+  "AI & Chatbots integration",
+  "Database validation & SQL",
+  "Windows & Linux OS support",
+  "Network troubleshooting",
+  "User acceptance testing",
+  "Proactive problem solving",
 ];
 
 const testimonies = [
@@ -76,13 +76,13 @@ function AboutPage() {
               <span className="h-1.5 w-1.5 rounded-full bg-accent" /> About
             </span>
             <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-balance md:text-6xl">
-              Operations, engineering, and AI — under one roof.
+              IT Support, full-stack engineering, and AI systems.
             </h1>
             <p className="mt-4 text-base text-muted-foreground md:text-lg">
-              As an IT student transitioning into the Virtual Assistant field, I recently completed Virtual Assistant training that strengthened my skills in organization, communication, and digital tools. While I’m still building hands-on client experience, I’m highly adaptable, detail-oriented, tech-savvy, and committed to providing reliable support that helps clients stay productive and organized.
+              I am an IT graduate and IT Application Support Specialist with hands-on experience in application support, troubleshooting, helpdesk resolution, and systems testing. I have successfully built and deployed real-world systems, including a Laravel-based DTC Digital Logbook System used in government environments and a full-stack alumni tracking platform using React 19 and a PHP REST API.
             </p>
             <p className="mt-4 text-base text-muted-foreground md:text-lg">
-              My background spans a DICT internship, building multilingual chatbots, shipping full-stack tools, and providing day-to-day technical support. The throughline: clear thinking, calm execution, and systems that compound.
+              My technical background covers networks, OS administration (Linux/Windows), database validations, security protocols, and custom natural language processing chatbots. I bring a structured, SLA-driven approach to maintaining high uptime and streamlining IT workflows.
             </p>
             <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-3">
               {traits.map((t) => (
@@ -104,7 +104,16 @@ function AboutPage() {
                   Work with me <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline">
+              <Button
+                asChild
+                variant="outline"
+                className="border-border hover:bg-muted"
+              >
+                <a href="/Roy_Heinrich_Delgado_CV.pdf" download>
+                  <Download className="mr-1.5 h-4 w-4" /> Download CV
+                </a>
+              </Button>
+              <Button asChild variant="ghost">
                 <Link to="/experience">See experience</Link>
               </Button>
             </div>
@@ -134,7 +143,7 @@ function AboutPage() {
                       Roy Heinrich Delgado
                     </h2>
                     <p className="mt-1 text-sm text-white/90 md:text-base">
-                      VA · AI Systems · Full-Stack
+                      IT Support · Full-Stack · AI Chatbots
                     </p>
                   </div>
                 </div>
@@ -156,7 +165,7 @@ function AboutPage() {
       <Section className="pt-10">
         <SectionHeading
           eyebrow="Highlights"
-          title="A blend of operations, engineering, and AI fluency."
+          title="A technical background spanning support, engineering, and certifications."
         />
         <div className="grid gap-3 md:grid-cols-2">
           {highlights.map((h, i) => (

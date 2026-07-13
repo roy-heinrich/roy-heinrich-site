@@ -18,20 +18,20 @@ import { Reveal, Section, SectionHeading } from "@/components/site/Section";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Roy Heinrich — Virtual Assistant & AI Systems Specialist" },
+      { title: "Roy Heinrich Delgado — IT Specialist & Full-Stack Developer" },
       {
         name: "description",
         content:
-          "Premium virtual assistance, technical support, automation, and AI systems for founders, agencies, and SMEs.",
+          "Experienced IT Application Support Specialist and Full-Stack Developer specializing in systems, application support, UAT testing, databases, and AI chatbots.",
       },
       {
         property: "og:title",
-        content: "Roy Heinrich — Virtual Assistant & AI Systems Specialist",
+        content: "Roy Heinrich Delgado — IT Specialist & Full-Stack Developer",
       },
       {
         property: "og:description",
         content:
-          "Helping businesses run smarter through virtual assistance and AI-powered systems.",
+          "Building and supporting robust software, AI chatbots, and IT systems.",
       },
       { property: "og:url", content: "/" },
     ],
@@ -42,31 +42,31 @@ export const Route = createFileRoute("/")({
 
 const floatingBadges = [
   { label: "AI Chatbots", icon: Bot, x: "8%", y: "12%", d: 0 },
-  { label: "Automation", icon: Workflow, x: "82%", y: "18%", d: 0.4 },
+  { label: "UAT Testing", icon: Workflow, x: "82%", y: "18%", d: 0.4 },
   { label: "Full-Stack", icon: Cpu, x: "12%", y: "78%", d: 0.8 },
-  { label: "Tech Support", icon: Headphones, x: "78%", y: "72%", d: 1.2 },
+  { label: "App Support", icon: Headphones, x: "78%", y: "72%", d: 1.2 },
 ];
 
 const servicesPreview = [
   {
-    icon: Calendar,
-    title: "Virtual Assistance",
-    text: "Inbox, calendar, client comms, and admin run smoothly so you can focus on the work that matters.",
+    icon: Headphones,
+    title: "IT Application Support",
+    text: "SLA-driven issue resolution, application rollout, helpdesk assistance, incident documentation, and UAT testing.",
   },
   {
-    icon: Headphones,
-    title: "Technical Support",
-    text: "IT troubleshooting, system maintenance, documentation, and reliable user support.",
+    icon: Cpu,
+    title: "Systems & Network Support",
+    text: "Windows/Linux OS administration, command-line operations, network diagnostics, and connectivity troubleshooting.",
   },
   {
     icon: Globe,
-    title: "Web Development",
-    text: "Portfolio sites, backends, dashboards, and APIs built with modern, maintainable stacks.",
+    title: "Full-Stack Web Development",
+    text: "Building dynamic systems, admin portals, and transactional REST APIs using PHP/Laravel, React 19, TypeScript, and SQL.",
   },
   {
     icon: Bot,
-    title: "AI & Automation",
-    text: "Chatbots, workflow automations, and intelligent integrations that scale with you.",
+    title: "Applied AI & NLP",
+    text: "Deploying custom NLP chatbots, FastAPI backends, caching pipelines, and database integrations on cloud hosts.",
   },
 ];
 
@@ -163,11 +163,11 @@ function Index() {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="mt-6 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-balance text-white md:text-6xl lg:text-7xl"
           >
-            Helping businesses run smarter through{" "}
+            Building &amp; supporting robust{" "}
             <span className="bg-gradient-to-r from-accent to-yellow-200 bg-clip-text text-transparent">
-              virtual assistance
+              software, AI chatbots,
             </span>{" "}
-            &amp; AI-powered systems.
+            &amp; IT systems.
           </motion.h1>
 
           <motion.p
@@ -176,9 +176,9 @@ function Index() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="mx-auto mt-6 max-w-2xl text-base text-white/80 md:text-lg"
           >
-            I'm Roy Heinrich — an IT professional combining virtual assistance,
-            technical support, automation, and AI to streamline operations and
-            ship modern web solutions for teams that want to move faster.
+            I'm Roy Heinrich — an IT graduate and IT Application Support Specialist combining
+            frontline application support, troubleshooting, full-stack web development, and AI solutions
+            to optimize operations and keep systems highly available.
           </motion.p>
 
           <motion.div
@@ -223,8 +223,8 @@ function Index() {
       <Section id="services">
         <SectionHeading
           eyebrow="What I Do"
-          title="A full operations stack — human + intelligent."
-          subtitle="From inbox zero to AI workflows, I bring the systems mindset that lets small teams operate like much larger ones."
+          title="Bridging application support and full-stack engineering."
+          subtitle="From diagnosing complex system errors to shipping secure APIs and NLP chatbots, I keep modern business technology running smoothly."
         />
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {servicesPreview.map((s, i) => (
@@ -257,16 +257,16 @@ function Index() {
         <div className="grid gap-10 md:grid-cols-3">
           {[
             {
-              k: "Systems-first",
-              v: "Every engagement starts with a workflow audit so we automate what actually moves the needle.",
+              k: "SLA-Driven",
+              v: "Experienced in responding to issues within strict timelines, resolving technical hiccups, and maintaining system uptime.",
             },
             {
-              k: "Tech-fluent",
-              v: "Comfortable across full-stack development, AI integrations, and infrastructure tooling.",
+              k: "Full-Stack & APIs",
+              v: "Fluent across React 19, TanStack, PHP/Laravel, and FastAPI, from dashboard interfaces to secure backend databases.",
             },
             {
-              k: "Client-obsessed",
-              v: "Clear communication, predictable delivery, and documentation you can hand to anyone.",
+              k: "Strong Documenter",
+              v: "Committed to maintaining complete audit-ready documentation trails, including incident reports, logs, and system guides.",
             },
           ].map((v, i) => (
             <Reveal key={v.k} delay={i * 0.08}>
@@ -296,19 +296,19 @@ function Index() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {[
             {
-              tag: "AI · NLP",
+              tag: "React 19 · PHP · PostgreSQL",
+              title: "PFLC Alumni Tracker & Admin Portal",
+              text: "Full-stack record management system with bulk Excel/CSV import pipelines, custom REST APIs, and multi-role OTP authentication.",
+            },
+            {
+              tag: "PHP · Laravel · MySQL",
+              title: "DICT DTC Aklan Digital Logbook System",
+              text: "Full-lifecycle application replacing manual paper logs, incorporating SQL injection protections and dynamic logging.",
+            },
+            {
+              tag: "Python · FastAPI · NLP",
               title: "Multilingual School Chatbot",
-              text: "Conversational assistant serving students in multiple languages — automating FAQs and reducing staff load.",
-            },
-            {
-              tag: "Full-Stack · Education",
-              title: "PFLC Alumni Tracker",
-              text: "Alumni tracking database and admin portal with bulk imports, custom REST API, and multi-role OTP security.",
-            },
-            {
-              tag: "Full-Stack",
-              title: "DICT Digital Logbook System",
-              text: "Internal logbook + reporting system replacing manual paper logs, with role-based access and exports.",
+              text: "Natural language assistant (NLTK, TextBlob) built with Redis caching and Supabase integration, deployed on Render.",
             },
           ].map((p, i) => (
             <Reveal key={p.title} delay={i * 0.08}>
@@ -353,11 +353,10 @@ function Index() {
             <div className="relative grid items-center gap-8 md:grid-cols-[1.4fr_1fr]">
               <div>
                 <h2 className="font-display text-3xl font-semibold text-balance md:text-5xl">
-                  Let's build smarter systems together.
+                  Let's collaborate on your next technical project.
                 </h2>
                 <p className="mt-4 max-w-xl text-primary-foreground/75">
-                  Whether you need an extra set of hands, a chatbot, or a full
-                  internal tool — let's scope it out.
+                  Looking for a dedicated IT Application Support Specialist, system troubleshooter, or full-stack developer? Let's connect.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3 md:justify-end">
@@ -373,6 +372,16 @@ function Index() {
                   size="lg"
                   variant="outline"
                   className="border-white/20 bg-transparent text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
+                >
+                  <a href="/Roy_Heinrich_Delgado_CV.pdf" download>
+                    <Download className="mr-1.5 h-4 w-4" /> Download CV
+                  </a>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="ghost"
+                  className="text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
                 >
                   <Link to="/about">About me</Link>
                 </Button>

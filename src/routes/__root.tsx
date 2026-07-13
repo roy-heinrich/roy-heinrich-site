@@ -80,12 +80,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         {
           title:
-            "Roy Heinrich — Virtual Assistant & AI Systems Specialist",
+            "Roy Heinrich — IT Application Support Specialist & Developer",
         },
         {
           name: "description",
           content:
-            "Roy Heinrich Delgado helps founders, agencies, and SMEs run smarter through premium virtual assistance, technical support, automation, and AI-powered systems.",
+            "Roy Heinrich Delgado is an IT Application Support Specialist and Developer specializing in application support, full-stack web development, and AI solutions.",
         },
         { name: "author", content: "Roy Heinrich Delgado" },
         { property: "og:site_name", content: "Roy Heinrich" },
@@ -93,20 +93,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         {
           property: "og:title",
           content:
-            "Roy Heinrich — Virtual Assistant & AI Systems Specialist",
+            "Roy Heinrich — IT Application Support Specialist & Developer",
         },
         {
           property: "og:description",
           content:
-            "Premium virtual assistance, automation, and AI systems for teams that want to move faster.",
+            "IT Application Support, Full-Stack Web Development, and AI Solutions.",
         },
         { name: "twitter:card", content: "summary_large_image" },
         { title: "Lovable App" },
         { property: "og:title", content: "Lovable App" },
         { name: "twitter:title", content: "Lovable App" },
-        { name: "description", content: "Roy Systems is a premium personal brand website showcasing expertise in virtual assistance, AI, and systems development." },
-        { property: "og:description", content: "Roy Systems is a premium personal brand website showcasing expertise in virtual assistance, AI, and systems development." },
-        { name: "twitter:description", content: "Roy Systems is a premium personal brand website showcasing expertise in virtual assistance, AI, and systems development." },
+        { name: "description", content: "Roy Systems is a premium portfolio showcasing expertise in IT application support, full-stack development, and AI systems." },
+        { property: "og:description", content: "Roy Systems is a premium portfolio showcasing expertise in IT application support, full-stack development, and AI systems." },
+        { name: "twitter:description", content: "Roy Systems is a premium portfolio showcasing expertise in IT application support, full-stack development, and AI systems." },
         { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a8cc18f7-ffb5-4ef0-9369-bfd7be3a7505/id-preview-aca8df37--cccfb902-714d-492c-82c6-061a75b2d166.lovable.app-1779759112470.png" },
         { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a8cc18f7-ffb5-4ef0-9369-bfd7be3a7505/id-preview-aca8df37--cccfb902-714d-492c-82c6-061a75b2d166.lovable.app-1779759112470.png" },
       ],
@@ -137,9 +137,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             "@context": "https://schema.org",
             "@type": "Person",
             name: "Roy Heinrich Delgado",
-            jobTitle: "Virtual Assistant & AI Systems Specialist",
+            jobTitle: "IT Application Support Specialist & Developer",
             description:
-              "IT professional specializing in virtual assistance, technical support, automation, AI chatbots, and modern web systems.",
+              "IT professional specializing in application support, troubleshooting, full-stack web development, and custom AI systems.",
             url: "/",
             sameAs: ["https://linkedin.com", "https://github.com"],
           }),

@@ -14,20 +14,20 @@ import googleImg from "../../icons/icons8-google-48.png";
 export const Route = createFileRoute("/skills")({
   head: () => ({
     meta: [
-      { title: "Skills & Certifications — Roy Heinrich" },
+      { title: "Skills & Certifications — Roy Heinrich Delgado" },
       {
         name: "description",
         content:
-          "Skills across virtual assistance, technical support, development, AI & automation, and deployment — plus CSC, Director's Honor List, and Cisco credentials.",
+          "Technical skills across IT Application Support, Full-Stack Web Development, Databases, Networking, OS Support, and Applied AI, along with certifications.",
       },
       {
         property: "og:title",
-        content: "Skills & Certifications — Roy Heinrich",
+        content: "Skills & Certifications — Roy Heinrich Delgado",
       },
       {
         property: "og:description",
         content:
-          "A categorized view of skills, tools, and credentials.",
+          "A categorized view of technical skills, tools, and eligibility credentials.",
       },
       { property: "og:url", content: "/skills" },
     ],
@@ -38,71 +38,57 @@ export const Route = createFileRoute("/skills")({
 
 const categories = [
   {
-    name: "Virtual Assistance",
+    name: "IT Application Support",
     skills: [
-      { label: "Inbox & Calendar", level: 5 },
-      { label: "Client Communication", level: 5 },
-      { label: "Research & Reporting", level: 4 },
-      { label: "Notion / Docs / Sheets", level: 5 },
+      { label: "Helpdesk & End-User Support", level: 5 },
+      { label: "Systems & UAT Testing", level: 5 },
+      { label: "Incident Documentation & SLA", level: 5 },
+      { label: "Application Rollout Support", level: 4 },
     ],
   },
   {
-    name: "Technical Support",
-    skills: [
-      { label: "Helpdesk / Troubleshooting", level: 5 },
-      { label: "System Maintenance", level: 4 },
-      { label: "Documentation / SOPs", level: 5 },
-      { label: "User Training", level: 4 },
-    ],
-  },
-  {
-    name: "AI & Automation",
-    skills: [
-      { label: "Chatbots / LLM Prompts", level: 5 },
-      { label: "Workflow Automation", level: 4 },
-      { label: "AI Integrations", level: 4 },
-      { label: "Evaluation & Guardrails", level: 3 },
-    ],
-  },
-  {
-    name: "Frameworks & Tools",
+    name: "Frameworks & Languages",
     skills: [
       { label: "React 19 & TypeScript", level: 5 },
       { label: "TanStack Start / Router / Query", level: 5 },
-      { label: "Laravel & FastAPI", level: 4 },
+      { label: "PHP & Laravel / Python", level: 4 },
       { label: "REST APIs & Tailwind CSS", level: 5 },
-      { label: "Git / GitHub", level: 5 },
     ],
   },
   {
-    name: "Databases & Cloud",
+    name: "Databases & Cloud APIs",
     skills: [
       { label: "MySQL & PostgreSQL (Neon)", level: 4 },
-      { label: "Supabase Storage", level: 4 },
+      { label: "Supabase & Redis Caching", level: 4 },
       { label: "Query Optimization", level: 4 },
+      { label: "Git / GitHub / Hostinger", level: 5 },
     ],
   },
   {
-    name: "Frontend",
+    name: "Networking & OS Admin",
     skills: [
-      { label: "JavaScript, HTML & CSS", level: 5 },
-      { label: "Responsive UI Development", level: 5 },
+      { label: "Windows & Linux Support", level: 5 },
+      { label: "TCP/IP & DNS Diagnostics", level: 4 },
+      { label: "Command-Line (Bash/CLI)", level: 4 },
+      { label: "Network Troubleshooting", level: 4 },
     ],
   },
   {
-    name: "Backend",
+    name: "Applied AI & NLP",
     skills: [
-      { label: "PHP & Python", level: 4 },
-      { label: "Authentication (OTP)", level: 4 },
-      { label: "Session Management", level: 4 },
+      { label: "NLP Chatbots (NLTK/TextBlob)", level: 5 },
+      { label: "FastAPI REST Integration", level: 4 },
+      { label: "OTP & SMTP Authentication", level: 4 },
+      { label: "Session & Rate-Limiting", level: 4 },
     ],
   },
   {
     name: "Data & Operations",
     skills: [
-      { label: "Excel/CSV Processing", level: 5 },
-      { label: "SheetJS (xlsx) & Data Validation", level: 5 },
-      { label: "Application Testing", level: 4 },
+      { label: "Excel Data Validation", level: 5 },
+      { label: "SheetJS (xlsx) & CSV Parsing", level: 5 },
+      { label: "Technical Document Writing", level: 5 },
+      { label: "Microsoft Office Suite", level: 5 },
     ],
   },
 ];
@@ -111,17 +97,32 @@ const certs = [
   {
     icon: ShieldCheck,
     title: "CSC Professional Eligibility",
-    issuer: "Civil Service Commission",
+    issuer: "Civil Service Commission (March 2025)",
   },
   {
     icon: Award,
-    title: "Director's Honor List",
-    issuer: "Academic Recognition",
+    title: "Director's Honor List & Academic Excellence",
+    issuer: "Aklan State University (2023-2026)",
   },
   {
     icon: GraduationCap,
-    title: "Cisco Certifications",
-    issuer: "Networking Academy",
+    title: "Technical Support Fundamentals",
+    issuer: "Google Career Certificates (June 2026)",
+  },
+  {
+    icon: ShieldCheck,
+    title: "IT Security: Defense Against the Digital Dark Arts",
+    issuer: "Coursera (July 2026)",
+  },
+  {
+    icon: GraduationCap,
+    title: "Computer Networking & OS Support",
+    issuer: "Coursera (July 2026)",
+  },
+  {
+    icon: Award,
+    title: "DICT VA Training Medalist",
+    issuer: "Department of Information and Communications Technology (June 2026)",
   },
 ];
 

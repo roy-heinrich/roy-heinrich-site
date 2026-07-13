@@ -16,8 +16,8 @@ export function Footer() {
             </span>
           </div>
           <p className="mt-4 max-w-sm text-sm text-primary-foreground/70">
-            Premium virtual assistance and AI-powered systems for founders,
-            teams, and operators who want to move faster — without the chaos.
+            IT Application Support Specialist and Developer building and supporting robust software,
+            AI chatbots, and IT systems.
           </p>
         </div>
 

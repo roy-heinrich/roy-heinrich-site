@@ -3,7 +3,7 @@ import { useState } from "react";
 import {
   ArrowRight,
   Bot,
-  Calendar,
+  Cpu,
   Globe,
   Headphones,
   Mail,
@@ -22,20 +22,20 @@ import { Reveal, Section, SectionHeading } from "@/components/site/Section";
 export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
-      { title: "Services — Virtual Assistance, Tech Support, AI & Web" },
+      { title: "Services — IT Application Support, Full-Stack Dev, & AI Systems" },
       {
         name: "description",
         content:
-          "Premium virtual assistance, technical support, web development, and AI & automation services for founders, agencies, and SMEs.",
+          "IT Application Support, Full-Stack Web Development, Systems & Network Support, and Applied AI/NLP chatbot deployment.",
       },
       {
         property: "og:title",
-        content: "Services — Virtual Assistance, Tech Support, AI & Web",
+        content: "Services — IT Application Support, Full-Stack Dev, & AI Systems",
       },
       {
         property: "og:description",
         content:
-          "Four core service tracks designed to streamline operations and ship smarter systems.",
+          "Four technical service tracks designed to build, secure, and support your applications.",
       },
       { property: "og:url", content: "/services" },
     ],
@@ -53,47 +53,47 @@ type Service = {
 
 const services: Service[] = [
   {
-    icon: Calendar,
-    title: "Virtual Assistance",
-    tagline: "Day-to-day operations, handled with care.",
+    icon: Headphones,
+    title: "IT Application Support",
+    tagline: "SLA-driven resolution and application lifecycle support.",
     bullets: [
-      { icon: Inbox, text: "Inbox management & triage" },
-      { icon: Calendar, text: "Calendar scheduling & coordination" },
-      { icon: Mail, text: "Client communication & follow-ups" },
-      { icon: FileText, text: "Administrative & research support" },
+      { icon: Wrench, text: "Incident troubleshooting & support" },
+      { icon: ShieldCheck, text: "Systems & user acceptance (UAT) testing" },
+      { icon: FileText, text: "Audit-ready logs & incident documentation" },
+      { icon: Wrench, text: "Application rollout & deployment support" },
     ],
   },
   {
-    icon: Headphones,
-    title: "Technical Support",
-    tagline: "Reliable IT support without the runaround.",
+    icon: Cpu,
+    title: "Systems & Network Support",
+    tagline: "Helpdesk operations and foundational network diagnostics.",
     bullets: [
-      { icon: Wrench, text: "IT troubleshooting & resolution" },
-      { icon: ShieldCheck, text: "System maintenance & monitoring" },
-      { icon: FileText, text: "Internal documentation & SOPs" },
-      { icon: Headphones, text: "End-user training & support" },
+      { icon: Headphones, text: "On-site ICT helpdesk & end-user training" },
+      { icon: Wrench, text: "Windows & Linux OS configuration" },
+      { icon: ShieldCheck, text: "TCP/IP & network troubleshooting" },
+      { icon: FileText, text: "System logs & process guides preparation" },
     ],
   },
   {
     icon: Globe,
-    title: "Web Development",
-    tagline: "Modern websites and internal tools, built to last.",
+    title: "Full-Stack Web Development",
+    tagline: "Secure, performant, and responsive web applications.",
     bullets: [
-      { icon: Globe, text: "Portfolio & business websites" },
-      { icon: LayoutDashboard, text: "Dashboards & admin panels" },
-      { icon: Plug, text: "Backend systems & REST APIs" },
-      { icon: ShieldCheck, text: "Auth, roles, and secure data flows" },
+      { icon: LayoutDashboard, text: "Alumni tracking & admin portal builds" },
+      { icon: Plug, text: "Transactional REST APIs in PHP/Laravel/FastAPI" },
+      { icon: ShieldCheck, text: "OTP authentication, rate-limiting & security" },
+      { icon: Globe, text: "Bulk Excel/CSV import pipelines (SheetJS)" },
     ],
   },
   {
     icon: Bot,
-    title: "AI & Automation",
-    tagline: "Smart systems that work while you sleep.",
+    title: "Applied AI & NLP Chatbots",
+    tagline: "Custom natural language engines to automate FAQs.",
     bullets: [
-      { icon: Bot, text: "AI chatbots & assistants" },
-      { icon: Workflow, text: "Workflow automation pipelines" },
-      { icon: Plug, text: "AI integrations into existing tools" },
-      { icon: ShieldCheck, text: "Guardrails, prompts & evaluation" },
+      { icon: Bot, text: "Multilingual chatbots (NLTK & TextBlob)" },
+      { icon: Plug, text: "FastAPI endpoints & Supabase storage" },
+      { icon: Workflow, text: "In-memory caching pipelines (Redis)" },
+      { icon: ShieldCheck, text: "Uptime and response time optimizations" },
     ],
   },
 ];
@@ -175,12 +175,11 @@ function ServicesPage() {
             <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Services
           </span>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-balance md:text-6xl">
-            Four tracks. One operator.
+            Four tracks. Dedicated execution.
           </h1>
           <p className="mt-6 text-base text-muted-foreground md:text-lg">
-            Pick a single service or combine them into a fully managed
-            operations layer. Every engagement starts with a short audit to
-            scope what's actually worth your time.
+            Combining application support, system diagnostics, full-stack software development,
+            and custom NLP integrations to keep your business workflows fast, secure, and reliable.
           </p>
         </Reveal>
       </Section>

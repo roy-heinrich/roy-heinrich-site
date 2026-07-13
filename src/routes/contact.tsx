@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { CalendarDays, Github, Linkedin, Mail, Send } from "lucide-react";
+import { CalendarDays, Download, Github, Linkedin, Mail, Send } from "lucide-react";
 import { useForm, ValidationError } from "@formspree/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,20 +14,20 @@ const RATE_LIMIT_MS = 30000;
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Let's Build Smarter Systems Together" },
+      { title: "Contact — Let's Collaborate on Technical Projects" },
       {
         name: "description",
         content:
-          "Get in touch with Roy Heinrich Delgado for virtual assistance, technical support, web development, or AI & automation engagements.",
+          "Get in touch with Roy Heinrich Delgado for IT Application Support, Full-Stack Web Development, or AI Chatbot deployments.",
       },
       {
         property: "og:title",
-        content: "Contact — Let's Build Smarter Systems Together",
+        content: "Contact — Let's Collaborate on Technical Projects",
       },
       {
         property: "og:description",
         content:
-          "Start a project, ask a question, or scope an engagement.",
+          "Get in touch to collaborate on systems support, troubleshooting, or application development.",
       },
       { property: "og:url", content: "/contact" },
     ],
@@ -73,11 +73,10 @@ function ContactPage() {
             <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Contact
           </span>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-[1.05] tracking-tight text-balance md:text-6xl">
-            Let's build smarter systems together.
+            Let's collaborate on your next technical project.
           </h1>
           <p className="mt-6 max-w-md text-base text-muted-foreground md:text-lg">
-            Tell me what you're working on and what you'd like to offload,
-            automate, or build. I usually reply within 24 hours.
+            Looking for a dedicated IT Application Support Specialist, system troubleshooter, or full-stack developer? Drop a line below.
           </p>
 
           <div className="mt-10 space-y-3">
@@ -141,6 +140,21 @@ function ContactPage() {
                   GitHub
                 </p>
                 <p className="text-sm font-medium">@royheinrich</p>
+              </div>
+            </a>
+            <a
+              href="/Roy_Heinrich_Delgado_CV.pdf"
+              download
+              className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/40"
+            >
+              <span className="grid h-10 w-10 place-items-center rounded-lg bg-accent text-accent-foreground animate-pulse">
+                <Download className="h-4 w-4" />
+              </span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                  Resume / CV
+                </p>
+                <p className="text-sm font-medium">Download my CV (PDF)</p>
               </div>
             </a>
           </div>
@@ -255,10 +269,10 @@ function ContactForm({
           className="mt-1.5 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <option value="">Pick what fits best</option>
-          <option value="Virtual Assistance">Virtual Assistance</option>
-          <option value="Technical Support">Technical Support</option>
+          <option value="IT Application Support">IT Application Support</option>
+          <option value="Systems & Network Support">Systems & Network Support</option>
           <option value="Web Development">Web Development</option>
-          <option value="AI & Automation">AI & Automation</option>
+          <option value="AI & Chatbots">AI & Chatbots</option>
           <option value="Other">Other</option>
         </select>
         <ValidationError prefix="Project type" field="type" errors={state.errors} />
@@ -271,7 +285,7 @@ function ContactForm({
           name="message"
           required
           rows={6}
-          placeholder="A short description of what you'd like to build or offload…"
+          placeholder="A short description of your project or technical support requirements…"
           className="mt-1.5"
         />
         <ValidationError prefix="Message" field="message" errors={state.errors} />
